@@ -12,6 +12,7 @@ export async function main(ns) {
 	let serverReady = false
 	while (!serverReady) {
 		startBatch(ns, target, maxThreads, true);
+        serverReady = getServerStatus(ns, target);
 		if (!serverReady) {
 			await ns.sleep(offset);
 		}
@@ -27,6 +28,22 @@ export async function main(ns) {
             await ns.sleep(2000);
         }
 	}
+}
+
+function getServerStatus(ns, target) {
+    let maxMoney = ns.getServerMaxMoney(target);
+    let currentMoney = ns.getServerMoneyAvailable(target);
+    let moneyReady = maxMoney == currentMoney;
+
+    let minSecurity = ns.getServerMinSecurityLevel(target);
+    let currentSecurity = ns.getServerSecurityLevel(target);
+    let securityReady = minSecurity == currentSecurity;
+
+    if (moneyReady && securityReady) {
+        return true;
+    } else {
+        return false;
+    }
 }
 
 function unlockServer(ns, target) {
