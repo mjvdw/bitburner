@@ -93,7 +93,7 @@ async function earn(ns) {
   }
 }
 
-function getTargets(ns) {
+export function getTargets(ns) {
   // TODO: Having to cap infinite loop arbitrarily. Struggling
   // to get the scanQueue to remove a server once scanned.
 
