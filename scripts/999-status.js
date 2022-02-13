@@ -1,4 +1,2 @@
-/** @param {NS} ns **/
-export async function main(ns) {
-	
-}
+/** @param {import(".").NS} ns **/
+export async function main(ns) {}
