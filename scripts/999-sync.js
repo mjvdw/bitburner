@@ -1,5 +1,7 @@
 /** @param {import(".").NS} ns **/
 export async function main(ns) {
+  ns.disableLog("wget");
+
   while (true) {
     await ns.wget("http://127.0.0.1:5000", "scripts.txt", "home");
 
