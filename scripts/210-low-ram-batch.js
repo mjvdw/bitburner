@@ -96,7 +96,7 @@ async function runBatch(ns, target, times, threads, preparingServer) {
   // If two the two weaken scripts have the same number of threads if won't
   // run both of them. Having a random ID allows them to run simultaneously.
 
-  let server = "home";
+  let server = ns.getServer().hostname;
   // Finish order:
   // 1. Hack
   // 2. Weaken

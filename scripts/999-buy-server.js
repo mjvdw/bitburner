@@ -2,8 +2,13 @@
 export async function main(ns) {
   const name = ns.args[0];
   const ram = ns.args[1];
-  ns.purchaseServer(name, ram);
 
-  const scripts = ns.ls("home", "scripts/");
-  await ns.scp(scripts, name);
+  let server = ns.purchaseServer(name, ram);
+
+  if (server) {
+    const scripts = ns.ls("home", "scripts/");
+    await ns.scp(scripts, name);
+  } else {
+    ns.alert("Something went wrong purchasing this server.");
+  }
 }

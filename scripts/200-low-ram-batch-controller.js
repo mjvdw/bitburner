@@ -1,7 +1,7 @@
 /** @param {import(".").NS} ns **/
 export async function main(ns) {
   let target = ns.args[0];
-  let server = "home";
+  let server = ns.getServer().hostname;
 
   let maxThreads = Math.trunc(ns.getServerMaxRam(server) / 4);
   let offset = 200;
