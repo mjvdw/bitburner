@@ -20,12 +20,15 @@ export async function main(ns) {
   let serverHeader = "SERVER";
   let moneyHeader = "MONEY";
   let securityHeader = "SECURITY";
+  let statusHeader = "STATUS";
   ns.tprint(
     serverHeader +
       " ".repeat(columnWidth - serverHeader.length) +
       moneyHeader +
       " ".repeat(columnWidth - moneyHeader.length) +
-      securityHeader
+      securityHeader +
+      " ".repeat(columnWidth - moneyHeader.length) +
+      statusHeader
   );
 
   // Print Content
@@ -33,11 +36,11 @@ export async function main(ns) {
     let target = ns.getServer(t.hostname);
     prettyPrint(ns, target, columnWidth);
   });
-  ns.tprint("-".repeat(columnWidth * 3));
+  ns.tprint("-".repeat(columnWidth * 4));
 }
 
 function prettyPrint(ns, target, columnWidth) {
-  ns.tprint("-".repeat(columnWidth * 3));
+  ns.tprint("-".repeat(columnWidth * 4));
   let hostname = target.hostname;
 
   let availableMoney = ns.nFormat(target.moneyAvailable, "($0.00a)");
