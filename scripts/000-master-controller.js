@@ -33,7 +33,9 @@ async function earn(ns) {
     // Kill all scripts except this one.
     let currentScripts = ns.ps("home");
     let batchScripts = currentScripts.filter((s) => {
-      return s.filename != ns.getScriptName();
+      return (
+        s.filename != ns.getScriptName() && s.filename != "/scripts/999-sync.js"
+      );
     });
     batchScripts.forEach((s) => {
       ns.kill(s.pid);
@@ -148,10 +150,29 @@ function getHackableTargets(ns, targets) {
 
   let hackingSkill = ns.getHackingLevel();
 
+  let portsCanOpen = 0;
+  let portsScripts = [
+    "BruteSSH.exe",
+    "FTPCrack.exe",
+    "relaySMTP.exe",
+    "HTTPWorm.exe",
+    "SQLInject.exe",
+  ];
+  let files = ns.ls("home");
+
+  for (let p in portsScripts) {
+    if (portsScripts[p] in files) {
+      portsCanOpen++;
+    }
+  }
+
   let hackableTargets = targets.filter((t) => {
+    let portsRequired = ns.getServerNumPortsRequired(t.hostname);
+
     return (
       hackingSkill >= t.requiredHackingSkill &&
-      ns.getServerMaxMoney(t.hostname) > 0
+      ns.getServerMaxMoney(t.hostname) > 0 &&
+      portsCanOpen >= portsRequired
     );
   });
 
