@@ -13,6 +13,13 @@ export async function main(ns) {
 
       await ns.wget(url, saveLocation, "home");
     }
+
+    let pservs = ns.getPurchasedServers();
+    for (let p in pservs) {
+      const scripts = ns.ls("home", "scripts/");
+      await ns.scp(scripts, pservs[p]);
+    }
+
     await ns.sleep(5000);
   }
 }

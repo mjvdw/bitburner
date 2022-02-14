@@ -30,7 +30,13 @@ function getTimes(ns, target) {
 }
 
 function getThreads(ns, target, maxThreads) {
-  let multiplier = 2;
+  // TODO: Handle situation when this multiplier to too large and
+  // causes the "round up to 1" functionality at the end to mean
+  // the server drains continuously - ie, the grow action doesn't
+  // sufficiently compensate for the hack. This is more of a problem
+  // early on when you're hacking large servers with low ram.
+
+  let multiplier = 1.5;
 
   // Get ideal number of threads for preferred hack amount.
   let maxHackAmount = ns.getServerMaxMoney(target) / multiplier;
@@ -46,7 +52,7 @@ function getThreads(ns, target, maxThreads) {
   }
 
   // Get grow threads needed to bring back up to full.
-  let growThreads = ns.growthAnalyze(target, multiplier);
+  let growThreads = ns.growthAnalyze(target, multiplier * 1.1);
   let growSecurityEffect = ns.growthAnalyzeSecurity(growThreads);
 
   // Second weaken reduces security after growth. Calculate threads needed.

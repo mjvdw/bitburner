@@ -1,3 +1,4 @@
+import logging
 from flask import Flask, send_file
 from flask_cors import CORS
 from turbo_flask import Turbo
@@ -6,6 +7,9 @@ import os
 app = Flask(__name__)
 CORS(app)
 turbo = Turbo(app)
+
+log = logging.getLogger('werkzeug')
+log.setLevel(logging.ERROR)
 
 
 @app.route("/")

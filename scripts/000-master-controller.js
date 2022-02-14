@@ -67,28 +67,38 @@ async function earn(ns) {
   // Starting hacking using purchased servers.
   // Get pservs again.
   pservs = ns.getPurchasedServers();
+  pservs.sort();
 
   for (let n in pservs) {
-    let p = pservs[n];
+    let pserv = pservs[n];
     // Make sure pserv has the latest scripts.
     // Get scripts on home and on server.
     let homeScripts = ns.ls("home", "/scripts/");
 
     // Copy all scripts back to server.
-    await ns.scp(homeScripts, p);
+    await ns.scp(homeScripts, pserv);
+    let i = parseInt(pserv.split("-").pop());
 
-    let i = parseInt(p.split("-").pop());
+    // This will be true if there are more targets than servers.
+    // Outcome is to loop back around and use the remaining server
+    // on the "top" option.
+    if (!targets[i]) {
+      i = 0;
+    }
+
+    let target = targets[i].hostname;
+
     let correctTarget = ns.isRunning(
       "/scripts/100-batch-controller.js",
-      p,
-      targets[i].hostname
+      pserv,
+      target
     );
     if (!correctTarget) {
       // Kill all scripts on the server.
-      ns.killall(p);
+      ns.killall(pserv);
 
       // Start with the correct one!
-      ns.exec("/scripts/100-batch-controller.js", p, 1, targets[i].hostname);
+      ns.exec("/scripts/100-batch-controller.js", pserv, 1, target);
     }
   }
 }
