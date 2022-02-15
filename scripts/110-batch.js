@@ -52,7 +52,7 @@ function getThreads(ns, target, maxThreads) {
   }
 
   // Get grow threads needed to bring back up to full.
-  let growThreads = ns.growthAnalyze(target, multiplier * 1.1);
+  let growThreads = ns.growthAnalyze(target, multiplier * 3);
   let growSecurityEffect = ns.growthAnalyzeSecurity(growThreads);
 
   // Second weaken reduces security after growth. Calculate threads needed.

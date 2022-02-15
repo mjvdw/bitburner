@@ -15,8 +15,13 @@ export async function main(ns) {
 }
 
 async function earn(ns) {
+  let server = ns.getServer();
+
   let pservLimit = ns.getPurchasedServerLimit();
-  let maxServerRam = ns.getPurchasedServerMaxRam();
+  let maxServerRam =
+    ns.getServerMaxRam(server.hostname) > ns.getPurchasedServerMaxRam()
+      ? ns.getPurchasedServerMaxRam()
+      : ns.getServerMaxRam(server.hostname);
   let maxServerCost = ns.getPurchasedServerCost(maxServerRam);
   let money = ns.getServerMoneyAvailable("home");
   let pservs = ns.getPurchasedServers();
@@ -67,9 +72,10 @@ async function earn(ns) {
   // Starting hacking using purchased servers.
   // Get pservs again.
   pservs = ns.getPurchasedServers();
-  pservs.sort();
+  let filteredPservs = pservs.filter((p) => p.startsWith("pserv-"));
+  filteredPservs.sort();
 
-  for (let n in pservs) {
+  for (let n in filteredPservs) {
     let pserv = pservs[n];
     // Make sure pserv has the latest scripts.
     // Get scripts on home and on server.
@@ -200,16 +206,18 @@ function getOrderedTargets(ns, hackableTargets) {
 
   hackableTargets.forEach((h) => {
     let maxMoney = ns.getServerMaxMoney(h.hostname);
-    let batchTime = ns.getWeakenTime(h.hostname) + 1000; // Weaken always takes longest.
-    let score = maxMoney / batchTime;
+    // let batchTime = ns.getWeakenTime(h.hostname) + 1000; // Weaken always takes longest.
+    // let score = maxMoney / batchTime;
     scoredTargets.push({
       hostname: h.hostname,
-      score: score,
+      // score: score,
+      money: maxMoney,
     });
   });
 
   let orderedTargets = scoredTargets.sort((a, b) => {
-    return b.score - a.score;
+    // return b.score - a.score;
+    return b.money - a.money;
   });
 
   let orderedTargetServers = [];
