@@ -20,7 +20,7 @@ export async function main(ns) {
       " ".repeat(columnWidth - moneyHeader.length) +
       statusHeader
   );
-  ns.tprint("=".repeat(columnWidth * 4));
+  ns.tprint("—".repeat(columnWidth * 4));
 
   // Print Content
   targets.forEach((t) => {
@@ -47,5 +47,5 @@ function prettyPrint(ns, target, columnWidth) {
       " ".repeat(columnWidth - money.length) +
       security
   );
-  ns.tprint("-".repeat(columnWidth * 4));
+  // ns.tprint("-".repeat(columnWidth * 4));
 }

@@ -20,6 +20,6 @@ export async function main(ns) {
       await ns.scp(scripts, pservs[p]);
     }
 
-    await ns.sleep(5000);
+    await ns.sleep(500);
   }
 }
