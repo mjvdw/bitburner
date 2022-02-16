@@ -179,7 +179,7 @@ function getHackableTargets(ns, targets) {
   let files = ns.ls("home");
 
   for (let p in portsScripts) {
-    if (portsScripts[p] in files) {
+    if (files.includes(portsScripts[p])) {
       portsCanOpen++;
     }
   }

@@ -36,7 +36,7 @@ function getThreads(ns, target, maxThreads) {
   // sufficiently compensate for the hack. This is more of a problem
   // early on when you're hacking large servers with low ram.
 
-  let multiplier = 1.5;
+  let multiplier = 2;
 
   // Get ideal number of threads for preferred hack amount.
   let maxHackAmount = ns.getServerMaxMoney(target) / multiplier;
@@ -52,7 +52,7 @@ function getThreads(ns, target, maxThreads) {
   }
 
   // Get grow threads needed to bring back up to full.
-  let growThreads = ns.growthAnalyze(target, multiplier * 3);
+  let growThreads = ns.growthAnalyze(target, multiplier);
   let growSecurityEffect = ns.growthAnalyzeSecurity(growThreads);
 
   // Second weaken reduces security after growth. Calculate threads needed.
