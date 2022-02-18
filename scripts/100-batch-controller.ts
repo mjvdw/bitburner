@@ -34,9 +34,9 @@ export async function main(ns) {
       ns.getServerUsedRam(server.hostname);
     if (freeRam >= 20) {
       startBatch(ns, target, maxThreads, false);
-      await ns.sleep(1000);
+      await ns.sleep(3000);
     } else {
-      await ns.sleep(1000);
+      await ns.sleep(3000);
     }
   }
 }
