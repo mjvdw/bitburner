@@ -2,7 +2,7 @@
 export async function main(ns) {
   let target = ns.args[0];
   let maxThreads = ns.args[1];
-  let preparingServer = ns.args[2] || false;
+  let preparingServer = ns.args[2] | false;
 
   let times = getTimes(ns, target);
   let threads = getThreads(ns, target, maxThreads);

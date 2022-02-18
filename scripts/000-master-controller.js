@@ -1,5 +1,5 @@
 /** @param {import(".").NS} ns **/
-export async function main(ns: any) {
+export async function main(ns) {
   ns.disableLog("scp");
 
   let debug = ns.args[0];

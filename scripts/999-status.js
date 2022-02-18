@@ -1,6 +1,6 @@
 /** @param {import(".").NS} ns **/
 
-import { getTargets } from "./000-master-controller";
+import { getTargets } from "scripts/000-master-controller.js";
 
 export async function main(ns) {
   let targets = getTargets(ns);
@@ -13,12 +13,12 @@ export async function main(ns) {
   let statusHeader = "STATUS";
   ns.tprint(
     serverHeader +
-    " ".repeat(columnWidth - serverHeader.length) +
-    moneyHeader +
-    " ".repeat(columnWidth - moneyHeader.length) +
-    securityHeader +
-    " ".repeat(columnWidth - moneyHeader.length) +
-    statusHeader
+      " ".repeat(columnWidth - serverHeader.length) +
+      moneyHeader +
+      " ".repeat(columnWidth - moneyHeader.length) +
+      securityHeader +
+      " ".repeat(columnWidth - moneyHeader.length) +
+      statusHeader
   );
   ns.tprint("—".repeat(columnWidth * 4));
 
@@ -42,10 +42,10 @@ function prettyPrint(ns, target, columnWidth) {
 
   ns.tprint(
     hostname +
-    " ".repeat(columnWidth - hostname.length) +
-    money +
-    " ".repeat(columnWidth - money.length) +
-    security
+      " ".repeat(columnWidth - hostname.length) +
+      money +
+      " ".repeat(columnWidth - money.length) +
+      security
   );
   // ns.tprint("-".repeat(columnWidth * 4));
 }
