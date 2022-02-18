@@ -14,7 +14,7 @@ log.setLevel(logging.ERROR)
 
 @app.route("/")
 def scripts_list():
-    path = os.path.abspath("scripts")
+    path = os.path.abspath("scripts/out")
     scripts = [f for f in os.listdir(
         path) if os.path.isfile(os.path.join(path, f))]
 
@@ -22,7 +22,7 @@ def scripts_list():
 
     with open("scripts.txt", "w") as file:
         for s in scripts:
-            if s not in excluded:
+            if s not in excluded and s.endswith(".js"):
                 file.write(f"{s},")
 
     return send_file("scripts.txt", "txt/plain")
@@ -30,6 +30,6 @@ def scripts_list():
 
 @app.route("/<filename>")
 def file(filename):
-    path = os.path.abspath("scripts")
+    path = os.path.abspath("scripts/out")
     script = path + "/" + filename
     return send_file(script, "text/javascript")
