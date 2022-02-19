@@ -2,19 +2,25 @@
 export async function main(ns) {
   ns.disableLog("scp");
 
-  let debug = ns.args[0];
+  let flag = ns.flags([
+    ["target", ""],
+    ["debug", false],
+  ]);
+
+  let target = flag.target;
+  let debug = flag.debug;
 
   if (debug) {
-    await earn(ns);
+    await earn(ns, target);
   } else {
     while (true) {
-      await earn(ns);
+      await earn(ns, target);
       await ns.sleep(60000);
     }
   }
 }
 
-async function earn(ns) {
+async function earn(ns, target) {
   let server = ns.getServer();
 
   let pservLimit = ns.getPurchasedServerLimit();
@@ -27,7 +33,12 @@ async function earn(ns) {
   let pservs = ns.getPurchasedServers();
 
   // Identify targets, in order of best to hack.
-  let targets = getTargets(ns);
+  let targets = [];
+  if (target) {
+    targets = [ns.getServer(target)];
+  } else {
+    targets = getTargets(ns);
+  }
 
   // Make sure that "home" is hacking the one at the target
   // top of the list.
