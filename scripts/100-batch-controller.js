@@ -3,7 +3,6 @@ export async function main(ns) {
   let target = ns.args[0];
   let server = ns.getServer();
 
-  let maxThreads = Math.trunc(ns.getServerMaxRam(server.hostname) / 4);
   let offset = 200;
 
   // Prepare server.
@@ -15,15 +14,15 @@ export async function main(ns) {
       ns.getServerMaxRam(server.hostname) -
       ns.getServerUsedRam(server.hostname);
     if (freeRam > 20) {
-      startBatch(ns, target, maxThreads, true);
+      startBatch(ns, target, true);
     }
 
     serverReady = getServerStatus(ns, target);
 
     if (!serverReady) {
-      // let waitTime = ns.getWeakenTime(target);
-      // await ns.sleep(waitTime + (5 * offset));
-      await ns.sleep(1000);
+      let waitTime = ns.getWeakenTime(target);
+      // await ns.sleep(waitTime + 5 * offset);
+      await ns.sleep(1500);
     }
   }
 
@@ -33,10 +32,10 @@ export async function main(ns) {
       ns.getServerMaxRam(server.hostname) -
       ns.getServerUsedRam(server.hostname);
     if (freeRam >= 20) {
-      startBatch(ns, target, maxThreads, false);
-      await ns.sleep(1000);
+      startBatch(ns, target, false);
+      await ns.sleep(1500);
     } else {
-      await ns.sleep(1000);
+      await ns.sleep(1500);
     }
   }
 }
@@ -91,14 +90,14 @@ function unlockServer(ns, target) {
   ns.nuke(target);
 }
 
-function startBatch(ns, target, threads, preparingServer) {
+function startBatch(ns, target, preparingServer) {
   let server = ns.getServer();
   ns.exec(
     "scripts/110-batch.js",
     server.hostname,
     1,
     target,
-    threads,
-    preparingServer
+    preparingServer,
+    Math.random()
   );
 }

@@ -1,15 +1,40 @@
 /** @param {import(".").NS} ns **/
 export async function main(ns) {
   let target = ns.args[0];
-  let maxThreads = ns.args[1];
-  let preparingServer = ns.args[2] | false;
+  let preparingServer = ns.args[1] || false;
+
+  let server = ns.getServer();
+  let maxThreads = Math.trunc(ns.getServerMaxRam(server.hostname) * 2);
 
   let times = getTimes(ns, target);
-  let threads = getThreads(ns, target, maxThreads);
 
-  let validThreads = Object.keys(threads).every((n) => threads[n] >= 1);
-  // ns.tprint(validThreads);
-  if (validThreads) {
+  let threads = {};
+  let validThreads = false;
+  let multiplier = 0.5; // Double money on grow, halve on hack.
+  while (!validThreads) {
+    threads = getThreads(ns, target, maxThreads, multiplier);
+    validThreads = Object.keys(threads).every((n) => threads[n] >= 1);
+    multiplier -= 0.01;
+    if (1 / (1 - multiplier) <= 1) {
+      if (threads.h < 1) {
+        threads.h = 1;
+      }
+      if (threads.g < 1) {
+        threads.g = 1;
+      }
+      if (threads.w1 < 1) {
+        threads.w1 = 1;
+      }
+      if (threads.w2 < 1) {
+        threads.w2 = 1;
+      }
+
+      validThreads = true;
+    }
+  }
+
+  let f = ns.flags([["debug", false]]);
+  if (validThreads && f["debug"] == false) {
     await runBatch(ns, target, times, threads, preparingServer);
   }
 }
@@ -29,18 +54,19 @@ function getTimes(ns, target) {
   return times;
 }
 
-function getThreads(ns, target, maxThreads) {
+function getThreads(ns, target, maxThreads, multiplier) {
   // TODO: Handle situation when this multiplier to too large and
   // causes the "round up to 1" functionality at the end to mean
   // the server drains continuously - ie, the grow action doesn't
   // sufficiently compensate for the hack. This is more of a problem
   // early on when you're hacking large servers with low ram.
 
-  let multiplier = 2;
+  let hackMulti = multiplier;
+  let growMulti = 1 / (1 - multiplier);
 
   // Get ideal number of threads for preferred hack amount.
-  let maxHackAmount = ns.getServerMaxMoney(target) / multiplier;
-  let hackThreads = ns.hackAnalyzeThreads(target, maxHackAmount);
+  let maxHackAmount = ns.getServerMaxMoney(target) * hackMulti;
+  let hackThreads = Math.round(ns.hackAnalyzeThreads(target, maxHackAmount));
   let hackSecurityEffect = ns.hackAnalyzeSecurity(hackThreads);
 
   // First weaken reduces security after hack. Calculate threads needed.
@@ -52,7 +78,7 @@ function getThreads(ns, target, maxThreads) {
   }
 
   // Get grow threads needed to bring back up to full.
-  let growThreads = ns.growthAnalyze(target, multiplier);
+  let growThreads = Math.round(ns.growthAnalyze(target, growMulti));
   let growSecurityEffect = ns.growthAnalyzeSecurity(growThreads);
 
   // Second weaken reduces security after growth. Calculate threads needed.
@@ -75,18 +101,18 @@ function getThreads(ns, target, maxThreads) {
     secondWeakenThreads = secondWeakenThreads * ratio;
   }
 
-  if (hackThreads < 1) {
-    hackThreads = 1;
-  }
-  if (growThreads < 1) {
-    growThreads = 1;
-  }
-  if (firstWeakenThreads < 1) {
-    firstWeakenThreads = 1;
-  }
-  if (secondWeakenThreads < 1) {
-    secondWeakenThreads = 1;
-  }
+  // if (hackThreads < 1) {
+  //   hackThreads = 1;
+  // }
+  // if (growThreads < 1) {
+  //   growThreads = 1;
+  // }
+  // if (firstWeakenThreads < 1) {
+  //   firstWeakenThreads = 1;
+  // }
+  // if (secondWeakenThreads < 1) {
+  //   secondWeakenThreads = 1;
+  // }
 
   let threads = {
     w1: firstWeakenThreads,
@@ -112,16 +138,40 @@ async function runBatch(ns, target, times, threads, preparingServer) {
   let hSleep = times.w - times.h - (w2Sleep + gSleep);
 
   await ns.sleep(w1Sleep);
-  ns.exec("scripts/113-weaken.js", server.hostname, threads.w1, target);
+  ns.exec(
+    "scripts/113-weaken.js",
+    server.hostname,
+    threads.w1,
+    target,
+    Math.random()
+  );
 
   await ns.sleep(w2Sleep);
-  ns.exec("scripts/113-weaken.js", server.hostname, threads.w2, target);
+  ns.exec(
+    "scripts/113-weaken.js",
+    server.hostname,
+    threads.w2,
+    target,
+    Math.random()
+  );
 
   await ns.sleep(gSleep);
-  ns.exec("scripts/112-grow.js", server.hostname, threads.g, target);
+  ns.exec(
+    "scripts/112-grow.js",
+    server.hostname,
+    threads.g,
+    target,
+    Math.random()
+  );
 
   if (!preparingServer) {
     await ns.sleep(hSleep);
-    ns.exec("scripts/111-hack.js", server.hostname, threads.h, target);
+    ns.exec(
+      "scripts/111-hack.js",
+      server.hostname,
+      threads.h,
+      target,
+      Math.random()
+    );
   }
 }

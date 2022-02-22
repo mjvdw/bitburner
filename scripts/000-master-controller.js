@@ -217,18 +217,18 @@ function getOrderedTargets(ns, hackableTargets) {
 
   hackableTargets.forEach((h) => {
     let maxMoney = ns.getServerMaxMoney(h.hostname);
-    // let batchTime = ns.getWeakenTime(h.hostname) + 1000; // Weaken always takes longest.
-    // let score = maxMoney / batchTime;
+    let batchTime = ns.getWeakenTime(h.hostname) + 1000; // Weaken always takes longest.
+    let score = maxMoney / batchTime;
     scoredTargets.push({
       hostname: h.hostname,
-      // score: score,
+      score: score,
       money: maxMoney,
     });
   });
 
   let orderedTargets = scoredTargets.sort((a, b) => {
-    // return b.score - a.score;
-    return b.money - a.money;
+    return b.score - a.score;
+    // return b.money - a.money;
   });
 
   let orderedTargetServers = [];
