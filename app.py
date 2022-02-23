@@ -1,5 +1,5 @@
 import logging
-from flask import Flask, send_file
+from flask import Flask, send_file, request
 from flask_cors import CORS
 from turbo_flask import Turbo
 import os
@@ -11,12 +11,17 @@ turbo = Turbo(app)
 log = logging.getLogger('werkzeug')
 log.setLevel(logging.ERROR)
 
+ROOT = "scripts/dist/"
+PATHS = ["", "lib/"]
+
 
 @app.route("/")
 def scripts_list():
-    path = os.path.abspath("scripts")
-    scripts = [f for f in os.listdir(
-        path) if os.path.isfile(os.path.join(path, f))]
+    scripts = []
+    for p in PATHS:
+        path = os.path.abspath(ROOT + p)
+        scripts.extend([p + f for f in os.listdir(
+            path) if os.path.isfile(os.path.join(path, f))])
 
     excluded = [".DS_Store", "index.d.ts"]
 
@@ -28,8 +33,8 @@ def scripts_list():
     return send_file("scripts.txt", "txt/plain")
 
 
-@app.route("/<filename>")
+@ app.route("/<path:filename>")
 def file(filename):
-    path = os.path.abspath("scripts")
+    path = os.path.abspath(ROOT)
     script = path + "/" + filename
     return send_file(script, "text/javascript")
