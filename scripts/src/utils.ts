@@ -1,5 +1,6 @@
 /** @param {import(".").NS} ns */
 
+
 /**
  * Get a list of all servers currently accessible (but not necessarily hackable).
  * Optionally can filter the output list by whether the
@@ -8,7 +9,7 @@
  * @param hackableOnly Whether to filter the list by servers that can be hacked by the current user.
  * @returns The list of all visible servers, of type Server.
  */
-export function getServers(ns: any, hackableOnly?: boolean) {
+export function getServers(ns: any, hackableOnly?: boolean): any {
 
     let servers: string[] = []
     let queue: string[] = []
@@ -34,15 +35,28 @@ export function getServers(ns: any, hackableOnly?: boolean) {
     }
 
     // Convert list of server names to list of Server objects.
-    servers = servers.map(server_name => ns.getServer(server_name))
+    servers = servers.map(serverName => ns.getServer(serverName))
 
     // If hackableOnly is true, filter the server list by servers that the current
     // user is able to hack, based on the hack skill level and port open scripts owned.
     // Sort by max money available on server.
     if (hackableOnly) {
         servers = servers
-            .filter((server: any) => ns.getHackingLevel() >= server.requiredHackingSkill)
             .filter((server: any) => server.moneyMax > 0)
+            .filter((server: any) => ns.getHackingLevel() >= server.requiredHackingSkill)
+            .filter((server: any) => {
+                let allPortScripts = [
+                    "BruteSSH.exe",
+                    "FTPCrack.exe",
+                    "relaySMTP.exe",
+                    "HTTPWorm.exe",
+                    "SQLInject.exe",
+                ]
+                let scripts = ns.ls("home")
+                let portsCanOpen = scripts.filter((scriptName: string) => allPortScripts.includes(scriptName)).length
+                let portsRequired = server.numOpenPortsRequired
+                return portsCanOpen >= portsRequired
+            })
             .sort((a: any, b: any) => b.moneyMax - a.moneyMax)
     }
 

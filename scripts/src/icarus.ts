@@ -14,5 +14,5 @@ import { getServers } from "/scripts/utils.js";
  */
 export async function main(ns: any) {
     let servers = getServers(ns, true)
-    servers.forEach((s: any) => ns.tprint(s.hostname + ": " + s.moneyMax))
+    servers.forEach((s: any) => ns.tprint(s.hostname + ": " + ns.nFormat(s.moneyMax, "$0.000a")))
 }
