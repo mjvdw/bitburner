@@ -19,7 +19,7 @@ export function getServers(ns: any, hackableOnly?: boolean): any {
     queue = ns.scan("home")
 
     // Iterate through initial queue, adding new servers as it finds them.
-    // By ignoring duplicates, this is not an infinite loop.
+    // Ignoring duplicates ensures that this is not an infinite loop.
     while (queue.length > 0) {
         let scanQueue = queue
         for (let s in scanQueue) {
@@ -42,8 +42,11 @@ export function getServers(ns: any, hackableOnly?: boolean): any {
     // Sort by max money available on server.
     if (hackableOnly) {
         servers = servers
+            // Some servers don't have money. Remove those from the list.
             .filter((server: any) => server.moneyMax > 0)
+            // Remove servers that require a higher hacking level than the user currently has.
             .filter((server: any) => ns.getHackingLevel() >= server.requiredHackingSkill)
+            // Higher level servers require you to open ports. Filter servers with more ports than the user can open.
             .filter((server: any) => {
                 let allPortScripts = [
                     "BruteSSH.exe",
@@ -57,6 +60,7 @@ export function getServers(ns: any, hackableOnly?: boolean): any {
                 let portsRequired = server.numOpenPortsRequired
                 return portsCanOpen >= portsRequired
             })
+            // Sort so that servers with the most money come first in the list.
             .sort((a: any, b: any) => b.moneyMax - a.moneyMax)
     }
 
