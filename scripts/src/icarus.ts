@@ -1,7 +1,7 @@
 /** @param {import(".").NS} ns */
 
 // @ts-ignore
-import { getAllServers } from "/scripts/utils.js";
+import { getServers } from "/scripts/utils.js";
 
 /**
  * This is the "master" script for hacking servers.
@@ -13,6 +13,6 @@ import { getAllServers } from "/scripts/utils.js";
  * @param ns Netscript object provider by Bitburner
  */
 export async function main(ns: any) {
-    let servers = getAllServers(ns)
-    ns.tprint(servers)
+    let servers = getServers(ns, true)
+    servers.forEach((s: any) => ns.tprint(s.hostname + ": " + s.moneyMax))
 }

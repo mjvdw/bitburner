@@ -2,9 +2,13 @@
 
 /**
  * Get a list of all servers currently accessible (but not necessarily hackable).
+ * Optionally can filter the output list by whether the
+ * 
  * @param ns Netscript object provider by Bitburner.
+ * @param hackableOnly Whether to filter the list by servers that can be hacked by the current user.
+ * @returns The list of all visible servers, of type Server.
  */
-export function getAllServers(ns: any) {
+export function getServers(ns: any, hackableOnly?: boolean) {
 
     let servers: string[] = []
     let queue: string[] = []
@@ -27,6 +31,19 @@ export function getAllServers(ns: any) {
                 }
             })
         }
+    }
+
+    // Convert list of server names to list of Server objects.
+    servers = servers.map(server_name => ns.getServer(server_name))
+
+    // If hackableOnly is true, filter the server list by servers that the current
+    // user is able to hack, based on the hack skill level and port open scripts owned.
+    // Sort by max money available on server.
+    if (hackableOnly) {
+        servers = servers
+            .filter((server: any) => ns.getHackingLevel() >= server.requiredHackingSkill)
+            .filter((server: any) => server.moneyMax > 0)
+            .sort((a: any, b: any) => b.moneyMax - a.moneyMax)
     }
 
     return servers

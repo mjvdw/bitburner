@@ -1,1 +1,1 @@
-buffet.js,sync.js,lazarus.js,utils.js,lib/hack.js,
+buffet.js,sync.js,utils.js,icarus.js,lib/hack.js,
