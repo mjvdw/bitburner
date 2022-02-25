@@ -13,6 +13,7 @@ import { getServers } from "/scripts/utils.js";
  * @param ns Netscript object provider by Bitburner
  */
 export async function main(ns: any) {
+
+    // Get a list of servers that can be hacked by user.
     let servers = getServers(ns, true)
-    servers.forEach((s: any) => ns.tprint(s.hostname + ": " + ns.nFormat(s.moneyMax, "$0.000a")))
 }
