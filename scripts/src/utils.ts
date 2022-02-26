@@ -210,10 +210,8 @@ export function isHackingTarget(ns: any, server: any, target: any): boolean {
  * @param ns Netscript object provider by Bitburner.
  * @param server The server to kill the hack scripts for.
  * @param target The target the hacking scripts relate to.
- * @returns Boolean indicating whether function was successful.
  */
-export function killHackScripts(ns: any, server: any, target: any): boolean {
-    ns.tprint("Killing hack scripts on " + server.hostname)
+export function killHackScripts(ns: any, server: any, target: any) {
 
     let hackScripts = [
         "/scripts/lib/batch-controller.js",
@@ -224,14 +222,14 @@ export function killHackScripts(ns: any, server: any, target: any): boolean {
     ]
 
     let runningScripts = ns.ps(server.hostname)
-
     runningScripts.forEach((script: any) => {
-        ns.tprint(hackScripts.includes(script.filename))
         if (hackScripts.includes(script.filename)) {
-            ns.tprint("Killing script " + script.filename)
             ns.kill(script.pid)
         }
     })
+}
 
+
+export function unlockTarget(ns: any, target: any): boolean {
     return true
 }
