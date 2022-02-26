@@ -22,8 +22,13 @@ export async function main(ns: any) {
         // or the maximum possible RAM for purchased servers.
         let money = ns.getServerMoneyAvailable("home")
         let ram = ns.getServerMaxRam("home")
-        if (money > ns.getPurchasedServerCost(ram)) {
-            buyServer(ns = ns, ram = ram)
+        let numPservs = ns.getPurchasedServers().length
+
+        while (money > ns.getPurchasedServerCost(ram) && numPservs < 25) {
+            await buyServer(ns = ns, ram = ram)
+            numPservs = ns.getPurchasedServers().length
+            money = ns.getServerMoneyAvailable("home")
+            await ns.sleep(500)
         }
 
         // If debug flag is set to true, this will interupt the while
