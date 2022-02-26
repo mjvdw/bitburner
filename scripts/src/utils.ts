@@ -1,6 +1,23 @@
 /** @param {import(".").NS} ns */
 
 
+let ALL_PORT_SCRIPTS = [
+    "BruteSSH.exe",
+    "FTPCrack.exe",
+    "relaySMTP.exe",
+    "HTTPWorm.exe",
+    "SQLInject.exe",
+]
+
+let HACK_SCRIPTS = [
+    "/scripts/lib/batch-controller.js",
+    "/scripts/lib/batch.js",
+    "/scripts/lib/hack.js",
+    "/scripts/lib/grow.js",
+    "/scripts/lib/weaken.js"
+]
+
+
 /**
  * Get a list of all servers currently accessible (but not necessarily hackable).
  * Optionally can filter the output list by whether the
@@ -48,15 +65,8 @@ export function getTargets(ns: any, hackableOnly?: boolean): any[] {
             .filter((server: any) => ns.getHackingLevel() >= server.requiredHackingSkill)
             // Higher level servers require you to open ports. Filter servers with more ports than the user can open.
             .filter((server: any) => {
-                let allPortScripts = [
-                    "BruteSSH.exe",
-                    "FTPCrack.exe",
-                    "relaySMTP.exe",
-                    "HTTPWorm.exe",
-                    "SQLInject.exe",
-                ]
                 let scripts = ns.ls("home")
-                let portsCanOpen = scripts.filter((scriptName: string) => allPortScripts.includes(scriptName)).length
+                let portsCanOpen = scripts.filter((scriptName: string) => ALL_PORT_SCRIPTS.includes(scriptName)).length
                 let portsRequired = server.numOpenPortsRequired
                 return portsCanOpen >= portsRequired
             })
@@ -213,23 +223,41 @@ export function isHackingTarget(ns: any, server: any, target: any): boolean {
  */
 export function killHackScripts(ns: any, server: any, target: any) {
 
-    let hackScripts = [
-        "/scripts/lib/batch-controller.js",
-        "/scripts/lib/batch.js",
-        "/scripts/lib/hack.js",
-        "/scripts/lib/grow.js",
-        "/scripts/lib/weaken.js"
-    ]
-
     let runningScripts = ns.ps(server.hostname)
     runningScripts.forEach((script: any) => {
-        if (hackScripts.includes(script.filename)) {
+        if (HACK_SCRIPTS.includes(script.filename)) {
             ns.kill(script.pid)
         }
     })
 }
 
 
-export function unlockTarget(ns: any, target: any): boolean {
-    return true
+/**
+ * Uses as many of the port unlock scripts as the user has on the "home" server
+ * and then attempts to use NUKE.exe on the target server.
+ * 
+ * @param ns Netscript object provider by Bitburner.
+ * @param target The name of the target server to be unlocked.
+ * @returns Boolean indicating whether unlock was successful.
+ */
+export function unlockTarget(ns: any, target: string): boolean {
+
+    let scripts = ns.ls("home")
+
+    // This is a bit fragile - it relies on the order of ALL_PORT_SCRIPTS
+    // never changing. However, assuming the order doesn't change, this will
+    // run whatever port unlock scripts the user has available.
+    scripts.includes(ALL_PORT_SCRIPTS[0]) ? ns.brutessh(target) : null
+    scripts.includes(ALL_PORT_SCRIPTS[1]) ? ns.ftpcrack(target) : null
+    scripts.includes(ALL_PORT_SCRIPTS[2]) ? ns.relaysmtp(target) : null
+    scripts.includes(ALL_PORT_SCRIPTS[3]) ? ns.httpworm(target) : null
+    scripts.includes(ALL_PORT_SCRIPTS[4]) ? ns.sqlinject(target) : null
+
+    // Once unlocking as many ports as possible, attempt to NUKE the target.
+    try {
+        ns.nuke(target)
+        return true
+    } catch {
+        return false
+    }
 }

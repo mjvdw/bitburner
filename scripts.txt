@@ -1,1 +1,1 @@
-buffet.js,sync.js,utils.js,icarus.js,lib/batch.js,lib/hack.js,lib/grow.js,lib/batch-controller.js,lib/weaken.js,tools/pserv.js,
+buffet.js,sync.js,utils.js,icarus.js,lib/batch.js,lib/hack.js,lib/grow.js,lib/batch-controller.js,lib/weaken.js,tools/unlock.js,tools/pserv.js,
