@@ -1,7 +1,7 @@
 /** @param {import(".").NS} ns */
 
 // @ts-ignore
-import { getServers } from "/scripts/utils.js";
+import { getTargets } from "/scripts/utils.js";
 
 /**
  * This is the "master" script for hacking servers.
@@ -15,5 +15,7 @@ import { getServers } from "/scripts/utils.js";
 export async function main(ns: any) {
 
     // Get a list of servers that can be hacked by user.
-    let servers = getServers(ns, true)
+    let targets = getTargets(ns, true)
+
+    targets.forEach((t: any) => ns.tprint(t.hostname));
 }

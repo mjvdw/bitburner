@@ -12,7 +12,7 @@ log = logging.getLogger('werkzeug')
 log.setLevel(logging.ERROR)
 
 ROOT = "scripts/dist/"
-PATHS = ["", "lib/"]
+PATHS = ["", "lib/", "tools/"]
 
 
 @app.route("/")
