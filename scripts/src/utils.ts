@@ -17,6 +17,8 @@ let HACK_SCRIPTS = [
     "/scripts/lib/weaken.js"
 ]
 
+let RAM_PORT = 1
+
 
 /**
  * Get a list of all servers currently accessible (but not necessarily hackable).
@@ -240,18 +242,18 @@ export function killHackScripts(ns: any, server: any, target: any) {
  * @param target The name of the target server to be unlocked.
  * @returns Boolean indicating whether unlock was successful.
  */
-export function unlockTarget(ns: any, target: string): boolean {
+export function unlockTarget(ns: any, target: any): boolean {
 
     let scripts = ns.ls("home")
 
     // This is a bit fragile - it relies on the order of ALL_PORT_SCRIPTS
     // never changing. However, assuming the order doesn't change, this will
     // run whatever port unlock scripts the user has available.
-    scripts.includes(ALL_PORT_SCRIPTS[0]) ? ns.brutessh(target) : null
-    scripts.includes(ALL_PORT_SCRIPTS[1]) ? ns.ftpcrack(target) : null
-    scripts.includes(ALL_PORT_SCRIPTS[2]) ? ns.relaysmtp(target) : null
-    scripts.includes(ALL_PORT_SCRIPTS[3]) ? ns.httpworm(target) : null
-    scripts.includes(ALL_PORT_SCRIPTS[4]) ? ns.sqlinject(target) : null
+    scripts.includes(ALL_PORT_SCRIPTS[0]) ? ns.brutessh(target.hostname) : null
+    scripts.includes(ALL_PORT_SCRIPTS[1]) ? ns.ftpcrack(target.hostname) : null
+    scripts.includes(ALL_PORT_SCRIPTS[2]) ? ns.relaysmtp(target.hostname) : null
+    scripts.includes(ALL_PORT_SCRIPTS[3]) ? ns.httpworm(target.hostname) : null
+    scripts.includes(ALL_PORT_SCRIPTS[4]) ? ns.sqlinject(target.hostname) : null
 
     // Once unlocking as many ports as possible, attempt to NUKE the target.
     try {
@@ -260,4 +262,131 @@ export function unlockTarget(ns: any, target: string): boolean {
     } catch {
         return false
     }
+}
+
+
+/**
+ * Private function for updating the value of the port storing the amount of
+ * RAM stored per server.
+ * 
+ * @param ns Netscript object provider by Bitburner.
+ * @param server The server in respect of which the reserved RAM is being updated.
+ * @param ram The amount of RAM (positve or negative) being added to the current amount.
+ * @returns Boolean indicating whether the update was successful.
+ */
+function updateReservedRam(ns: any, server: any, ram: number): boolean {
+
+    // Get Netscript port used for storing the current state of RAM for 
+    // each server (home + purchased servers.)
+    let port = ns.getPortHandle(RAM_PORT)
+
+    // Get current state of RAM.
+    let ramState: any = getReservedRamState(ns, server)
+
+    // getReservedRamState() only "peeks" the data, so we have to manually
+    // clear it once we've retrieved what we need.
+    port.clear()
+
+    // Increment the current state using the given parameters.
+    let reservedRam = ramState[server.hostname]
+    reservedRam = reservedRam == null ? ram : parseInt(reservedRam) + ram
+    ramState[server.hostname] = reservedRam
+
+    // Write new state to port.
+    port.write(JSON.stringify(ramState))
+    return true
+}
+
+
+/**
+ * Private function for fetching and parsing the current reserved RAM state
+ * from the reserved RAM Netscript port.
+ * 
+ * @param ns Netscript object provider by Bitburner.
+ * @param server The server to get the reserved RAM state for.
+ * @returns An object with the current RAM state.
+ */
+function getReservedRamState(ns: any, server: any): any {
+
+    // Get Netscript port used for storing the current state of RAM for 
+    // each server (home + purchased servers.)
+    let port = ns.getPortHandle(RAM_PORT)
+
+    // Get current state and read the reserved RAM for the given server.
+    let ramState: any = {}
+
+    // If the port is empty, populate it with inital data for this server, based
+    // on the number of HACK_SCRIPTS running.
+    // Otherwise, if the port has data, attempt to parse the current RAM state.
+    if (port.empty()) {
+        // TODO: Come up with initial state for reserved RAM. 
+    } else {
+        let originalState = port.peek()
+        try {
+            ramState = JSON.parse(originalState)
+        }
+        catch (error) {
+            ns.tprint("Port data is not in a valid format. Data: " + originalState)
+            port.clear()
+        }
+    }
+
+    return ramState
+}
+
+
+/**
+ * Retrieve the amount of RAM currently reserved on the given server.
+ * 
+ * @param ns Netscript object provider by Bitburner.
+ * @param server The server to get the current reserved RAM for.
+ * @returns A number representing the amount of reserved RAM on that server.
+ */
+export function getReservedRamForServer(ns: any, server: any): number {
+    let ramState = getReservedRamState(ns, server)
+    let reservedRam = ramState[server.hostname]
+    reservedRam = reservedRam == null ? -1 : parseInt(reservedRam)
+    return reservedRam
+}
+
+
+/**
+ * Reserve a given amount of RAM on a given server.
+ * 
+ * @param ns Netscript object provider by Bitburner.
+ * @param server The server on which RAM should be reserved.
+ * @param ram The amount of RAM to reserve.
+ * @returns The amount of reserved RAM remaining.
+ */
+export function reserveRam(ns: any, server: any, ram: number): number {
+    updateReservedRam(ns, server, ram)
+    return getReservedRamForServer(ns, server)
+}
+
+
+/**
+ * Release a given amount of RAM on a given server.
+ * 
+ * @param ns Netscript object provider by Bitburner.
+ * @param server The server on which RAM should be released.
+ * @param ram The amount of RAM to release.
+ * @returns The amount of reserved RAM remaining.
+ */
+export function releaseRam(ns: any, server: any, ram: number): number {
+    updateReservedRam(ns, server, -ram)
+    return getReservedRamForServer(ns, server)
+}
+
+
+export function getBatchRunTime(ns: any, target: any): number {
+    return 0
+}
+
+
+export function getOptimalBatchThreads(ns: any, startRam: number, batchRam: number): number {
+    return 0
+}
+
+export function getBatchInterval(ns: any, startRam: number, batchThreads: number): number {
+    return 0
 }
