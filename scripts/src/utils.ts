@@ -187,3 +187,51 @@ export function deleteServer(ns: any, hostname: string): boolean {
         return false
     }
 }
+
+
+/**
+ * Get boolean indicating whether the given server is hacking the given target.
+ * 
+ * @param ns Netscript object provider by Bitburner.
+ * @param server The server hosting the hacking scripts.
+ * @param target The target of the hacking scripts.
+ * @returns Boolean indicating whether the given server is hacking the given target.
+ */
+export function isHackingTarget(ns: any, server: any, target: any): boolean {
+    let scriptName = "/scripts/lib/batch-controller.js"
+    return ns.isRunning(scriptName, server.hostname, target.hostname)
+}
+
+
+/**
+ * Kill only hacking related scripts. Used to avoid accidentally killing
+ * important scripts (like the sync.js script and the master controller icarus.js).
+ * 
+ * @param ns Netscript object provider by Bitburner.
+ * @param server The server to kill the hack scripts for.
+ * @param target The target the hacking scripts relate to.
+ * @returns Boolean indicating whether function was successful.
+ */
+export function killHackScripts(ns: any, server: any, target: any): boolean {
+    ns.tprint("Killing hack scripts on " + server.hostname)
+
+    let hackScripts = [
+        "/scripts/lib/batch-controller.js",
+        "/scripts/lib/batch.js",
+        "/scripts/lib/hack.js",
+        "/scripts/lib/grow.js",
+        "/scripts/lib/weaken.js"
+    ]
+
+    let runningScripts = ns.ps(server.hostname)
+
+    runningScripts.forEach((script: any) => {
+        ns.tprint(hackScripts.includes(script.filename))
+        if (hackScripts.includes(script.filename)) {
+            ns.tprint("Killing script " + script.filename)
+            ns.kill(script.pid)
+        }
+    })
+
+    return true
+}

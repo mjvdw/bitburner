@@ -1,7 +1,7 @@
 /** @param {import(".").NS} ns */
 
 // @ts-ignore
-import { getTargets, buyServer } from "/scripts/utils.js";
+import { getTargets, buyServer, isHackingTarget, killHackScripts } from "/scripts/utils.js";
 
 /**
  * This is the "master" script for hacking servers.
@@ -43,10 +43,17 @@ export async function main(ns: any) {
         })
 
         // Start batch controllers on each server, pointing at that server's target.
+        // If the server is already hacking another target, check whether it's the correct
+        // target, and if it isn't, kill all scripts on that server and start on the 
+        // correct target.
         hackPairs.forEach((pair: any) => {
             let server = pair[0]
             let target = pair[1]
-            ns.exec("scripts/lib/batch-controller.js", server.hostname, 1, target.hostname)
+
+            if (!isHackingTarget(ns, server, target)) {
+                killHackScripts(ns, server, target)
+                ns.exec("/scripts/lib/batch-controller.js", server.hostname, 1, target.hostname)
+            }
         })
 
         // If debug flag is set to true, this will interupt the while
