@@ -141,14 +141,13 @@ export async function buyServer(ns: any, ram?: number, hostname?: string): Promi
 
     // If RAM is valid and there is enough money, attempt to buy the server.
     // Get the result for final error handling if something else goes wrong.
-    // let server = ns.purchaseServer(hostname, ram);
-    let server = true
+    let server = ns.purchaseServer(hostname, ram);
 
     // If the server is successfully created, copy all scripts to the new server.
     // If the server was not successfully created, alert the user.
     if (server) {
         const scripts = ns.ls("home", "scripts/");
-        // await ns.scp(scripts, hostname);
+        await ns.scp(scripts, hostname);
         ns.tprint("Purchased server called " + hostname + " with " + ram + "GB of RAM for " + ns.nFormat(ns.getPurchasedServerCost(ram), "$0.000a") + ".")
         return true
     } else {
