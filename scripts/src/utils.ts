@@ -125,7 +125,7 @@ export async function buyServer(ns: any, ram?: number, hostname?: string): Promi
         let pservs = all_pservs.filter((pserv: string) => pserv.startsWith("pserv-"))
         let usedIds = pservs.map((pserv: string) => parseInt(pserv.slice(-2)))
 
-        let i = Math.max(...usedIds) + 1;
+        let i = usedIds ? 1 : Math.max(...usedIds) + 1
         let suffix = "000";
 
         if (i < 10) {
