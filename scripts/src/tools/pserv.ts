@@ -3,12 +3,17 @@
 // @ts-ignore
 import { buyServer, deleteServer } from "/scripts/utils.js";
 
-export async function main(ns: any) {
-    // User can optionally specify the server's hostname and RAM.
-    // If RAM is not provided, script will determine the best option automatically.
-    // If hostname is not provided, the buyServer() function will iterate through to the next
-    // name from pserv-001, pserv-002, pserv-003, ... pserv-025.
 
+/**
+ * Tool for purchasing or deleting servers manually. Optionally provide 
+ * servers desired hostname and RAM. The script will check whether these are
+ * possible and available and alert the user if they aren't.
+ * 
+ * User must specify an "action" - either buying or deleting a server.
+ * 
+ * @param ns Netscript object provider by Bitburner.
+ */
+export async function main(ns: any) {
     let action = ns.args[0]
     let hostname = ns.args[1]
     let ram = ns.args[2]
