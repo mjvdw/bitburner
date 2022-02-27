@@ -211,7 +211,8 @@ export function deleteServer(ns: any, hostname: string): boolean {
  */
 export function isHackingTarget(ns: any, server: any, target: any): boolean {
     let scriptName = "/scripts/lib/batch-controller.js"
-    return ns.isRunning(scriptName, server.hostname, target.hostname)
+    let isHackingTarget = ns.isRunning(scriptName, server.hostname, target.hostname)
+    return isHackingTarget
 }
 
 
@@ -510,6 +511,8 @@ export function getBatchThreads(ns: any, server: any, target: any, availableRam:
             scaled = true
         }
     }
+
+    ns.tprint(threads)
 
     return threads
 }

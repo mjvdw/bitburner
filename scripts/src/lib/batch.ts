@@ -1,7 +1,9 @@
 /** @param {import(".").NS} ns */
 
 import {
-    isTargetPrepared
+    isTargetPrepared,
+    releaseRam,
+    getBatchRam
     // @ts-ignore
 } from "/scripts/utils.js";
 
@@ -32,8 +34,8 @@ export async function main(ns: any) {
     // If the target is prepared (ie, max money, min security) then 
     // start a full HWGW batch. If it isn't prepared, do a half batch
     // with just the grow and weaken components.
+    await ns.sleep(w1Sleep);
     if (isTargetPrepared(ns, target)) {
-        await ns.sleep(w1Sleep);
         ns.exec("/scripts/lib/weaken.js", server.hostname, threads.hackWeaken, target.hostname, Math.random());
     }
 
@@ -43,8 +45,13 @@ export async function main(ns: any) {
     await ns.sleep(gSleep);
     ns.exec("scripts/lib/grow.js", server.hostname, threads.grow, target.hostname, Math.random());
 
+    await ns.sleep(hSleep);
     if (isTargetPrepared(ns, target)) {
-        await ns.sleep(hSleep);
         ns.exec("scripts/lib/hack.js", server.hostname, threads.hack, target.hostname, Math.random());
     }
+
+    // After everything has run, release any reserved RAM for this batch so a new
+    // batch can run.
+    let batchRam = getBatchRam(ns, server, threads)
+    releaseRam(ns, batchRam)
 }
