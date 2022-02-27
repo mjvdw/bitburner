@@ -378,15 +378,136 @@ export function releaseRam(ns: any, server: any, ram: number): number {
 }
 
 
-export function getBatchRunTime(ns: any, target: any): number {
-    return 0
+/**
+ * Get the times it will take the run the various components of a hacking
+ * batch. Breaks the times out into hack, grow and weaken, but also provides
+ * a total that can be used for calculating the optimal number of threads.
+ * 
+ * @param ns Netscript object provider by Bitburner.
+ * @param target The target being hacked, grown or weakened.
+ * @returns An object containing the times it will take to hack, grow and weaken.
+ */
+export function getBatchTimes(ns: any, target: any): any {
+
+    let offset = 200
+    let weakenTime = ns.getWeakenTime(target.hostname)
+    let growTime = ns.getGrowTime(target.hostname)
+    let hackTime = ns.getHackTime(target.hostname)
+    let total = weakenTime + (3 * offset)  // Weaken is always the longest.
+
+    let times = {
+        offset: offset,
+        weaken: weakenTime,
+        grow: growTime,
+        hack: hackTime,
+        total: total
+    }
+
+    return times
 }
 
 
-export function getOptimalBatchThreads(ns: any, startRam: number, batchRam: number): number {
-    return 0
+/**
+ * Get the amount of RAM that will be used by a batch on a given server
+ * using the given set up of threads.
+ * 
+ * @param ns Netscript object provider by Bitburner.
+ * @param server The server on which the batch would be running.
+ * @param threads On object with data about the threads that will be used by each 
+ * component of the batch.
+ * @returns The amount of RAM that a single batch will use.
+ */
+export function getBatchRam(ns: any, server: any, threads: any): number {
+
+    // Hack, grow and weaken all run in their own scripts.
+    // All scripts have a base RAM of 1.6GB, and the HGW functions all use
+    // 0.1GB of RAM.
+    let hgwRam = 1.7
+    let batchScriptRam = (1.7 * 4) + ns.getScriptRam("/scripts/lib/batch.js", server.hostname)
+    let totalBatchRam = Math.round((batchScriptRam + (hgwRam * threads.total)) * 100) / 100
+
+    return totalBatchRam
 }
 
-export function getBatchInterval(ns: any, startRam: number, batchThreads: number): number {
-    return 0
+
+/**
+ * Get the thread set up required to best use the HWGW batch method specified
+ * in the Bitburner docs.
+ * 
+ * @param ns Netscript object provider by Bitburner.
+ * @param server The host server running the script.
+ * @param target The target of the batch hack.
+ * @param availableRam The amount of ram available on the host server before running batches.
+ * @param times The times for each component of the batch.
+ * @returns An object containing the threads needed to run a batch against the given target.
+ */
+export function getBatchThreads(ns: any, server: any, target: any, availableRam: number, times: any): any {
+
+    let multiplier = 0.5
+    let threads: any = {}
+
+    // These valiables are used to prevent oscilating between multipliers
+    // at the end of this while loop when the scale ratio is used.
+    let upper = Infinity
+
+    let scaled = false
+    while (!scaled) {
+        let hackMoney = ns.getServerMoneyAvailable(target.hostname) * multiplier
+        let hackThreads = Math.trunc(ns.hackAnalyzeThreads(target.hostname, hackMoney))
+
+        let growRatio = 1 / (1 - multiplier)
+        let growThreads = Math.ceil(ns.growthAnalyze(target.hostname, growRatio))
+
+        // These constants come from the docs based on the known effect
+        // of HGW functions on the security of a server.
+        let hackWeakenThreads = Math.ceil(hackThreads / 25)
+        let growWeakenThreads = Math.ceil(growThreads / 12.5)
+
+        // This object now represents the "ideal" thread setup, if the host server
+        // had infinite RAM. Next step is to scale it back (if necessary) to achieve
+        // a consistent rate of batch deployment.
+        threads = {
+            hack: hackThreads,
+            grow: growThreads,
+            hackWeaken: hackWeakenThreads,
+            growWeaken: growWeakenThreads,
+            total: hackThreads + growThreads + hackWeakenThreads + growWeakenThreads
+        }
+
+        // Get the RAM that would be used by deploying a batch with this thread setup.
+        let batchRam = getBatchRam(ns, server, threads)
+
+        // Get the number of batches that should be running at any one time.
+        // Since we are aiming to run one per second, this is the same as the number of
+        // seconds it takes to complete one batch.
+        let numBatches = times.total / 1000
+        let totalBatchRam = batchRam * numBatches
+
+        // Scale the multiplier up or down depending on whether the "ideal" thread amount
+        // is lower or higher than the host server can handle.
+        let scaleRatio = availableRam / totalBatchRam
+        if (scaleRatio > 1.1 && multiplier < 0.98 && upper == multiplier) {
+            multiplier += 0.01
+            upper = multiplier
+        } else if (scaleRatio < 1) {
+            multiplier -= 0.01
+        } else {
+            scaled = true
+        }
+    }
+
+    return threads
+}
+
+
+/**
+ * Helper to get the available RAM on a server at the time the function is called.
+ * For some reason Bitburner doesn't already offer this function.
+ * 
+ * @param ns Netscript object provider by Bitburner.
+ * @param server The server the get available RAM for.
+ * @returns The available RAM for the given server.
+ */
+export function getServerAvailableRam(ns: any, host: string): number {
+    return ns.getServerMaxRam(host) - ns.getServerUsedRam(host)
 }

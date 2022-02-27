@@ -4,8 +4,10 @@ import {
     unlockTarget,
     reserveRam,
     getReservedRamForServer,
-    getOptimalBatchThreads,
-    getBatchInterval
+    getBatchThreads,
+    getBatchTimes,
+    getBatchRam,
+    getServerAvailableRam
     // @ts-ignore
 } from "/scripts/utils.js";
 
@@ -31,17 +33,11 @@ export async function main(ns: any) {
     // this step should always succeed.
     unlockTarget(ns, target)
 
-    // Calculate RAM required to run batch script. HGW scripts are always 1.7GB each.
-    // Note that batch RAM is the RAM per thread. Running batches with multiple
-    // threads will scale linearly.
-    let batchRam = (1.7 * 4) + ns.getScriptRam(batchScript, server.hostname)
-    let startRam = ns.getServerMaxRam(server.hostname) - ns.getServerUsedRam(server.hostname)
-
-    // Determine the best number of threads for each batch.
-    let batchThreads = getOptimalBatchThreads(ns, startRam, batchRam)
-
-    // To ensure a consistent rate of batch deployment, calculate the interval between batches.
-    let interval = getBatchInterval(ns, startRam, batchThreads)
+    // Calculate threads, time and RAM required to run batch script.
+    let startRam = getServerAvailableRam(ns, server.hostname)
+    let times = getBatchTimes(ns, target)
+    let threads = getBatchThreads(ns, server, target, startRam, times)
+    let batchRam = getBatchRam(ns, server, threads)
 
     // Create hack/grow/weaken batches continuously, with a delay so that
     // batches are deployed at a consistent rate. Reserve RAM needed to fully
@@ -51,9 +47,9 @@ export async function main(ns: any) {
     while (true) {
         let availableRam = startRam - getReservedRamForServer(ns, server.hostname)
         if (availableRam >= batchRam) {
-            ns.exec(batchScript, server.hostname, 1, target.hostname, batchThreads)
+            ns.exec(batchScript, server.hostname, 1, target.hostname, threads, times)
             reserveRam(ns, server.hostname, batchRam)
         }
-        await ns.sleep(interval)
+        await ns.sleep(times.interval)
     }
 }
