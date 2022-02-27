@@ -47,7 +47,7 @@ export async function main(ns: any) {
     while (true) {
         let availableRam = startRam - getReservedRamForServer(ns, server.hostname)
         if (availableRam >= batchRam) {
-            ns.exec(batchScript, server.hostname, 1, target.hostname, threads, times)
+            ns.exec(batchScript, server.hostname, 1, target.hostname, JSON.stringify(threads), JSON.stringify(times))
             reserveRam(ns, server.hostname, batchRam)
         }
         await ns.sleep(times.interval)

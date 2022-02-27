@@ -24,7 +24,7 @@ let RAM_PORT = 1
  * Get a list of all servers currently accessible (but not necessarily hackable).
  * Optionally can filter the output list by whether the
  * 
- * @param ns Netscript object provider by Bitburner.
+ * @param ns Netscript object provided by Bitburner.
  * @param hackableOnly Whether to filter the list by servers that can be hacked by the current user.
  * @returns The list of all visible servers, of type Server.
  */
@@ -84,7 +84,7 @@ export function getTargets(ns: any, hackableOnly?: boolean): any[] {
  * Buy a purchased server. If a hostname or RAM is specified, use these values,
  * otherwise function will automatically generate an appropriate name and RAM.
  * 
- * @param ns Netscript object provider by Bitburner.
+ * @param ns Netscript object provided by Bitburner.
  * @param ram Optional. The amount of RAM of the purchased server.
  * @param hostname Optional. The hostname of the purchased server.
  * @returns Boolean indicating whether the server was successfully created.
@@ -174,7 +174,7 @@ export async function buyServer(ns: any, ram?: number, hostname?: string): Promi
  * by the user. If there is no name given, or the name is incorrect, the function
  * returns false and alerts the user.
  * 
- * @param ns Netscript object provider by Bitburner.
+ * @param ns Netscript object provided by Bitburner.
  * @param hostname The hostname of the server to be deleted.
  * @returns Boolean indicated whether the server was successfully deleted.
  */
@@ -204,7 +204,7 @@ export function deleteServer(ns: any, hostname: string): boolean {
 /**
  * Get boolean indicating whether the given server is hacking the given target.
  * 
- * @param ns Netscript object provider by Bitburner.
+ * @param ns Netscript object provided by Bitburner.
  * @param server The server hosting the hacking scripts.
  * @param target The target of the hacking scripts.
  * @returns Boolean indicating whether the given server is hacking the given target.
@@ -219,7 +219,7 @@ export function isHackingTarget(ns: any, server: any, target: any): boolean {
  * Kill only hacking related scripts. Used to avoid accidentally killing
  * important scripts (like the sync.js script and the master controller icarus.js).
  * 
- * @param ns Netscript object provider by Bitburner.
+ * @param ns Netscript object provided by Bitburner.
  * @param server The server to kill the hack scripts for.
  * @param target The target the hacking scripts relate to.
  */
@@ -238,7 +238,7 @@ export function killHackScripts(ns: any, server: any, target: any) {
  * Uses as many of the port unlock scripts as the user has on the "home" server
  * and then attempts to use NUKE.exe on the target server.
  * 
- * @param ns Netscript object provider by Bitburner.
+ * @param ns Netscript object provided by Bitburner.
  * @param target The name of the target server to be unlocked.
  * @returns Boolean indicating whether unlock was successful.
  */
@@ -269,7 +269,7 @@ export function unlockTarget(ns: any, target: any): boolean {
  * Private function for updating the value of the port storing the amount of
  * RAM stored per server.
  * 
- * @param ns Netscript object provider by Bitburner.
+ * @param ns Netscript object provided by Bitburner.
  * @param server The server in respect of which the reserved RAM is being updated.
  * @param ram The amount of RAM (positve or negative) being added to the current amount.
  * @returns Boolean indicating whether the update was successful.
@@ -302,7 +302,7 @@ function updateReservedRam(ns: any, server: any, ram: number): boolean {
  * Private function for fetching and parsing the current reserved RAM state
  * from the reserved RAM Netscript port.
  * 
- * @param ns Netscript object provider by Bitburner.
+ * @param ns Netscript object provided by Bitburner.
  * @param server The server to get the reserved RAM state for.
  * @returns An object with the current RAM state.
  */
@@ -338,7 +338,7 @@ function getReservedRamState(ns: any, server: any): any {
 /**
  * Retrieve the amount of RAM currently reserved on the given server.
  * 
- * @param ns Netscript object provider by Bitburner.
+ * @param ns Netscript object provided by Bitburner.
  * @param server The server to get the current reserved RAM for.
  * @returns A number representing the amount of reserved RAM on that server.
  */
@@ -353,7 +353,7 @@ export function getReservedRamForServer(ns: any, server: any): number {
 /**
  * Reserve a given amount of RAM on a given server.
  * 
- * @param ns Netscript object provider by Bitburner.
+ * @param ns Netscript object provided by Bitburner.
  * @param server The server on which RAM should be reserved.
  * @param ram The amount of RAM to reserve.
  * @returns The amount of reserved RAM remaining.
@@ -367,7 +367,7 @@ export function reserveRam(ns: any, server: any, ram: number): number {
 /**
  * Release a given amount of RAM on a given server.
  * 
- * @param ns Netscript object provider by Bitburner.
+ * @param ns Netscript object provided by Bitburner.
  * @param server The server on which RAM should be released.
  * @param ram The amount of RAM to release.
  * @returns The amount of reserved RAM remaining.
@@ -383,13 +383,14 @@ export function releaseRam(ns: any, server: any, ram: number): number {
  * batch. Breaks the times out into hack, grow and weaken, but also provides
  * a total that can be used for calculating the optimal number of threads.
  * 
- * @param ns Netscript object provider by Bitburner.
+ * @param ns Netscript object provided by Bitburner.
  * @param target The target being hacked, grown or weakened.
  * @returns An object containing the times it will take to hack, grow and weaken.
  */
 export function getBatchTimes(ns: any, target: any): any {
 
-    let offset = 200
+    let offset = 200   // Time between HWGW.
+    let interval = 1000   // Time between batches
     let weakenTime = ns.getWeakenTime(target.hostname)
     let growTime = ns.getGrowTime(target.hostname)
     let hackTime = ns.getHackTime(target.hostname)
@@ -411,7 +412,7 @@ export function getBatchTimes(ns: any, target: any): any {
  * Get the amount of RAM that will be used by a batch on a given server
  * using the given set up of threads.
  * 
- * @param ns Netscript object provider by Bitburner.
+ * @param ns Netscript object provided by Bitburner.
  * @param server The server on which the batch would be running.
  * @param threads On object with data about the threads that will be used by each 
  * component of the batch.
@@ -434,7 +435,7 @@ export function getBatchRam(ns: any, server: any, threads: any): number {
  * Get the thread set up required to best use the HWGW batch method specified
  * in the Bitburner docs.
  * 
- * @param ns Netscript object provider by Bitburner.
+ * @param ns Netscript object provided by Bitburner.
  * @param server The host server running the script.
  * @param target The target of the batch hack.
  * @param availableRam The amount of ram available on the host server before running batches.
@@ -504,10 +505,30 @@ export function getBatchThreads(ns: any, server: any, target: any, availableRam:
  * Helper to get the available RAM on a server at the time the function is called.
  * For some reason Bitburner doesn't already offer this function.
  * 
- * @param ns Netscript object provider by Bitburner.
+ * @param ns Netscript object provided by Bitburner.
  * @param server The server the get available RAM for.
  * @returns The available RAM for the given server.
  */
 export function getServerAvailableRam(ns: any, host: string): number {
     return ns.getServerMaxRam(host) - ns.getServerUsedRam(host)
+}
+
+
+/**
+ * Establish whether the target server has the maximum money possible and the
+ * minimum security. Used for the first stage in preparing a target to be 
+ * hacked using the HWGW batch hacking method.
+ * 
+ * @param ns Netscript object provided by Bitburner.
+ * @param target The target being evaluated.
+ * @returns A boolean indicating whether the target is ready to be batch hacked.
+ */
+export function isTargetPrepared(ns: any, target: any): boolean {
+
+    let maxMoney = ns.getServerMoneyAvailable(target.hostname) == ns.getServerMaxMoney(target.hostname)
+    let minSecurity = ns.getServerSecurityLevel(target.hostname) == ns.getServerMinSecurityLevel(target.hostname)
+
+    let targetPrepared = maxMoney && minSecurity
+
+    return targetPrepared
 }
