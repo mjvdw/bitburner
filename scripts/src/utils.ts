@@ -257,7 +257,7 @@ export function unlockTarget(ns: any, target: any): boolean {
 
     // Once unlocking as many ports as possible, attempt to NUKE the target.
     try {
-        ns.nuke(target)
+        ns.nuke(target.hostname)
         return true
     } catch {
         return false
@@ -274,7 +274,7 @@ export function unlockTarget(ns: any, target: any): boolean {
  * @param ram The amount of RAM (positve or negative) being added to the current amount.
  * @returns Boolean indicating whether the update was successful.
  */
-function updateReservedRam(ns: any, server: any, ram: number): boolean {
+export function updateReservedRam(ns: any, server: any, ram: number): boolean {
 
     // Get Netscript port used for storing the current state of RAM for 
     // each server (home + purchased servers.)
@@ -306,7 +306,7 @@ function updateReservedRam(ns: any, server: any, ram: number): boolean {
  * @param server The server to get the reserved RAM state for.
  * @returns An object with the current RAM state.
  */
-function getReservedRamState(ns: any, server: any): any {
+export function getReservedRamState(ns: any, server: any): any {
 
     // Get Netscript port used for storing the current state of RAM for 
     // each server (home + purchased servers.)
@@ -379,6 +379,18 @@ export function releaseRam(ns: any, server: any, ram: number): number {
 
 
 /**
+ * Clear the reserved RAM port. Usually run this when restarting 
+ * a batch hack session from scratch.
+ * 
+ * @param ns Netscript object provided by Bitburner.
+ */
+export function resetReservedRamForServer(ns: any, server: any) {
+    let ramState = getReservedRamState(ns, server)
+    releaseRam(ns, server, ramState[server.hostname])
+}
+
+
+/**
  * Get the times it will take the run the various components of a hacking
  * batch. Breaks the times out into hack, grow and weaken, but also provides
  * a total that can be used for calculating the optimal number of threads.
@@ -398,6 +410,7 @@ export function getBatchTimes(ns: any, target: any): any {
 
     let times = {
         offset: offset,
+        interval: interval,
         weaken: weakenTime,
         grow: growTime,
         hack: hackTime,
@@ -487,11 +500,12 @@ export function getBatchThreads(ns: any, server: any, target: any, availableRam:
         // Scale the multiplier up or down depending on whether the "ideal" thread amount
         // is lower or higher than the host server can handle.
         let scaleRatio = availableRam / totalBatchRam
-        if (scaleRatio > 1.1 && multiplier < 0.98 && upper == multiplier) {
-            multiplier += 0.01
+
+        if (scaleRatio > 1.1 && multiplier < 0.98) {
+            multiplier *= 1.01
             upper = multiplier
-        } else if (scaleRatio < 1) {
-            multiplier -= 0.01
+        } else if (scaleRatio < 1 || upper == multiplier) {
+            multiplier *= 0.99
         } else {
             scaled = true
         }

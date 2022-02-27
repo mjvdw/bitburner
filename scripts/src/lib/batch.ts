@@ -19,6 +19,32 @@ export async function main(ns: any) {
     let target = ns.getServer(ns.args[0])
     let threads = JSON.parse(ns.args[1])
     let times = JSON.parse(ns.args[2])
+    let server = ns.getServer()
 
-    let targetPrepared = isTargetPrepared(ns, target)
+
+    // Calculate sleep times for batch style hacking.
+    let w1Sleep = times.offset;
+    let w2Sleep = 3 * times.offset;
+    let gSleep = times.weaken - times.grow + times.offset * 2 - w2Sleep;
+    let hSleep = times.weaken - times.hack - (w2Sleep + gSleep);
+
+
+    // If the target is prepared (ie, max money, min security) then 
+    // start a full HWGW batch. If it isn't prepared, do a half batch
+    // with just the grow and weaken components.
+    if (isTargetPrepared(ns, target)) {
+        await ns.sleep(w1Sleep);
+        ns.exec("/scripts/lib/weaken.js", server.hostname, threads.hackWeaken, target.hostname, Math.random());
+    }
+
+    await ns.sleep(w2Sleep);
+    ns.exec("scripts/lib/weaken.js", server.hostname, threads.growWeaken, target.hostname, Math.random());
+
+    await ns.sleep(gSleep);
+    ns.exec("scripts/lib/grow.js", server.hostname, threads.grow, target.hostname, Math.random());
+
+    if (isTargetPrepared(ns, target)) {
+        await ns.sleep(hSleep);
+        ns.exec("scripts/lib/hack.js", server.hostname, threads.hack, target.hostname, Math.random());
+    }
 }

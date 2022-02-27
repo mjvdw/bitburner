@@ -1,7 +1,7 @@
 /** @param {import(".").NS} ns */
 
 // @ts-ignore
-import { getBatchThreads, getServerAvailableRam, getBatchTimes } from "/scripts/utils.js";
+import { getReservedRamForServer, getReservedRamState } from "/scripts/utils.js";
 
 
 /**
@@ -10,19 +10,33 @@ import { getBatchThreads, getServerAvailableRam, getBatchTimes } from "/scripts/
  * @param ns Netscript object provider by Bitburner.
  */
 export async function main(ns: any) {
-    let target = ns.getServer("iron-gym")
-    let server = ns.getServer()
-    let times = getBatchTimes(ns, target)
 
-    let threads = getBatchThreads(ns, server, target, getServerAvailableRam(ns, server.hostname), times)
-    ns.tprint("Hack: " + threads.hack)
-    ns.tprint("Weaken (Hack): " + threads.hackWeaken)
-    ns.tprint("Grow: " + threads.grow)
-    ns.tprint("Weaken (Grow): " + threads.growWeaken)
-    ns.tprint("—".repeat(30));
+    // ns.tprint(getReservedRamForServer(ns, ns.getServer()))
 
-    let total = threads.hack + threads.grow + threads.hackWeaken + threads.growWeaken
-    ns.tprint("Total Threads: " + total)
+    let port = ns.getPortHandle(1)
+    port.clear()
+
+    ns.tprint(getReservedRamState(ns, ns.getServer()))
+
+    // ************* //
+
+    // let target = ns.getServer("foodnstuff")
+    // let server = ns.getServer()
+    // let times = getBatchTimes(ns, target)
+
+    // let threads = getBatchThreads(ns, server, target, getServerAvailableRam(ns, server.hostname), times)
+    // ns.tprint("Hack: " + threads.hack)
+    // ns.tprint("Weaken (Hack): " + threads.hackWeaken)
+    // ns.tprint("Grow: " + threads.grow)
+    // ns.tprint("Weaken (Grow): " + threads.growWeaken)
+    // ns.tprint("—".repeat(30));
+
+    // let total = threads.hack + threads.grow + threads.hackWeaken + threads.growWeaken
+    // ns.tprint("Total Threads: " + total)
+
+
+    // ************* //
+
 
     // let multiplier = 0.9
     // // let hackMoney = ns.getServerMaxMoney(target.hostname) * multiplier

@@ -7,7 +7,8 @@ import {
     getBatchThreads,
     getBatchTimes,
     getBatchRam,
-    getServerAvailableRam
+    getServerAvailableRam,
+    resetReservedRamForServer
     // @ts-ignore
 } from "/scripts/utils.js";
 
@@ -39,6 +40,10 @@ export async function main(ns: any) {
     let threads = getBatchThreads(ns, server, target, startRam, times)
     let batchRam = getBatchRam(ns, server, threads)
 
+    // Before running individual batches, clear the reserved RAM from
+    // any previous runs for this server.
+    resetReservedRamForServer(ns, server)
+
     // Create hack/grow/weaken batches continuously, with a delay so that
     // batches are deployed at a consistent rate. Reserve RAM needed to fully
     // run each batch - this is necessary because of the delay starting each 
@@ -47,7 +52,7 @@ export async function main(ns: any) {
     while (true) {
         let availableRam = startRam - getReservedRamForServer(ns, server.hostname)
         if (availableRam >= batchRam) {
-            ns.exec(batchScript, server.hostname, 1, target.hostname, JSON.stringify(threads), JSON.stringify(times))
+            ns.exec(batchScript, server.hostname, 1, target.hostname, JSON.stringify(threads), JSON.stringify(times), Math.random())
             reserveRam(ns, server.hostname, batchRam)
         }
         await ns.sleep(times.interval)
