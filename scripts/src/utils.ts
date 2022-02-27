@@ -137,6 +137,8 @@ export async function buyServer(ns: any, ram?: number, hostname?: string): Promi
         let pservs = all_pservs.filter((pserv: string) => pserv.startsWith("pserv-"))
         let usedIds = pservs.map((pserv: string) => parseInt(pserv.slice(6, 9)))
 
+        ns.tprint(usedIds)
+
         let i = usedIds == [] ? 1 : Math.max(...usedIds) + 1
         let suffix = "000";
 
@@ -511,8 +513,6 @@ export function getBatchThreads(ns: any, server: any, target: any, availableRam:
             scaled = true
         }
     }
-
-    ns.tprint(threads)
 
     return threads
 }

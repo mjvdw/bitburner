@@ -25,7 +25,7 @@ export async function main(ns: any) {
         let servers = ns.getPurchasedServers()
 
         while (money > ns.getPurchasedServerCost(ram) && servers.length < 25) {
-            await buyServer(ns = ns, ram = 64)
+            await buyServer(ns = ns, ram = ram)
             servers = ns.getPurchasedServers()
             money = ns.getServerMoneyAvailable("home")
             await ns.sleep(500)
