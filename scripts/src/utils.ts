@@ -211,7 +211,7 @@ export function deleteServer(ns: any, hostname: string): boolean {
  * @param target The target of the hacking scripts.
  * @returns Boolean indicating whether the given server is hacking the given target.
  */
-export function isHackingTarget(ns: any, server: any, target: any): boolean {
+export function isHackingTarget(ns: any, server: any, target: any): Promise<boolean> {
     let scriptName = "/scripts/lib/batch-controller.js"
     let isHackingTarget = ns.isRunning(scriptName, server.hostname, target.hostname)
     return isHackingTarget
@@ -461,14 +461,11 @@ export function getBatchRam(ns: any, server: any, threads: any): number {
 export function getBatchThreads(ns: any, server: any, target: any, availableRam: number, times: any): any {
 
     let multiplier = 0.5
-    let threads: any = {}
-
-    // These valiables are used to prevent oscilating between multipliers
-    // at the end of this while loop when the scale ratio is used.
-    let upper = Infinity
+    let threads: any | boolean = {}
 
     let scaled = false
     while (!scaled) {
+
         let hackMoney = ns.getServerMoneyAvailable(target.hostname) * multiplier
         let hackThreads = Math.trunc(ns.hackAnalyzeThreads(target.hostname, hackMoney))
 
@@ -502,12 +499,10 @@ export function getBatchThreads(ns: any, server: any, target: any, availableRam:
 
         // Scale the multiplier up or down depending on whether the "ideal" thread amount
         // is lower or higher than the host server can handle.
+        // TODO: Allow the server to scale up if it's not using it's full resources.
         let scaleRatio = availableRam / totalBatchRam
 
-        if (scaleRatio > 1.1 && multiplier < 0.98) {
-            multiplier *= 1.01
-            upper = multiplier
-        } else if (scaleRatio < 1 || upper == multiplier) {
+        if (scaleRatio < 1) {
             multiplier *= 0.99
         } else {
             scaled = true

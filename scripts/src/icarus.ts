@@ -38,7 +38,7 @@ export async function main(ns: any) {
         let hackPairs = servers.map((server: any, index: number) => {
             let target: any
             if (targets[index]) { target = targets[index] }
-            else { target = targets[index - targets.length] }
+            else { target = targets[index % targets.length] }
             return [server, target]
         })
 
@@ -46,6 +46,7 @@ export async function main(ns: any) {
         // If the server is already hacking another target, check whether it's the correct
         // target, and if it isn't, kill all scripts on that server and start on the 
         // correct target.
+
         hackPairs.forEach((pair: any) => {
             let server = pair[0]
             let target = pair[1]

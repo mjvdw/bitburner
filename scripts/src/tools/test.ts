@@ -1,7 +1,7 @@
 /** @param {import(".").NS} ns */
 
 // @ts-ignore
-import { getReservedRamForServer, getReservedRamState } from "/scripts/utils.js";
+import { getBatchThreads, getServerAvailableRam, getBatchTimes } from "/scripts/utils.js";
 
 
 /**
@@ -11,28 +11,27 @@ import { getReservedRamForServer, getReservedRamState } from "/scripts/utils.js"
  */
 export async function main(ns: any) {
 
-    // ns.tprint(getReservedRamForServer(ns, ns.getServer()))
+    // let server = ns.getServer()
+    // let target = ns.getServer(ns.args[0])
 
-    let port = ns.getPortHandle(1)
-    port.clear()
+    // ns.tprint("Hacking " + target.hostname + " with " + server.hostname)
 
-    ns.tprint(getReservedRamState(ns, ns.getServer()))
 
     // ************* //
 
-    // let target = ns.getServer("foodnstuff")
-    // let server = ns.getServer()
-    // let times = getBatchTimes(ns, target)
+    let target = ns.getServer("foodnstuff")
+    let server = ns.getServer()
+    let times = getBatchTimes(ns, target)
 
-    // let threads = getBatchThreads(ns, server, target, getServerAvailableRam(ns, server.hostname), times)
-    // ns.tprint("Hack: " + threads.hack)
-    // ns.tprint("Weaken (Hack): " + threads.hackWeaken)
-    // ns.tprint("Grow: " + threads.grow)
-    // ns.tprint("Weaken (Grow): " + threads.growWeaken)
-    // ns.tprint("—".repeat(30));
+    let threads = getBatchThreads(ns, server, target, getServerAvailableRam(ns, server.hostname), times)
+    ns.tprint("Hack: " + threads.hack)
+    ns.tprint("Weaken (Hack): " + threads.hackWeaken)
+    ns.tprint("Grow: " + threads.grow)
+    ns.tprint("Weaken (Grow): " + threads.growWeaken)
+    ns.tprint("—".repeat(30));
 
-    // let total = threads.hack + threads.grow + threads.hackWeaken + threads.growWeaken
-    // ns.tprint("Total Threads: " + total)
+    let total = threads.hack + threads.grow + threads.hackWeaken + threads.growWeaken
+    ns.tprint("Total Threads: " + total)
 
 
     // ************* //

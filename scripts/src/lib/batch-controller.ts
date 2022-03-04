@@ -24,8 +24,8 @@ import {
  */
 export async function main(ns: any) {
 
-    let target = ns.getServer(ns.args[0])
     let server = ns.getServer()
+    let target = ns.getServer(ns.args[0])
     let batchScript = "/scripts/lib/batch.js"
 
     // Unlock server. This means opening all ports available and then
