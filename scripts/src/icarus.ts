@@ -52,7 +52,7 @@ export async function main(ns: any) {
             let target = pair[1]
 
             if (!isHackingTarget(ns, server, target)) {
-                killHackScripts(ns, server, target)
+                killHackScripts(ns, server)
                 ns.exec("/scripts/lib/batch-controller.js", server.hostname, 1, target.hostname)
             }
         })

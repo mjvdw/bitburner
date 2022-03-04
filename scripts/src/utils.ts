@@ -224,9 +224,8 @@ export function isHackingTarget(ns: any, server: any, target: any): Promise<bool
  * 
  * @param ns Netscript object provided by Bitburner.
  * @param server The server to kill the hack scripts for.
- * @param target The target the hacking scripts relate to.
  */
-export function killHackScripts(ns: any, server: any, target: any) {
+export function killHackScripts(ns: any, server: any) {
 
     let runningScripts = ns.ps(server.hostname)
     runningScripts.forEach((script: any) => {
@@ -461,15 +460,17 @@ export function getBatchRam(ns: any, server: any, threads: any): number {
 export function getBatchThreads(ns: any, server: any, target: any, availableRam: number, times: any): any {
 
     let multiplier = 0.5
-    let threads: any | boolean = {}
+    let threads: any = {}
 
+    let i = 0
     let scaled = false
-    while (!scaled) {
+    while (i < 1) {
 
         let hackMoney = ns.getServerMoneyAvailable(target.hostname) * multiplier
         let hackThreads = Math.trunc(ns.hackAnalyzeThreads(target.hostname, hackMoney))
 
         let growRatio = 1 / (1 - multiplier)
+
         let growThreads = Math.ceil(ns.growthAnalyze(target.hostname, growRatio))
 
         // These constants come from the docs based on the known effect
@@ -502,10 +503,12 @@ export function getBatchThreads(ns: any, server: any, target: any, availableRam:
         // TODO: Allow the server to scale up if it's not using it's full resources.
         let scaleRatio = availableRam / totalBatchRam
 
-        if (scaleRatio < 1) {
-            multiplier *= 0.99
-        } else {
+        if (!scaled) {
+            multiplier *= scaleRatio
+            multiplier >= 1 ? multiplier = 0.99 : multiplier
             scaled = true
+        } else {
+            i++
         }
     }
 
