@@ -545,3 +545,62 @@ export function isTargetPrepared(ns: any, target: any): boolean {
 
     return targetPrepared
 }
+
+
+/**
+ * Take the given data and print nicely as a table in the Bitburner console.
+ * 
+ * @param ns Netscript object provided by Bitburner.
+ * @param data Data to print in a table. Must be a regular array of objects.
+ */
+export function printTable(ns: any, data: object[]) {
+
+    let keys = Object.keys(data[0])
+    let colBuffer = 2  // Should always be an even number
+
+    // Calculate table dimensions.
+    let colWidths = keys.map((key: any) => {
+        let valuesLength = data
+            .map((row: any) => row[key])
+            .map((value: any) => value.length)
+        valuesLength.push(key.length)
+        let width = Math.max(...valuesLength)
+        return width + colBuffer
+    })
+
+    let tableWidth = colWidths.reduce((partialSum, a) => partialSum + a, 0) + (keys.length - 1)
+
+    // Print header row.
+    let headerString = ""
+    let rowSplit = ""
+    for (let k in keys) {
+        let frontSpaces = Number(k) == 0 ? 0 : Math.trunc((colWidths[k] - keys[k].length) / 2)
+        let endSpaces = colWidths[k] - keys[k].length - frontSpaces
+        headerString += (" ".repeat(frontSpaces) + keys[k].toUpperCase() + " ".repeat(endSpaces) + "|")
+        rowSplit += ("-".repeat(colWidths[k]) + "|")
+    }
+
+    rowSplit = rowSplit.slice(0, -1)
+    headerString = headerString.slice(0, -1)
+
+    ns.tprint(rowSplit)
+    ns.tprint(headerString)
+    ns.tprint(rowSplit)
+
+    // Print content.
+    data.forEach((row: any) => {
+        let rowString = ""
+        for (let k in keys) {
+            let key = keys[k]
+            let frontSpaces = Number(k) == 0 ? 0 : Math.trunc((colWidths[k] - row[key].length) / 2)
+            let endSpaces = colWidths[k] - row[key].length - frontSpaces
+            rowString += (" ".repeat(frontSpaces) + row[key] + " ".repeat(endSpaces) + "|")
+        }
+        rowString = rowString.slice(0, -1)
+        ns.tprint(rowString)
+    })
+
+    // Print end row.
+    ns.tprint(rowSplit);
+
+}
