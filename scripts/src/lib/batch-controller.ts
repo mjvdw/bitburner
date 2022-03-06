@@ -53,7 +53,7 @@ export async function main(ns: any) {
         let availableRam = startRam - getReservedRamForServer(ns, server.hostname)
         if (availableRam >= batchRam) {
             ns.exec(batchScript, server.hostname, 1, target.hostname, JSON.stringify(threads), JSON.stringify(times), Math.random())
-            reserveRam(ns, server.hostname, batchRam)
+            reserveRam(ns, server, batchRam)
         }
         await ns.sleep(times.interval)
     }

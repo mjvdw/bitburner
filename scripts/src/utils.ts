@@ -281,7 +281,7 @@ export function updateReservedRam(ns: any, server: any, ram: number): boolean {
     let port = ns.getPortHandle(RAM_PORT)
 
     // Get current state of RAM.
-    let ramState: any = getReservedRamState(ns, server)
+    let ramState: any = getReservedRamState(ns)
 
     // getReservedRamState() only "peeks" the data, so we have to manually
     // clear it once we've retrieved what we need.
@@ -303,10 +303,9 @@ export function updateReservedRam(ns: any, server: any, ram: number): boolean {
  * from the reserved RAM Netscript port.
  * 
  * @param ns Netscript object provided by Bitburner.
- * @param server The server to get the reserved RAM state for.
  * @returns An object with the current RAM state.
  */
-export function getReservedRamState(ns: any, server: any): any {
+export function getReservedRamState(ns: any): any {
 
     // Get Netscript port used for storing the current state of RAM for 
     // each server (home + purchased servers.)
@@ -343,9 +342,9 @@ export function getReservedRamState(ns: any, server: any): any {
  * @returns A number representing the amount of reserved RAM on that server.
  */
 export function getReservedRamForServer(ns: any, server: any): number {
-    let ramState = getReservedRamState(ns, server)
+    let ramState = getReservedRamState(ns)
     let reservedRam = ramState[server.hostname]
-    reservedRam = reservedRam == null ? -1 : parseInt(reservedRam)
+    reservedRam = reservedRam == null ? 0 : parseInt(reservedRam)
     return reservedRam
 }
 
@@ -385,7 +384,7 @@ export function releaseRam(ns: any, server: any, ram: number): number {
  * @param ns Netscript object provided by Bitburner.
  */
 export function resetReservedRamForServer(ns: any, server: any) {
-    let ramState = getReservedRamState(ns, server)
+    let ramState = getReservedRamState(ns)
     releaseRam(ns, server, ramState[server.hostname])
 }
 
@@ -519,7 +518,7 @@ export function getBatchThreads(ns: any, server: any, target: any, availableRam:
  * For some reason Bitburner doesn't already offer this function.
  * 
  * @param ns Netscript object provided by Bitburner.
- * @param server The server the get available RAM for.
+ * @param host The server the get available RAM for.
  * @returns The available RAM for the given server.
  */
 export function getServerAvailableRam(ns: any, host: string): number {
@@ -557,18 +556,17 @@ export function printTable(ns: any, data: object[]) {
 
     let keys = Object.keys(data[0])
     let colBuffer = 2  // Should always be an even number
+    let sepChar = "|"
 
-    // Calculate table dimensions.
+    // Calculate column dimensions.
     let colWidths = keys.map((key: any) => {
         let valuesLength = data
             .map((row: any) => row[key])
-            .map((value: any) => value.length)
+            .map((value: any) => String(value).length)
         valuesLength.push(key.length)
         let width = Math.max(...valuesLength)
         return width + colBuffer
     })
-
-    let tableWidth = colWidths.reduce((partialSum, a) => partialSum + a, 0) + (keys.length - 1)
 
     // Print header row.
     let headerString = ""
@@ -576,8 +574,8 @@ export function printTable(ns: any, data: object[]) {
     for (let k in keys) {
         let frontSpaces = Number(k) == 0 ? 0 : Math.trunc((colWidths[k] - keys[k].length) / 2)
         let endSpaces = colWidths[k] - keys[k].length - frontSpaces
-        headerString += (" ".repeat(frontSpaces) + keys[k].toUpperCase() + " ".repeat(endSpaces) + "|")
-        rowSplit += ("-".repeat(colWidths[k]) + "|")
+        headerString += (" ".repeat(frontSpaces) + keys[k].toUpperCase() + " ".repeat(endSpaces) + sepChar)
+        rowSplit += ("-".repeat(colWidths[k]) + sepChar)
     }
 
     rowSplit = rowSplit.slice(0, -1)
@@ -592,9 +590,10 @@ export function printTable(ns: any, data: object[]) {
         let rowString = ""
         for (let k in keys) {
             let key = keys[k]
-            let frontSpaces = Number(k) == 0 ? 0 : Math.trunc((colWidths[k] - row[key].length) / 2)
-            let endSpaces = colWidths[k] - row[key].length - frontSpaces
-            rowString += (" ".repeat(frontSpaces) + row[key] + " ".repeat(endSpaces) + "|")
+            let value = String(row[key])
+            let frontSpaces = Number(k) == 0 ? 0 : Math.trunc((colWidths[k] - value.length) / 2)
+            let endSpaces = colWidths[k] - value.length - frontSpaces
+            rowString += (" ".repeat(frontSpaces) + value + " ".repeat(endSpaces) + sepChar)
         }
         rowString = rowString.slice(0, -1)
         ns.tprint(rowString)

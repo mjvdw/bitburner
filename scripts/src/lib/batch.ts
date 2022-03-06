@@ -53,5 +53,5 @@ export async function main(ns: any) {
     // After everything has run, release any reserved RAM for this batch so a new
     // batch can run.
     let batchRam = getBatchRam(ns, server, threads)
-    releaseRam(ns, batchRam)
+    releaseRam(ns, server, batchRam)
 }
