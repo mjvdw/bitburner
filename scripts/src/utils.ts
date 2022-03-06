@@ -19,6 +19,9 @@ let HACK_SCRIPTS = [
 
 let RAM_PORT = 1
 
+let BATCH_FREQUENCY = 250
+let BATCH_SPEED = 50
+
 
 /**
  * Get a list of all servers currently accessible (but not necessarily hackable).
@@ -400,8 +403,8 @@ export function resetReservedRamForServer(ns: any, server: any) {
  */
 export function getBatchTimes(ns: any, target: any): any {
 
-    let offset = 200   // Time between HWGW.
-    let interval = 1000   // Time between batches
+    let offset = BATCH_SPEED   // Time between HWGW.
+    let interval = BATCH_FREQUENCY   // Time between batches
     let weakenTime = ns.getWeakenTime(target.hostname)
     let growTime = ns.getGrowTime(target.hostname)
     let hackTime = ns.getHackTime(target.hostname)
@@ -492,7 +495,7 @@ export function getBatchThreads(ns: any, server: any, target: any, availableRam:
         // Get the number of batches that should be running at any one time.
         // Since we are aiming to run one per second, this is the same as the number of
         // seconds it takes to complete one batch.
-        let numBatches = times.total / 1000
+        let numBatches = times.total / BATCH_FREQUENCY
         let totalBatchRam = batchRam * numBatches
 
         // Scale the multiplier up or down depending on whether the "ideal" thread amount
