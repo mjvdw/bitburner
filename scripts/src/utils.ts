@@ -19,8 +19,8 @@ let HACK_SCRIPTS = [
 
 let RAM_PORT = 1
 
-let BATCH_FREQUENCY = 250
 let BATCH_SPEED = 50
+let BATCH_FREQUENCY = 5 * BATCH_SPEED
 
 
 /**
