@@ -104,7 +104,7 @@ dist
 .tern-port
 
 
-*/.DS_Store
+.DS_Store
 __pycache__
 scripts.txt
 scripts/archive-js
