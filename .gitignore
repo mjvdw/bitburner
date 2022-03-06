@@ -107,5 +107,5 @@ dist
 */.DS_Store
 __pycache__
 scripts.txt
-archive-js
+scripts/archive-js
 backup_saves
