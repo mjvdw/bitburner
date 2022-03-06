@@ -6,6 +6,7 @@ import {
     isTargetPrepared,
     getReservedRamForServer,
     getReservedRamState,
+    getBatchTimes
     // getServersHackingTarget,
     // getServersPreparingTarget
     // @ts-ignore
@@ -54,8 +55,8 @@ function getHackingStats(ns: any): object[] {
             + "/"
             + ns.nFormat(target.moneyMax, "0.00a")
             + " ("
-            + (target.moneyAvailable / target.moneyMax * 100).toFixed(2)
-            + "%)"
+            + ns.nFormat(target.moneyAvailable / target.moneyMax, "0.00%")
+            + ")"
 
         // Current state of "attack"
         let preparing = getServersPreparingTarget(ns, target)
@@ -100,18 +101,20 @@ function getServerStats(ns: any): object[] {
     let pservs = ns.getPurchasedServers()
     let servers = home.concat(pservs)
 
+
+
     servers = servers.map((s: string) => ns.getServer(s))
 
     let data = servers.map((s: any) => {
 
-        let utilisation = getReservedRamForServer(ns, s)
-
-        // let state = getReservedRamState(ns, s)
-        // ns.tprint(state)
+        let reservedRam = ns.nFormat(getReservedRamForServer(ns, s) / s.maxRam, "0.00%")
+        let usedRam = ns.nFormat(s.ramUsed / s.maxRam, "0.00%")
 
         return {
             server: s.hostname,
-            ram: utilisation
+            reserved: reservedRam,
+            used: usedRam,
+            "batch time": 0
         }
     })
 
