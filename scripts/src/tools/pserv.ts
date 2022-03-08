@@ -11,7 +11,7 @@ import { buyServer, deleteServer } from "/scripts/utils.js";
  * 
  * User must specify an "action" - either buying or deleting a server.
  * 
- * @param ns Netscript object provider by Bitburner.
+ * @param ns Netscript object provided by Bitburner.
  */
 export async function main(ns: any) {
     let action = ns.args[0]

@@ -1,5 +1,8 @@
 /** @param {import(".").NS} ns */
 
+//@ts-ignore
+import { resetReservedRamForServer } from "./scripts/utils.js"
+
 /**
  * Kill all scripts on all servers except the sync script on home and this script.
  * 
@@ -22,5 +25,7 @@ export async function main(ns: any) {
                 ns.kill(script.pid)
             }
         })
+
+        resetReservedRamForServer(ns, server)
     })
 }
