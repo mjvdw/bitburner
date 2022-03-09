@@ -28,6 +28,9 @@ export async function main(ns: any) {
         case "servers":
             data = getServerStats(ns)
             break
+        case "money":
+            data = getMoneyStats(ns)
+            break
         default:
             ns.tprint("That's not a valid input. Please try again. Valid inputs: 'hacking', 'servers'")
             break
@@ -120,4 +123,11 @@ function getServerStats(ns: any): object[] {
 
     return data
 
+}
+
+
+function getMoneyStats(ns: any): any[] {
+    return [{
+        money: ns.nFormat(ns.getServerMoneyAvailable("home"), "$0,0.00")
+    }]
 }

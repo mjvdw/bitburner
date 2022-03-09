@@ -22,11 +22,15 @@ export async function main(ns: any) {
         // Buy new servers with either the same RAM as home server 
         // or the maximum possible RAM for purchased servers.
         let money = ns.getServerMoneyAvailable("home")
-        let ram = ns.getServerMaxRam("home")
+        let ram = ns.getServerMaxRam("home") <= Math.pow(2, 20)
+            ? ns.getServerMaxRam("home")
+            : Math.pow(2, 20)
+
         let servers = ns.getPurchasedServers()
 
+
         while (money > ns.getPurchasedServerCost(ram) && servers.length < 25) {
-            await buyServer(ns = ns, ram = ram)
+            await buyServer(ns, ram)
             servers = ns.getPurchasedServers()
             money = ns.getServerMoneyAvailable("home")
             await ns.sleep(500)

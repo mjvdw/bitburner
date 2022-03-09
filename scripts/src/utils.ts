@@ -19,7 +19,7 @@ let HACK_SCRIPTS = [
 
 let RAM_PORT = 1
 
-let BATCH_SPEED = 200
+let BATCH_SPEED = 500
 let BATCH_FREQUENCY = 5 * BATCH_SPEED
 
 
@@ -559,7 +559,20 @@ export function printTable(ns: any, data: object[]) {
 
     let keys = Object.keys(data[0])
     let colBuffer = 2  // Should always be an even number
-    let sepChar = "|"
+
+    let chars = {
+        vSectRight: "├",
+        vSectLeft: "┤",
+        vBorder: "│",
+        bottomRight: "┘",
+        bottomLeft: "└",
+        topLeft: "┌",
+        topRight: "┐",
+        crossSection: "┼",
+        hSectBottom: "┴",
+        hSectTop: "┬",
+        hBorder: "─"
+    }
 
     // Calculate column dimensions.
     let colWidths = keys.map((key: any) => {
@@ -577,8 +590,8 @@ export function printTable(ns: any, data: object[]) {
     for (let k in keys) {
         let frontSpaces = Number(k) == 0 ? 0 : Math.trunc((colWidths[k] - keys[k].length) / 2)
         let endSpaces = colWidths[k] - keys[k].length - frontSpaces
-        headerString += (" ".repeat(frontSpaces) + keys[k].toUpperCase() + " ".repeat(endSpaces) + sepChar)
-        rowSplit += ("-".repeat(colWidths[k]) + sepChar)
+        headerString += (" ".repeat(frontSpaces) + keys[k].toUpperCase() + " ".repeat(endSpaces) + chars.vBorder)
+        rowSplit += ("—".repeat(colWidths[k]) + chars.vBorder)
     }
 
     rowSplit = rowSplit.slice(0, -1)
@@ -596,7 +609,7 @@ export function printTable(ns: any, data: object[]) {
             let value = String(row[key])
             let frontSpaces = Number(k) == 0 ? 0 : Math.trunc((colWidths[k] - value.length) / 2)
             let endSpaces = colWidths[k] - value.length - frontSpaces
-            rowString += (" ".repeat(frontSpaces) + value + " ".repeat(endSpaces) + sepChar)
+            rowString += (" ".repeat(frontSpaces) + value + " ".repeat(endSpaces) + chars.vBorder)
         }
         rowString = rowString.slice(0, -1)
         ns.tprint(rowString)
