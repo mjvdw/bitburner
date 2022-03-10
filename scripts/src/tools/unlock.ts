@@ -11,6 +11,6 @@ import { unlockTarget } from "/scripts/utils.js";
  * @param ns Netscript object provider by Bitburner.
  */
 export async function main(ns: any) {
-    let target = ns.args[0]
+    let target = ns.getServer(ns.args[0])
     unlockTarget(ns, target)
 }
