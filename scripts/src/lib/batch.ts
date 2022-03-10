@@ -35,18 +35,22 @@ export async function main(ns: any) {
     // start a full HWGW batch. If it isn't prepared, do a half batch
     // with just the grow and weaken components.
     await ns.sleep(w1Sleep);
-    if (isTargetPrepared(ns, target)) {
+    if (isTargetPrepared(ns, target) && threads.hackWeaken > 0) {
         ns.exec("/scripts/lib/weaken.js", server.hostname, threads.hackWeaken, target.hostname, Math.random());
     }
 
     await ns.sleep(w2Sleep);
-    ns.exec("scripts/lib/weaken.js", server.hostname, threads.growWeaken, target.hostname, Math.random());
+    if (threads.growWeaken > 0) {
+        ns.exec("scripts/lib/weaken.js", server.hostname, threads.growWeaken, target.hostname, Math.random());
+    }
 
     await ns.sleep(gSleep);
-    ns.exec("scripts/lib/grow.js", server.hostname, threads.grow, target.hostname, Math.random());
+    if (threads.grow > 0) {
+        ns.exec("scripts/lib/grow.js", server.hostname, threads.grow, target.hostname, Math.random());
+    }
 
     await ns.sleep(hSleep);
-    if (isTargetPrepared(ns, target)) {
+    if (isTargetPrepared(ns, target) && threads.hack > 0) {
         ns.exec("scripts/lib/hack.js", server.hostname, threads.hack, target.hostname, Math.random());
     }
 
