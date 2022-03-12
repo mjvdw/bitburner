@@ -36,7 +36,7 @@ export async function main(ns: any) {
             data = getAllCrimeStats(ns)
             break
         default:
-            ns.tprint("That's not a valid input. Please try again. Valid inputs: 'hacking', 'servers'")
+            ns.tprint("That's not a valid input. Please try again. Valid inputs: 'hacking', 'servers', 'money', or 'crimes'")
             break
     }
 
@@ -145,8 +145,20 @@ function getAllCrimeStats(ns: any): any[] {
     crimes.forEach((crime: string) => {
         let stats = ns.getCrimeStats(crime)
         let d = {
-            name: crime,
-            money: stats.money
+            name: stats.name,
+            money: ns.nFormat(stats.money, "$0.000a"),
+            ae: stats.agility_exp,
+            asw: stats.agility_success_weight,
+            ce: stats.charisma_exp,
+            csw: stats.charisma_success_weight,
+            dfe: stats.defense_exp,
+            dfsw: stats.defense_success_weight,
+            dxe: stats.dexterity_exp,
+            dxsw: stats.dexterity_success_weight,
+            he: stats.hacking_exp,
+            hsw: stats.hacking_success_weight,
+            se: stats.strength_exp,
+            ssw: stats.strength_success_weight
         }
         data.push(d)
     })
