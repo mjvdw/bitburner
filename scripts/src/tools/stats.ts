@@ -1,5 +1,6 @@
 /** @param {import(".").NS} ns */
 
+import { STATUS_CODES } from "http";
 import {
     getTargets,
     printTable,
@@ -30,6 +31,9 @@ export async function main(ns: any) {
             break
         case "money":
             data = getMoneyStats(ns)
+            break
+        case "crimes":
+            data = getAllCrimeStats(ns)
             break
         default:
             ns.tprint("That's not a valid input. Please try again. Valid inputs: 'hacking', 'servers'")
@@ -130,4 +134,23 @@ function getMoneyStats(ns: any): any[] {
     return [{
         money: ns.nFormat(ns.getServerMoneyAvailable("home"), "$0,0.00")
     }]
+}
+
+
+function getAllCrimeStats(ns: any): any[] {
+    let crimes = ["shoplift", "rob store", "mug", "larceny", "drugs", "bond forge",
+        "traffic illegal arms", "homicide", "grand auto", "kidnap", "assassin", "heist"]
+
+    let data: any[] = []
+    crimes.forEach((crime: string) => {
+        let stats = ns.getCrimeStats(crime)
+        let d = {
+            name: crime,
+            money: stats.money
+        }
+        data.push(d)
+    })
+
+    return data
+
 }
