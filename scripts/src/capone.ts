@@ -19,6 +19,6 @@ export async function main(ns: any) {
         if (!ns.isBusy()) {
             crimeTime = ns.commitCrime(crime)
         }
-        await ns.sleep(crimeTime + 2000)
+        await ns.sleep(crimeTime + 200)
     }
 }
