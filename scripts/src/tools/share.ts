@@ -4,6 +4,8 @@
 import { getServerAvailableRam } from "/scripts/utils.js";
 
 /**
+ * Use the maximum possible RAM across all servers to "share" with
+ * factions, increasing the rate that faction rep is accumulated.
  * 
  * @param ns Netscript object provided by Bitburner.
  */
