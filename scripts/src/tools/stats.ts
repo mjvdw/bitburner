@@ -1,6 +1,5 @@
 /** @param {import(".").NS} ns */
 
-import { STATUS_CODES } from "http";
 import {
     getTargets,
     printTable,
@@ -12,6 +11,7 @@ import {
     // getServersPreparingTarget
     // @ts-ignore
 } from "/scripts/utils.js";
+
 
 /**
  * Helper function to display useful statistics to the player.
@@ -84,6 +84,14 @@ function getHackingStats(ns: any): object[] {
 }
 
 
+/**
+ * Helper function to determine whether a given target is being
+ * hacked (as opposed to prepared, or no action at all).
+ * 
+ * @param ns Netscript object provided by Bitburner.
+ * @param target The target potentially being hacked.
+ * @returns Boolean indicating whether the given target is being hacked.
+ */
 function getServersHackingTarget(ns: any, target: any): any[] {
 
     let serversHackingTarget: any[] = []
@@ -97,18 +105,31 @@ function getServersHackingTarget(ns: any, target: any): any[] {
 }
 
 
+/**
+ * Helper function to determine whether a given target is being
+ * prepared (as opposed to hacked, or no action at all).
+ * 
+ * @param ns Netscript object provided by Bitburner.
+ * @param target The target potentially being prepared.
+ * @returns Boolean indicating whether the given target is being prepared.
+ */
 function getServersPreparingTarget(ns: any, target: any): any[] {
     return []
 }
 
 
+/**
+ * Helper function to generate useful data about the player's
+ * purchased servers.
+ * 
+ * @param ns Netscript object provided by Bitburner.
+ * @returns 
+ */
 function getServerStats(ns: any): object[] {
 
     let home = ["home"]
     let pservs = ns.getPurchasedServers()
     let servers = home.concat(pservs)
-
-
 
     servers = servers.map((s: string) => ns.getServer(s))
 
@@ -126,10 +147,15 @@ function getServerStats(ns: any): object[] {
     })
 
     return data
-
 }
 
 
+/**
+ * Helper function to generate stats about the users money.
+ * 
+ * @param ns Netscript object provided by Bitburner.
+ * @returns 
+ */
 function getMoneyStats(ns: any): any[] {
     return [{
         money: ns.nFormat(ns.getServerMoneyAvailable("home"), "$0,0.00")
@@ -137,6 +163,12 @@ function getMoneyStats(ns: any): any[] {
 }
 
 
+/**
+ * Helper function to generate useful information about crimes.
+ * 
+ * @param ns Netscript object provided by Bitburner.
+ * @returns 
+ */
 function getAllCrimeStats(ns: any): any[] {
     let crimes = ["shoplift", "rob store", "mug", "larceny", "drugs", "bond forge",
         "traffic illegal arms", "homicide", "grand auto", "kidnap", "assassin", "heist"]
