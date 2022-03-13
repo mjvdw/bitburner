@@ -5,8 +5,6 @@ import {
     printTable,
     isTargetPrepared,
     getReservedRamForServer,
-    getReservedRamState,
-    getBatchTimes,
     CRIMES
     // @ts-ignore
 } from "/scripts/utils.js";
@@ -139,9 +137,9 @@ function getServerStats(ns: any): object[] {
 
         return {
             server: s.hostname,
+            maxram: s.maxRam,
             reserved: reservedRam,
-            used: usedRam,
-            "batch time": 0
+            used: usedRam
         }
     })
 
@@ -169,19 +167,24 @@ function getMoneyStats(ns: any): any[] {
  * @returns 
  */
 function getAllCrimeStats(ns: any): any[] {
+
     let crimes = CRIMES
+    let bitnodeMultiplier = 0.256
 
     let data: any[] = []
     crimes.forEach((crime: string) => {
         let stats = ns.getCrimeStats(crime)
+        let money = stats.money * bitnodeMultiplier
         let d = {
             name: stats.name,
-            money: ns.nFormat(stats.money, "$0.000a"),
-            chance: ns.getCrimeChance(stats.name)
+            i: crimes.indexOf(crime) + 1,
+            money: ns.nFormat(money, "$0.000a"),
+            chance: ns.nFormat(ns.getCrimeChance(stats.name), "0.00%"),
+            diff: ns.nFormat(stats.difficulty, "0.00"),
+            "rate/sec": ns.nFormat((money / (stats.time / 1000)) * ns.getCrimeChance(stats.name), "$0.000a")
         }
         data.push(d)
     })
 
     return data
-
 }
