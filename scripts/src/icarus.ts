@@ -15,8 +15,14 @@ import { getTargets, buyServer, isHackingTarget, killHackScripts } from "/script
 export async function main(ns: any) {
 
     while (true) {
+
+        let flags = ns.flags([
+            ["save", false],
+            ["target", ""]]
+        )
+
         // Get a list of servers that can be hacked by user.
-        let singleTarget = ns.args[0]
+        let singleTarget = flags["target"]
         let targets = singleTarget ? [ns.getServer(singleTarget)] : getTargets(ns, true)
 
         // Buy new servers with either the same RAM as home server 
@@ -28,18 +34,21 @@ export async function main(ns: any) {
 
         let servers = ns.getPurchasedServers()
 
-
-        while (money > ns.getPurchasedServerCost(ram) && servers.length < 25) {
-            await buyServer(ns, ram)
-            servers = ns.getPurchasedServers()
-            money = ns.getServerMoneyAvailable("home")
-            await ns.sleep(500)
+        if (!flags["save"]) {
+            while (money > ns.getPurchasedServerCost(ram) && servers.length < 25) {
+                await buyServer(ns, ram)
+                servers = ns.getPurchasedServers()
+                money = ns.getServerMoneyAvailable("home")
+                await ns.sleep(500)
+            }
         }
 
         // Pair up servers and targets. One server per target, unless there are more
         // servers than targets, in which case loop back around from the top.
         servers.splice(0, 0, "home")
-        servers = servers.map((server: string) => ns.getServer(server))
+        servers = servers
+            .filter((server: string) => server.startsWith("pserv-"))
+            .map((server: string) => ns.getServer(server))
         let hackPairs = servers.map((server: any, index: number) => {
             let target: any
             if (targets[index]) { target = targets[index] }
