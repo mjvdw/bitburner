@@ -29,7 +29,7 @@ export async function main(ns: any) {
  * successful.
  * 
  * @param ns Netscript object provider by Bitburner
- * @returns An object with the 
+ * @returns A string with the name of the selected crime.
  */
 function getMostProfitableCrime(ns: any): string {
 
