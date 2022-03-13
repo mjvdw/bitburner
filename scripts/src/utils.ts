@@ -1,7 +1,7 @@
 /** @param {import(".").NS} ns */
 
 
-let ALL_PORT_SCRIPTS = [
+const ALL_PORT_SCRIPTS = [
     "BruteSSH.exe",
     "FTPCrack.exe",
     "relaySMTP.exe",
@@ -9,7 +9,7 @@ let ALL_PORT_SCRIPTS = [
     "SQLInject.exe",
 ]
 
-let HACK_SCRIPTS = [
+const HACK_SCRIPTS = [
     "/scripts/lib/batch-controller.js",
     "/scripts/lib/batch.js",
     "/scripts/lib/hack.js",
@@ -17,10 +17,13 @@ let HACK_SCRIPTS = [
     "/scripts/lib/weaken.js"
 ]
 
-let RAM_PORT = 1
+const RAM_PORT = 1
 
-let BATCH_SPEED = 500
-let BATCH_FREQUENCY = 5 * BATCH_SPEED
+const BATCH_SPEED = 500
+const BATCH_FREQUENCY = 5 * BATCH_SPEED
+
+export const CRIMES = ["shoplift", "rob store", "mug", "larceny", "drugs", "bond forge",
+    "traffic illegal arms", "homicide", "grand auto", "kidnap", "assassin", "heist"]
 
 
 /**

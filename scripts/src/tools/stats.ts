@@ -6,9 +6,8 @@ import {
     isTargetPrepared,
     getReservedRamForServer,
     getReservedRamState,
-    getBatchTimes
-    // getServersHackingTarget,
-    // getServersPreparingTarget
+    getBatchTimes,
+    CRIMES
     // @ts-ignore
 } from "/scripts/utils.js";
 
@@ -170,8 +169,7 @@ function getMoneyStats(ns: any): any[] {
  * @returns 
  */
 function getAllCrimeStats(ns: any): any[] {
-    let crimes = ["shoplift", "rob store", "mug", "larceny", "drugs", "bond forge",
-        "traffic illegal arms", "homicide", "grand auto", "kidnap", "assassin", "heist"]
+    let crimes = CRIMES
 
     let data: any[] = []
     crimes.forEach((crime: string) => {
@@ -179,18 +177,7 @@ function getAllCrimeStats(ns: any): any[] {
         let d = {
             name: stats.name,
             money: ns.nFormat(stats.money, "$0.000a"),
-            ae: stats.agility_exp,
-            asw: stats.agility_success_weight,
-            ce: stats.charisma_exp,
-            csw: stats.charisma_success_weight,
-            dfe: stats.defense_exp,
-            dfsw: stats.defense_success_weight,
-            dxe: stats.dexterity_exp,
-            dxsw: stats.dexterity_success_weight,
-            he: stats.hacking_exp,
-            hsw: stats.hacking_success_weight,
-            se: stats.strength_exp,
-            ssw: stats.strength_success_weight
+            chance: ns.getCrimeChance(stats.name)
         }
         data.push(d)
     })

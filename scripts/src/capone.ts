@@ -12,7 +12,9 @@ import { } from "/scripts/utils.js";
  */
 export async function main(ns: any) {
 
-    let crime = ns.args[0] || "shoplift"
+    let crime = ns.args[0]
+
+    let crimes = crime ? [crime] : 0
 
     while (true) {
         let crimeTime = 0

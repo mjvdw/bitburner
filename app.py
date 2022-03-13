@@ -1,5 +1,5 @@
 import logging
-from flask import Flask, send_file, request
+from flask import Flask, send_file
 from flask_cors import CORS
 from turbo_flask import Turbo
 import os
