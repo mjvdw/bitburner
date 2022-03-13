@@ -47,7 +47,7 @@ export async function main(ns: any) {
         // servers than targets, in which case loop back around from the top.
         servers.splice(0, 0, "home")
         servers = servers
-            .filter((server: string) => server.startsWith("pserv-"))
+            .filter((server: string) => server.startsWith("pserv-") || server.startsWith("home"))
             .map((server: string) => ns.getServer(server))
         let hackPairs = servers.map((server: any, index: number) => {
             let target: any
