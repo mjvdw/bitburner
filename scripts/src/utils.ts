@@ -700,8 +700,9 @@ export async function maintainPurchasedServers(ns: any) {
     for (let u in upgradeServers) {
         let server = upgradeServers[u]
         if (money >= cost) {
-            deleteServer(ns, server.hostname)
-            await buyServer(ns, ram, server.hostname)
+            await ns.killall(server.hostname)
+            let deleted = deleteServer(ns, server.hostname)
+            if (deleted) { await buyServer(ns, ram, server.hostname) }
             money = ns.getServerMoneyAvailable("home")
         } else {
             break
