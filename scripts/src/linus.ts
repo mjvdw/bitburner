@@ -12,11 +12,6 @@ import { upgradeHomeServer } from "/scripts/utils.js";
  */
 export async function main(ns: any) {
 
-    ns.disableLog("getUpgradeHomeRamCost")
-    ns.disableLog("getUpgradeHomeCoresCost")
-    ns.disableLog("getServerMoneyAvailable")
-    ns.disableLog("sleep")
-
     while (true) {
         upgradeHomeServer(ns)
         await ns.sleep(60000)
