@@ -18,9 +18,6 @@ import {
  */
 export async function main(ns: any) {
 
-    let server = ns.getServer("home")
-
-    reserveRam(ns, server, 10)
-    ns.tprint(getReservedRamState(ns))
+    ns.tprint("This\nis\na\ntest")
 
 }

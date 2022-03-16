@@ -562,6 +562,7 @@ export function printTable(ns: any, data: object[]) {
 
     let keys = Object.keys(data[0])
     let colBuffer = 2  // Should always be an even number
+    let table = ""
 
     let chars = {
         vSectRight: "├",
@@ -601,16 +602,14 @@ export function printTable(ns: any, data: object[]) {
         bottom += (chars.hBorder.repeat(colWidths[k]) + chars.hSectBottom)
     }
 
-    hTop = hTop.slice(0, -1)
-    hBottom = hBottom.slice(0, -1)
-    header = header.slice(0, -1)
-    bottom = bottom.slice(0, -1)
+    hTop = "\n" + hTop.slice(0, -1)
+    hBottom = "\n" + hBottom.slice(0, -1)
+    header = "\n" + header.slice(0, -1)
+    bottom = "\n" + bottom.slice(0, -1)
 
-    hTop += "\n"
-
-    ns.tprint(hTop)
-    ns.tprint(header)
-    ns.tprint(hBottom)
+    table += hTop
+    table += header
+    table += hBottom
 
     // Print content.
     data.forEach((row: any) => {
@@ -622,11 +621,13 @@ export function printTable(ns: any, data: object[]) {
             let endSpaces = colWidths[k] - value.length - frontSpaces
             rowString += (" ".repeat(frontSpaces) + value + " ".repeat(endSpaces) + chars.vBorder)
         }
-        rowString = rowString.slice(0, -1)
-        ns.tprint(rowString)
+        rowString = "\n" + rowString.slice(0, -1)
+        table += rowString
     })
 
     // Print end row.
-    ns.tprint(bottom);
+    table += bottom
+
+    ns.tprint(table)
 
 }
