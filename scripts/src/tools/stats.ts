@@ -208,6 +208,12 @@ function getAllCrimeStats(ns: any): any[] {
 }
 
 
+/**
+ * The cost of each level of purchased server based on RAM.
+ * 
+ * @param ns Netscript object provided by Bitburner.
+ * @returns Data pre-formatted to print as a table.
+ */
 function getPurchasedServerCosts(ns: any): any[] {
 
     let data: any[] = []
