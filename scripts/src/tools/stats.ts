@@ -65,13 +65,14 @@ function getHackingStats(ns: any): object[] {
         // Current state of "attack"
         let preparing = getServersPreparingTarget(ns, target)
         let hacking = getServersHackingTarget(ns, target)
-
+        let rate = (ns.hackAnalyze(target.hostname) * ns.getServerMaxMoney(target.hostname)) / (ns.getWeakenTime(target.hostname) / 1000)
 
         return {
             server: target.hostname,
             money: money,
             security: (target.hackDifficulty).toFixed(2),
             time: ns.nFormat(ns.getWeakenTime(target.hostname) / 1000, "00:00:00"),
+            "rate/thread": ns.nFormat(rate, "$0.00") + "/s",
             prep: "*".repeat(preparing.length),
             ready: isTargetPrepared(ns, target) ? "*" : "",
             hack: "*".repeat(hacking.length)
