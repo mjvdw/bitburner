@@ -602,10 +602,10 @@ export function printTable(ns: any, data: object[]) {
         bottom += (chars.hBorder.repeat(colWidths[k]) + chars.hSectBottom)
     }
 
-    hTop = "\n" + hTop.slice(0, -1)
-    hBottom = "\n" + hBottom.slice(0, -1)
-    header = "\n" + header.slice(0, -1)
-    bottom = "\n" + bottom.slice(0, -1)
+    hTop = "\n" + chars.topLeft + hTop.slice(0, -1) + chars.topRight
+    hBottom = "\n" + chars.vSectRight + hBottom.slice(0, -1) + chars.vSectLeft
+    header = "\n" + chars.vBorder + header.slice(0, -1) + chars.vBorder
+    bottom = "\n" + chars.bottomLeft + bottom.slice(0, -1) + chars.bottomRight
 
     table += hTop
     table += header
@@ -621,7 +621,7 @@ export function printTable(ns: any, data: object[]) {
             let endSpaces = colWidths[k] - value.length - frontSpaces
             rowString += (" ".repeat(frontSpaces) + value + " ".repeat(endSpaces) + chars.vBorder)
         }
-        rowString = "\n" + rowString.slice(0, -1)
+        rowString = "\n" + chars.vBorder + rowString.slice(0, -1) + chars.vBorder
         table += rowString
     })
 
