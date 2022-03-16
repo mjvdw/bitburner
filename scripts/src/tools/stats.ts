@@ -132,18 +132,20 @@ function getServerStats(ns: any): object[] {
 
     servers = servers.map((s: string) => ns.getServer(s))
 
-    let data = servers.map((s: any) => {
+    let data = servers
+        .sort((a: any, b: any) => a.hostname - b.hostname)
+        .map((s: any) => {
 
-        let reservedRam = ns.nFormat(getReservedRamForServer(ns, s) / s.maxRam, "0.00%")
-        let usedRam = ns.nFormat(s.ramUsed / s.maxRam, "0.00%")
+            let reservedRam = ns.nFormat(getReservedRamForServer(ns, s) / s.maxRam, "0.00%")
+            let usedRam = ns.nFormat(s.ramUsed / s.maxRam, "0.00%")
 
-        return {
-            server: s.hostname,
-            maxram: s.maxRam,
-            reserved: reservedRam,
-            used: usedRam
-        }
-    })
+            return {
+                server: s.hostname,
+                maxram: s.maxRam,
+                reserved: reservedRam,
+                used: usedRam
+            }
+        })
 
     return data
 }
