@@ -122,7 +122,7 @@ function getServersPreparingTarget(ns: any, target: any): any[] {
  * purchased servers.
  * 
  * @param ns Netscript object provided by Bitburner.
- * @returns 
+ * @returns Data pre-formatted to print as a table.
  */
 function getServerStats(ns: any): object[] {
 
@@ -155,7 +155,7 @@ function getServerStats(ns: any): object[] {
  * Helper function to generate stats about the users money.
  * 
  * @param ns Netscript object provided by Bitburner.
- * @returns 
+ * @returns Data pre-formatted to print as a table.
  */
 function getMoneyStats(ns: any): any[] {
     return [{
@@ -168,7 +168,7 @@ function getMoneyStats(ns: any): any[] {
  * Helper function to generate useful information about crimes.
  * 
  * @param ns Netscript object provided by Bitburner.
- * @returns 
+ * @returns Data pre-formatted to print as a table.
  */
 function getAllCrimeStats(ns: any): any[] {
 
