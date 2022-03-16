@@ -18,13 +18,24 @@ import {
 export async function main(ns: any) {
 
     let data: object[] = []
+    let option = ns.args[0]
+    let options = {
+        hacking: "hacking",
+        servers: "servers",
+        pservCost: "pserv-costs",
+        money: "money",
+        crimes: "crimes"
+    }
 
-    switch (ns.args[0]) {
+    switch (option) {
         case "hacking":
             data = getHackingStats(ns)
             break
         case "servers":
             data = getServerStats(ns)
+            break
+        case "pserv-costs":
+            data = getPurchasedServerCosts(ns)
             break
         case "money":
             data = getMoneyStats(ns)
@@ -33,7 +44,10 @@ export async function main(ns: any) {
             data = getAllCrimeStats(ns)
             break
         default:
-            ns.tprint("That's not a valid input. Please try again. Valid inputs: 'hacking', 'servers', 'money', or 'crimes'")
+            ns.tprint("That's not a valid input. Please try again. Valid inputs incude:")
+            for (let [key, value] of Object.entries(options)) {
+                ns.tprint("- " + value)
+            }
             break
     }
 
@@ -189,6 +203,22 @@ function getAllCrimeStats(ns: any): any[] {
         }
         data.push(d)
     })
+
+    return data
+}
+
+
+function getPurchasedServerCosts(ns: any): any[] {
+
+    let data: any[] = []
+
+    for (let i = 1; i <= 20; i++) {
+        let ram = Math.pow(2, i)
+        data.push({
+            ram: ns.nFormat(ram * 1e9, "0.00b"),
+            cost: ns.nFormat(ns.getPurchasedServerCost(ram), "$0.000a")
+        })
+    }
 
     return data
 }
