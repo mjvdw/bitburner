@@ -631,3 +631,31 @@ export function printTable(ns: any, data: object[]) {
     ns.tprint(table)
 
 }
+
+
+/**
+ * Helper function to buy the next available upgrade for 
+ * "home" server.
+ * 
+ * @param ns Netscript object provided by Bitburner.
+ * @returns Whether the upgrade is successful.
+ */
+export function upgradeHomeServer(ns: any) {
+    let ramCost = ns.getUpgradeHomeRamCost()
+    let coresCost = ns.getUpgradeHomeCoresCost()
+    let money = ns.getServerMoneyAvailable("home")
+
+    let upgrade = ramCost <= coresCost ? "RAM" : "CORES"
+
+    if (upgrade == "RAM" && money >= ramCost) {
+        ns.upgradeHomeRam()
+        ns.tprint("Upgraded RAM on home server!")
+        return true
+    } else if (upgrade == "CORES" && money >= coresCost) {
+        ns.upgradeHomeCores()
+        ns.tprint("Upgraded cores on home server!")
+        return true
+    }
+
+    return false
+}
