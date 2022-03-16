@@ -588,21 +588,29 @@ export function printTable(ns: any, data: object[]) {
     })
 
     // Print header row.
-    let headerString = ""
-    let rowSplit = ""
+    let hTop = ""
+    let header = ""
+    let hBottom = ""
+    let bottom = ""
     for (let k in keys) {
         let frontSpaces = Number(k) == 0 ? 0 : Math.trunc((colWidths[k] - keys[k].length) / 2)
         let endSpaces = colWidths[k] - keys[k].length - frontSpaces
-        headerString += (" ".repeat(frontSpaces) + keys[k].toUpperCase() + " ".repeat(endSpaces) + chars.vBorder)
-        rowSplit += ("—".repeat(colWidths[k]) + chars.vBorder)
+        header += (" ".repeat(frontSpaces) + keys[k].toUpperCase() + " ".repeat(endSpaces) + chars.vBorder)
+        hTop += (chars.hBorder.repeat(colWidths[k]) + chars.hSectTop)
+        hBottom += (chars.hBorder.repeat(colWidths[k]) + chars.crossSection)
+        bottom += (chars.hBorder.repeat(colWidths[k]) + chars.hSectBottom)
     }
 
-    rowSplit = rowSplit.slice(0, -1)
-    headerString = headerString.slice(0, -1)
+    hTop = hTop.slice(0, -1)
+    hBottom = hBottom.slice(0, -1)
+    header = header.slice(0, -1)
+    bottom = bottom.slice(0, -1)
 
-    ns.tprint(rowSplit)
-    ns.tprint(headerString)
-    ns.tprint(rowSplit)
+    hTop += "\n"
+
+    ns.tprint(hTop)
+    ns.tprint(header)
+    ns.tprint(hBottom)
 
     // Print content.
     data.forEach((row: any) => {
@@ -619,6 +627,6 @@ export function printTable(ns: any, data: object[]) {
     })
 
     // Print end row.
-    ns.tprint(rowSplit);
+    ns.tprint(bottom);
 
 }
