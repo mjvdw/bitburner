@@ -1,7 +1,10 @@
 /** @param {import(".").NS} ns */
 
-// @ts-ignore
-import { upgradeHomeServer } from "/scripts/utils.js";
+import {
+    upgradeHomeServer,
+    maintainPurchasedServers
+    // @ts-ignore
+} from "/scripts/utils.js";
 
 /**
  * Automate the process of upgrading your home computer and
@@ -14,6 +17,8 @@ export async function main(ns: any) {
 
     while (true) {
         upgradeHomeServer(ns)
-        await ns.sleep(60000)
+        await maintainPurchasedServers(ns)
+        await ns.sleep(10000)
     }
 }
+

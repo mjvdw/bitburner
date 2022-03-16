@@ -640,7 +640,7 @@ export function printTable(ns: any, data: object[]) {
  * @param ns Netscript object provided by Bitburner.
  * @returns Whether the upgrade is successful.
  */
-export function upgradeHomeServer(ns: any) {
+export function upgradeHomeServer(ns: any): boolean {
     let ramCost = ns.getUpgradeHomeRamCost()
     let coresCost = ns.getUpgradeHomeCoresCost()
     let money = ns.getServerMoneyAvailable("home")
@@ -658,4 +658,53 @@ export function upgradeHomeServer(ns: any) {
     }
 
     return false
+}
+
+
+/**
+ * Automating buying and deleting of purchased servers so that resources
+ * available to player are always optimal. Specifically, buy as many servers
+ * as possible with the same RAM as "home". When "home" upgrades its RAM, 
+ * wait until there is enough money to buy a new server with the same RAM, then
+ * (if necessary) delete one purchased server and replace with a server with
+ * more RAM. Repeat until all servers are matched.
+ * 
+ * @param ns Netscript object provided by Bitburner.
+ */
+export async function maintainPurchasedServers(ns: any) {
+
+    // Start by buying servers that match the "home" server's RAM,
+    // or is at the maximum.
+    let money = ns.getServerMoneyAvailable("home")
+    let ram = ns.getServerMaxRam("home") <= Math.pow(2, 20)
+        ? ns.getServerMaxRam("home")
+        : Math.pow(2, 20)
+    let cost = ns.getPurchasedServerCost(ram)
+
+    let servers = ns.getPurchasedServers()
+    servers = servers.map((s: string) => ns.getServer(s))
+
+    while (money > cost && servers.length < 25) {
+        await buyServer(ns, ram)
+        servers = ns.getPurchasedServers()
+        money = ns.getServerMoneyAvailable("home")
+        await ns.sleep(500)
+    }
+
+    // Determine whether any servers need upgrading.
+    let upgradeServers = servers
+        .filter((s: any) => s.maxRam < ram)
+        .sort((a: any, b: any) => a.maxRam - b.maxRam)
+
+    // Delete and repurchase servers that need upgrading.
+    for (let u in upgradeServers) {
+        let server = upgradeServers[u]
+        if (money >= cost) {
+            deleteServer(ns, server.hostname)
+            await buyServer(ns, ram, server.hostname)
+            money = ns.getServerMoneyAvailable("home")
+        } else {
+            break
+        }
+    }
 }

@@ -17,7 +17,6 @@ export async function main(ns: any) {
     while (true) {
 
         let flags = ns.flags([
-            ["save", false],
             ["target", ""]]
         )
 
@@ -25,23 +24,8 @@ export async function main(ns: any) {
         let singleTarget = flags["target"]
         let targets = singleTarget ? [ns.getServer(singleTarget)] : getTargets(ns, true)
 
-        // Buy new servers with either the same RAM as home server 
-        // or the maximum possible RAM for purchased servers.
-        let money = ns.getServerMoneyAvailable("home")
-        let ram = ns.getServerMaxRam("home") <= Math.pow(2, 20)
-            ? ns.getServerMaxRam("home")
-            : Math.pow(2, 20)
-
+        // Get a list of the player's servers.
         let servers = ns.getPurchasedServers()
-
-        if (!flags["save"]) {
-            while (money > ns.getPurchasedServerCost(ram) && servers.length < 25) {
-                await buyServer(ns, ram)
-                servers = ns.getPurchasedServers()
-                money = ns.getServerMoneyAvailable("home")
-                await ns.sleep(500)
-            }
-        }
 
         // Pair up servers and targets. One server per target, unless there are more
         // servers than targets, in which case loop back around from the top.
