@@ -22,25 +22,26 @@ export async function main(ns: any) {
     let options = {
         hacking: "hacking",
         servers: "servers",
-        pservCost: "pserv-costs",
+        ramCost: "ram-cost",
+        coresCost: "cores-cost",
         money: "money",
         crimes: "crimes"
     }
 
     switch (option) {
-        case "hacking":
+        case options.hacking:
             data = getHackingStats(ns)
             break
-        case "servers":
+        case options.servers:
             data = getServerStats(ns)
             break
-        case "pserv-costs":
+        case options.ramCost:
             data = getPurchasedServerCosts(ns)
             break
-        case "money":
+        case options.money:
             data = getMoneyStats(ns)
             break
-        case "crimes":
+        case options.crimes:
             data = getAllCrimeStats(ns)
             break
         default:
@@ -220,9 +221,15 @@ function getPurchasedServerCosts(ns: any): any[] {
 
     for (let i = 1; i <= 20; i++) {
         let ram = Math.pow(2, i)
+        let homeRam = ns.getServerMaxRam("home")
+        let homeCost = homeRam == ram ? ns.getUpgradeHomeRamCost() : 0
+        let pservCost = ns.getPurchasedServerCost(ram)
+
         data.push({
             ram: ns.nFormat(ram * 1e9, "0.00b"),
-            cost: ns.nFormat(ns.getPurchasedServerCost(ram), "$0.000a")
+            "home cost": homeCost != 0 ? ns.nFormat(homeCost, "$0.000a") : "-",
+            "pserv cost": ns.nFormat(pservCost, "$0.000a"),
+            "discount": homeCost != 0 ? ns.nFormat((homeCost - pservCost) / homeCost, "0.00%") : "-"
         })
     }
 
