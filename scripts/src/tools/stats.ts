@@ -23,7 +23,6 @@ export async function main(ns: any) {
         hacking: "hacking",
         servers: "servers",
         ramCost: "ram-cost",
-        coresCost: "cores-cost",
         money: "money",
         crimes: "crimes"
     }
@@ -36,7 +35,7 @@ export async function main(ns: any) {
             data = getServerStats(ns)
             break
         case options.ramCost:
-            data = getPurchasedServerCosts(ns)
+            data = getRamUpgradeCost(ns)
             break
         case options.money:
             data = getMoneyStats(ns)
@@ -215,7 +214,7 @@ function getAllCrimeStats(ns: any): any[] {
  * @param ns Netscript object provided by Bitburner.
  * @returns Data pre-formatted to print as a table.
  */
-function getPurchasedServerCosts(ns: any): any[] {
+function getRamUpgradeCost(ns: any): any[] {
 
     let data: any[] = []
 
