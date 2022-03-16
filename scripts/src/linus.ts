@@ -13,16 +13,23 @@ import { } from "/scripts/utils.js";
 export async function main(ns: any) {
 
     ns.disableLog("getUpgradeHomeRamCost")
+    ns.disableLog("getUpgradeHomeCoresCost")
     ns.disableLog("getServerMoneyAvailable")
     ns.disableLog("sleep")
 
     while (true) {
-        let cost = ns.getUpgradeHomeRamCost()
+        let ramCost = ns.getUpgradeHomeRamCost()
+        let coresCost = ns.getUpgradeHomeCoresCost()
         let money = ns.getServerMoneyAvailable("home")
 
-        if (money >= cost) {
+        let upgrade = ramCost <= coresCost ? "RAM" : "CORES"
+
+        if (upgrade == "RAM" && money >= ramCost) {
             ns.upgradeHomeRam()
             ns.tprint("Upgraded RAM on home server!")
+        } else if (upgrade == "CORES" && money >= coresCost) {
+            ns.upgradeHomeCores()
+            ns.tprint("Upgraded cores on home server!")
         }
 
         await ns.sleep(60000)

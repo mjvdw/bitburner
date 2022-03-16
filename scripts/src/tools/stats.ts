@@ -71,6 +71,7 @@ function getHackingStats(ns: any): object[] {
             server: target.hostname,
             money: money,
             security: (target.hackDifficulty).toFixed(2),
+            time: ns.nFormat(ns.getWeakenTime(target.hostname) / 1000, "00:00:00"),
             prep: "*".repeat(preparing.length),
             ready: isTargetPrepared(ns, target) ? "*" : "",
             hack: "*".repeat(hacking.length)
