@@ -756,6 +756,13 @@ export async function maintainPurchasedServers(ns: any) {
 }
 
 
+/**
+ * Get a list of all augmentations available in the game, for all factions.
+ * 
+ * @param ns Netscript object provided by Bitburner.
+ * @returns List of objects containing the name of the augmentations and
+ * the name of the faction where the player can obtain that augmentation.
+ */
 export function getAllAugmentations(ns: any): any[] {
 
     let allAugmentations: any[] = []
