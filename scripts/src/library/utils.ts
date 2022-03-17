@@ -9,13 +9,16 @@ const ALL_PORT_SCRIPTS = [
     "SQLInject.exe",
 ]
 
-const HACK_SCRIPTS = [
-    "/scripts/lib/batch-controller.js",
-    "/scripts/lib/batch.js",
-    "/scripts/lib/hack.js",
-    "/scripts/lib/grow.js",
-    "/scripts/lib/weaken.js"
-]
+export const SCRIPTS = {
+    batchController: "/scripts/library/batch-controller.js",
+    batch: "/scripts/library/batch.js",
+    hack: "/scripts/library/hack.js",
+    grow: "/scripts/library/grow.js",
+    weaken: "/scripts/library/weaken.js",
+    factionShare: "/scripts/library/faction-share.js"
+}
+
+const HACK_SCRIPTS = [SCRIPTS.batchController, SCRIPTS.batch, SCRIPTS.hack, SCRIPTS.grow, SCRIPTS.weaken]
 
 const RAM_PORT = 1
 
@@ -261,7 +264,7 @@ export function deleteServer(ns: any, hostname: string): boolean {
  * @returns Boolean indicating whether the given server is hacking the given target.
  */
 export function isHackingTarget(ns: any, server: any, target: any): Promise<boolean> {
-    let scriptName = "/scripts/lib/batch-controller.js"
+    let scriptName = "/scripts/library/batch-controller.js"
     let isHackingTarget = ns.isRunning(scriptName, server.hostname, target.hostname)
     return isHackingTarget
 }
@@ -487,7 +490,7 @@ export function getBatchRam(ns: any, server: any, threads: any): number {
     // All scripts have a base RAM of 1.6GB, and the HGW functions all use
     // 0.1GB of RAM.
     let hgwRam = 1.7
-    let batchScriptRam = (1.7 * 4) + ns.getScriptRam("/scripts/lib/batch.js", server.hostname)
+    let batchScriptRam = (1.7 * 4) + ns.getScriptRam("/scripts/library/batch.js", server.hostname)
     let totalBatchRam = Math.round((batchScriptRam + (hgwRam * threads.total)) * 100) / 100
 
     return totalBatchRam

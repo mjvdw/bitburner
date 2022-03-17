@@ -4,7 +4,7 @@ import {
     upgradeHomeServer,
     maintainPurchasedServers
     // @ts-ignore
-} from "/scripts/utils.js";
+} from "/scripts/library/utils.js";
 
 /**
  * Automate the process of upgrading your home computer and

@@ -1,7 +1,7 @@
 /** @param {import(".").NS} ns */
 
 // @ts-ignore
-import { getTargets, isTargetPrepared, getServerAvailableRam, unlockTarget } from "/scripts/utils.js";
+import { getTargets, isTargetPrepared, getServerAvailableRam, unlockTarget } from "/scripts/library/utils.js";
 
 /**
  * This is a junior version of the "master" script for hacking servers.

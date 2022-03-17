@@ -4,7 +4,7 @@ import {
     getTargets,
     printTable
     // @ts-ignore
-} from "/scripts/utils.js";
+} from "/scripts/library/utils.js";
 
 /**
  * Helper function to get the direct path to a particular server. Useful for

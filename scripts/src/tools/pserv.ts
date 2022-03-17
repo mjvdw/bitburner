@@ -1,7 +1,7 @@
 /** @param {import(".").NS} ns */
 
 // @ts-ignore
-import { buyServer, deleteServer } from "/scripts/utils.js";
+import { buyServer, deleteServer } from "/scripts/library/utils.js";
 
 
 /**

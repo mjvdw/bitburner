@@ -1,7 +1,7 @@
 /** @param {import(".").NS} ns */
 
 // @ts-ignore
-import { getServerAvailableRam } from "/scripts/utils.js";
+import { getServerAvailableRam, SCRIPTS } from "/scripts/library/utils.js";
 
 /**
  * Use the maximum possible RAM across all servers to "share" with
@@ -20,6 +20,6 @@ export async function main(ns: any) {
         let shareRam = 1.6 + 2.4 // 1.6GB base ram, 2.4GB for share function
         let threads = Math.trunc(availableRam / shareRam)
 
-        ns.exec("/scripts/lib/faction-share.js", server, threads)
+        ns.exec(SCRIPTS.factionShare, server, threads)
     })
 }

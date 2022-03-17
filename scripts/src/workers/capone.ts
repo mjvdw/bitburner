@@ -1,7 +1,7 @@
 /** @param {import(".").NS} ns */
 
 // @ts-ignore
-import { CRIMES } from "/scripts/utils.js";
+import { CRIMES } from "/scripts/library/utils.js";
 
 /**
  * Simple loop designed to commit crimes on repeat. Initially

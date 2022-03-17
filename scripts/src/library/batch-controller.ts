@@ -8,9 +8,10 @@ import {
     getBatchTimes,
     getBatchRam,
     getServerAvailableRam,
-    resetReservedRamForServer
+    resetReservedRamForServer,
+    SCRIPTS
     // @ts-ignore
-} from "/scripts/utils.js";
+} from "/scripts/library/utils.js";
 
 /**
  * The controller for starting each hack batch. While hacking, there
@@ -26,7 +27,7 @@ export async function main(ns: any) {
 
     let server = ns.getServer()
     let target = ns.getServer(ns.args[0])
-    let batchScript = "/scripts/lib/batch.js"
+    let batchScript = SCRIPTS.batch
 
     // Unlock server. This means opening all ports available and then
     // attempting to NUKE the server. Only servers that can be unlocked

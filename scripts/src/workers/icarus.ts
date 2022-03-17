@@ -1,7 +1,7 @@
 /** @param {import(".").NS} ns */
 
 // @ts-ignore
-import { getTargets, buyServer, isHackingTarget, killHackScripts } from "/scripts/utils.js";
+import { SCRIPTS, getTargets, isHackingTarget, killHackScripts } from "/scripts/library/utils.js";
 
 /**
  * This is the "master" script for hacking servers.
@@ -51,7 +51,7 @@ export async function main(ns: any) {
 
             if (!isHackingTarget(ns, server, target)) {
                 killHackScripts(ns, server)
-                ns.exec("/scripts/lib/batch-controller.js", server.hostname, 1, target.hostname)
+                ns.exec(SCRIPTS.batchController, server.hostname, 1, target.hostname)
             }
         })
 

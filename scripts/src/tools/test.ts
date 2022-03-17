@@ -8,7 +8,7 @@ import {
     releaseRam,
     resetReservedRamForServer
     // @ts-ignore
-} from "/scripts/utils.js";
+} from "/scripts/library/utils.js";
 
 
 /**

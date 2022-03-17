@@ -1,7 +1,7 @@
 /** @param {import(".").NS} ns */
 
 // @ts-ignore
-// import { } from "/scripts/utils.js";
+// import { } from "/scripts/library/utils.js";
 
 /**
  * 

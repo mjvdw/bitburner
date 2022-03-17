@@ -3,9 +3,10 @@
 import {
     isTargetPrepared,
     releaseRam,
-    getBatchRam
+    getBatchRam,
+    SCRIPTS
     // @ts-ignore
-} from "/scripts/utils.js";
+} from "/scripts/library/utils.js";
 
 
 /**
@@ -36,22 +37,22 @@ export async function main(ns: any) {
     // with just the grow and weaken components.
     await ns.sleep(w1Sleep);
     if (isTargetPrepared(ns, target) && threads.hackWeaken > 0) {
-        ns.exec("/scripts/lib/weaken.js", server.hostname, threads.hackWeaken, target.hostname, Math.random());
+        ns.exec(SCRIPTS.weaken, server.hostname, threads.hackWeaken, target.hostname, Math.random());
     }
 
     await ns.sleep(w2Sleep);
     if (threads.growWeaken > 0) {
-        ns.exec("scripts/lib/weaken.js", server.hostname, threads.growWeaken, target.hostname, Math.random());
+        ns.exec(SCRIPTS.weaken, server.hostname, threads.growWeaken, target.hostname, Math.random());
     }
 
     await ns.sleep(gSleep);
     if (threads.grow > 0) {
-        ns.exec("scripts/lib/grow.js", server.hostname, threads.grow, target.hostname, Math.random());
+        ns.exec(SCRIPTS.grow, server.hostname, threads.grow, target.hostname, Math.random());
     }
 
     await ns.sleep(hSleep);
     if (isTargetPrepared(ns, target) && threads.hack > 0) {
-        ns.exec("scripts/lib/hack.js", server.hostname, threads.hack, target.hostname, Math.random());
+        ns.exec(SCRIPTS.hack, server.hostname, threads.hack, target.hostname, Math.random());
     }
 
     // After everything has run, release any reserved RAM for this batch so a new

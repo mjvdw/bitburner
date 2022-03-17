@@ -1,7 +1,7 @@
 /** @param {import(".").NS} ns */
 
 // @ts-ignore
-import { unlockTarget } from "/scripts/utils.js";
+import { unlockTarget } from "/scripts/library/utils.js";
 
 /**
  * Simple entry point for the unlockTarget() utility function.
