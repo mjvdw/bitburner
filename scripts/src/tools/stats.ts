@@ -334,9 +334,21 @@ function getAugmentationStats(ns: any, args: string[]): any[] {
     }
 
     let sort = args[1]
-    let filter = args[2] || sort
     data = data
-        .filter((d: any) => d[filter] != "-")
+        .filter((d: any) => {
+            if (sort) {
+                return d[sort] != "-"
+            }
+            else {
+                let keep = false
+                Object.entries(d).forEach((element: any) => {
+                    if ((["augmentation", "faction"].indexOf(element[0]) == -1) && element[1] !== "-") {
+                        keep = true
+                    }
+                })
+                return keep
+            }
+        })
         .sort((a: any, b: any) => b[sort] - a[sort])
 
     return data
