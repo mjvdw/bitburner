@@ -28,6 +28,7 @@ export async function main(ns: any) {
         crimes: "crimes",
         augmentations: "augmentations"
     }
+    let args = ns.args.slice(1)
 
     switch (option) {
         case options.hacking:
@@ -46,7 +47,7 @@ export async function main(ns: any) {
             data = getAllCrimeStats(ns)
             break
         case options.augmentations:
-            data = getAugmentationStats(ns)
+            data = getAugmentationStats(ns, args)
             break
         default:
             ns.tprint("That's not a valid input. Please try again. Valid inputs incude:")
@@ -241,30 +242,102 @@ function getRamUpgradeCost(ns: any): any[] {
 }
 
 
-
-function getAugmentationStats(ns: any): any[] {
-    let augmentations = getAllAugmentations(ns)
+/**
+ * List of augmentations and their stats.
+ * 
+ * @param ns Netscript object provided by Bitburner.
+ * @returns Data pre-formatted to print as a table.
+ */
+function getAugmentationStats(ns: any, args: string[]): any[] {
 
     let data: any[] = []
+    let type = args[0]
+    let typeOptions: any = {
+        agility: {
+            exp: "agility_exp_mult",
+            skill: "agility_mult"
+        },
+        bladeburner: {
+            analysis: "bladeburner_analysis_mult",
+            max: "bladeburner_max_stamina_mult",
+            gain: "bladeburner_stamina_gain_mult",
+            chance: "bladeburner_success_chance_mult"
+        },
+        charisma: {
+            exp: "charisma_exp_mult",
+            skill: "charisma_mult"
+        },
+        company: {
+            rep: "company_rep_mult"
+        },
+        crime: {
+            money: "crime_money_mult",
+            success: "crime_success_mult"
+        },
+        defense: {
+            exp: "defense_exp_mult",
+            skill: "defense_mult"
+        },
+        dexterity: {
+            exp: "dexterity_exp_mult",
+            skill: "dexterity_mult"
+        },
+        faction: {
+            rep: "faction_rep_mult"
+        },
+        hacking: {
+            chance: "hacking_chance_mult",
+            exp: "hacking_exp_mult",
+            grow: "hacking_grow_mult",
+            money: "hacking_money_mult",
+            skill: "hacking_mult"
+        },
+        hacknet: {
+            level: "hacknet_node_level_cost_mult",
+            ram: "hacknet_node_ram_cost_mult",
+            core: "hacknet_node_core_cost_mult",
+            node: "hacknet_node_purchase_cost_mult",
+            money: "hacknet_node_money_mult",
 
+        },
+        strength: {
+            exp: "strength_exp_mult",
+            skill: "strength_mult"
+        },
+        work: {
+            money: "work_money_mult"
+        }
+    }
+
+    // Test whether the user has given a correct option.
+    if (!typeOptions[type]) {
+        ns.tprint("Incorrect augmentation type. Valid options are:")
+        for (let type in typeOptions) { ns.tprint("- " + type) }
+        return []
+    }
+
+    let augmentations = getAllAugmentations(ns)
     for (let a in augmentations) {
         let augmentation = augmentations[a]
         let stats = ns.getAugmentationStats(augmentation.name)
 
-        data.push({
+        let d: any = {
             augmentation: augmentation.name,
-            faction: augmentation.faction,
-            chance: stats.hacking_chance_mult,
-            exp: stats.hacking_exp_mult,
-            grow: stats.hacking_grow_mult,
-            money: stats.hacking_money_mult,
-            mult: stats.hacking_mult
-        })
+            faction: augmentation.faction
+        }
+
+        for (let stat in typeOptions[type]) {
+            d[stat] = stats[typeOptions[type][stat]] || "-"
+        }
+
+        data.push(d)
     }
 
+    let sort = args[1]
+    let filter = args[2] || sort
     data = data
-        .filter((d: any) => d.money != undefined)
-        .sort((a: any, b: any) => b.money - a.money)
+        .filter((d: any) => d[filter] != "-")
+        .sort((a: any, b: any) => b[sort] - a[sort])
 
     return data
 }
