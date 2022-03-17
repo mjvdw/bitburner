@@ -18,6 +18,6 @@ import {
  */
 export async function main(ns: any) {
 
-    ns.tprint("This\nis\na\ntest")
+    ns.tprint("This\nis\na\nnew\ntest")
 
 }

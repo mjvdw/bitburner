@@ -5,6 +5,7 @@ import {
     printTable,
     isTargetPrepared,
     getReservedRamForServer,
+    getAllAugmentations,
     CRIMES
     // @ts-ignore
 } from "/scripts/utils.js";
@@ -24,7 +25,8 @@ export async function main(ns: any) {
         servers: "servers",
         ramCost: "ram-cost",
         money: "money",
-        crimes: "crimes"
+        crimes: "crimes",
+        augmentations: "augmentations"
     }
 
     switch (option) {
@@ -42,6 +44,9 @@ export async function main(ns: any) {
             break
         case options.crimes:
             data = getAllCrimeStats(ns)
+            break
+        case options.augmentations:
+            data = getAugmentationStats(ns)
             break
         default:
             ns.tprint("That's not a valid input. Please try again. Valid inputs incude:")
@@ -231,6 +236,35 @@ function getRamUpgradeCost(ns: any): any[] {
             "discount": homeCost != 0 ? ns.nFormat((homeCost - pservCost) / homeCost, "0.00%") : "-"
         })
     }
+
+    return data
+}
+
+
+
+function getAugmentationStats(ns: any): any[] {
+    let augmentations = getAllAugmentations(ns)
+
+    let data: any[] = []
+
+    for (let a in augmentations) {
+        let augmentation = augmentations[a]
+        let stats = ns.getAugmentationStats(augmentation.name)
+
+        data.push({
+            augmentation: augmentation.name,
+            faction: augmentation.faction,
+            chance: stats.hacking_chance_mult,
+            exp: stats.hacking_exp_mult,
+            grow: stats.hacking_grow_mult,
+            money: stats.hacking_money_mult,
+            mult: stats.hacking_mult
+        })
+    }
+
+    data = data
+        .filter((d: any) => d.money != undefined)
+        .sort((a: any, b: any) => b.money - a.money)
 
     return data
 }

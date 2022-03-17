@@ -10,18 +10,12 @@ export async function main(ns: any) {
     // wget function prints a lot - turn it off for convenience.
     ns.disableLog("wget");
 
-    // Optional argument to just run the script once, rather than
-    // continuously, which makes debuging easier/
-    let debug = ns.args[0] || false;
+    let address = ns.args[0] || "127.0.0.1:5000"
 
     // Run the sync loop.
-    if (debug) {
-        await sync(ns = ns);
-    } else {
-        while (true) {
-            await sync(ns = ns);
-            await ns.sleep(500);
-        }
+    while (true) {
+        await sync(ns, address);
+        await ns.sleep(500);
     }
 }
 
@@ -31,15 +25,16 @@ export async function main(ns: any) {
  * 
  * @param ns Netscript object provider by Bitburner
  */
-async function sync(ns: any) {
-    await ns.wget("http://127.0.0.1:5000", "scripts.txt", "home");
+async function sync(ns: any, address: string) {
+    let url = "http://" + address
+    await ns.wget(url, "scripts.txt", "home");
 
     let scriptsList = await ns.read("scripts.txt");
     let scripts = scriptsList.split(",");
     for (let s in scripts) {
         let saveLocation = "/scripts/" + scripts[s];
-        let url = "http://127.0.0.1:5000/" + scripts[s];
-        await ns.wget(url, saveLocation, "home");
+        let script_url = url + "/" + scripts[s];
+        await ns.wget(script_url, saveLocation, "home");
     }
 
     let pservs = ns.getPurchasedServers();

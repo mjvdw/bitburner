@@ -22,8 +22,53 @@ const RAM_PORT = 1
 const BATCH_SPEED = 500
 const BATCH_FREQUENCY = 5 * BATCH_SPEED
 
-export const CRIMES = ["shoplift", "rob store", "mug", "larceny", "drugs", "bond forge",
-    "traffic illegal arms", "homicide", "grand auto", "kidnap", "assassin", "heist"]
+export const CRIMES = [
+    "shoplift",
+    "rob store",
+    "mug",
+    "larceny",
+    "drugs",
+    "bond forge",
+    "traffic illegal arms",
+    "homicide",
+    "grand auto",
+    "kidnap",
+    "assassin",
+    "heist"
+]
+
+export const FACTIONS = [
+    "CyberSec",
+    "Tian Di Hui",
+    "Netburners",
+    "Sector-12",
+    "Chongqing",
+    "New Tokyo",
+    "Ishima",
+    "Aevum",
+    "Volhaven",
+    "NiteSec",
+    "The Black Hand",
+    "BitRunners",
+    "ECorp",
+    "MegaCorp",
+    "KuaiGong International",
+    "Four Sigma",
+    "NWO",
+    "Blade Industries",
+    "OmniTek Incorporated",
+    "Bachman & Associates",
+    "Clarke Incorporated",
+    "Fulcrum Secret Technologies",
+    "Slum Snakes",
+    "Tetrads",
+    "Silhouette",
+    "Speakers for the Dead",
+    "The Dark Army",
+    "The Syndicate",
+    "The Covenant",
+    "Illuminati"
+]
 
 
 /**
@@ -708,4 +753,21 @@ export async function maintainPurchasedServers(ns: any) {
             break
         }
     }
+}
+
+
+export function getAllAugmentations(ns: any): any[] {
+
+    let allAugmentations: any[] = []
+    FACTIONS.forEach((faction: string) => {
+        let augmentations = ns.getAugmentationsFromFaction(faction)
+        augmentations.forEach((augmentation: string) => {
+            allAugmentations.push({
+                name: augmentation,
+                faction: faction
+            })
+        })
+    })
+
+    return allAugmentations
 }
