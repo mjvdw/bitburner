@@ -1,7 +1,7 @@
 /** @param {import(".").NS} ns */
 
 // @ts-ignore
-import { getTargets, isTargetPrepared, getServerAvailableRam, unlockTarget } from "/scripts/library/utils.js";
+import { getTargets, isTargetPrepared, getServerAvailableRam, unlockTarget, SCRIPTS } from "/scripts/library/utils.js";
 
 /**
  * This is a junior version of the "master" script for hacking servers.
@@ -14,7 +14,7 @@ export async function main(ns: any) {
     let singleTarget = ns.args[0]
     let targets = singleTarget ? [ns.getServer(singleTarget)] : getTargets(ns, true)
 
-    let ram = getServerAvailableRam(ns, "home") - ns.getScriptRam("/scripts/icarus-jr.js")
+    let ram = getServerAvailableRam(ns, "home") - ns.getScriptRam(SCRIPTS.icarusjr)
     let baseThreads = Math.trunc(ram / 1.7)
     baseThreads = baseThreads <= 0 ? 1 : baseThreads
 

@@ -9,15 +9,38 @@ const ALL_PORT_SCRIPTS = [
     "SQLInject.exe",
 ]
 
+const SCRIPT_PREFIXES = {
+    library: "/scripts/library/",
+    tools: "/scripts/tools/",
+    workers: "/scripts/workers/"
+}
+
 export const SCRIPTS = {
-    batchController: "/scripts/library/batch-controller.js",
-    batch: "/scripts/library/batch.js",
-    hack: "/scripts/library/hack.js",
-    grow: "/scripts/library/grow.js",
-    weaken: "/scripts/library/weaken.js",
-    factionShare: "/scripts/library/faction-share.js",
-    sync: "/scripts/tools/sync.js",
-    resetScripts: "/scripts/tools/reset-scripts.js"
+    // Library
+    batchController: SCRIPT_PREFIXES.library + "batch-controller.js",
+    batch: SCRIPT_PREFIXES.library + "batch.js",
+    factionShare: SCRIPT_PREFIXES.library + "faction-share.js",
+    grow: SCRIPT_PREFIXES.library + "grow.js",
+    hack: SCRIPT_PREFIXES.library + "hack.js",
+    utils: SCRIPT_PREFIXES.library + "utils.js",
+    weaken: SCRIPT_PREFIXES.library + "weaken.js",
+    // Tools
+    exploit: SCRIPT_PREFIXES.tools + "utils.js",
+    list: SCRIPT_PREFIXES.tools + "list.js",
+    path: SCRIPT_PREFIXES.tools + "path.js",
+    pserv: SCRIPT_PREFIXES.tools + "pserv.js",
+    resetScripts: SCRIPT_PREFIXES.tools + "reset-scripts.js",
+    share: SCRIPT_PREFIXES.tools + "share.js",
+    stats: SCRIPT_PREFIXES.tools + "stats.js",
+    stop: SCRIPT_PREFIXES.tools + "stop.js",
+    sync: SCRIPT_PREFIXES.tools + "sync.js",
+    test: SCRIPT_PREFIXES.tools + "test.js",
+    unlock: SCRIPT_PREFIXES.tools + "unlock.js",
+    // Workers
+    capone: SCRIPT_PREFIXES.workers + "capone.js",
+    icarusjr: SCRIPT_PREFIXES.workers + "icarus-jr.js",
+    icarus: SCRIPT_PREFIXES.workers + "icarus.js",
+    linus: SCRIPT_PREFIXES.workers + "linus.js"
 }
 
 const HACK_SCRIPTS = [SCRIPTS.batchController, SCRIPTS.batch, SCRIPTS.hack, SCRIPTS.grow, SCRIPTS.weaken]
@@ -266,7 +289,7 @@ export function deleteServer(ns: any, hostname: string): boolean {
  * @returns Boolean indicating whether the given server is hacking the given target.
  */
 export function isHackingTarget(ns: any, server: any, target: any): Promise<boolean> {
-    let scriptName = "/scripts/library/batch-controller.js"
+    let scriptName = SCRIPTS.batchController
     let isHackingTarget = ns.isRunning(scriptName, server.hostname, target.hostname)
     return isHackingTarget
 }
@@ -509,7 +532,7 @@ export function getBatchRam(ns: any, server: any, threads: any): number {
     // All scripts have a base RAM of 1.6GB, and the HGW functions all use
     // 0.1GB of RAM.
     let hgwRam = 1.7
-    let batchScriptRam = (1.7 * 4) + ns.getScriptRam("/scripts/library/batch.js", server.hostname)
+    let batchScriptRam = (1.7 * 4) + ns.getScriptRam(SCRIPTS.batch, server.hostname)
     let totalBatchRam = Math.round((batchScriptRam + (hgwRam * threads.total)) * 100) / 100
 
     return totalBatchRam
@@ -799,4 +822,16 @@ export function getAllAugmentations(ns: any): any[] {
     })
 
     return allAugmentations
+}
+
+
+
+export function getPathToServer(ns: any, host: string) {
+
+}
+
+
+
+export function directConnect(ns: any, host: string) {
+
 }

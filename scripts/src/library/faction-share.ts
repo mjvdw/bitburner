@@ -12,6 +12,4 @@ export async function main(ns: any) {
     while (true) {
         await ns.share()
     }
-
-
 }

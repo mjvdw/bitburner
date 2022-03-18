@@ -1,7 +1,7 @@
 /** @param {import(".").NS} ns */
 
 //@ts-ignore
-import { resetReservedRamForServer } from "./scripts/utils.js"
+import { resetReservedRamForServer, SCRIPTS } from "./scripts/library/utils.js"
 
 /**
  * Kill all scripts on all servers except the sync script on home and this script.
@@ -15,7 +15,7 @@ export async function main(ns: any) {
 
     let servers = home.concat(pservs)
 
-    let exempt = ["/scripts/sync.js", "/scripts/tools/stop.js"]
+    let exempt = [SCRIPTS.sync, SCRIPTS.stop]
 
     servers.forEach((server: any) => {
         let scripts = ns.ps(server)
