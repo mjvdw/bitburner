@@ -18,6 +18,9 @@ import {
  */
 export async function main(ns: any) {
 
-    ns.tprint("This\nis\na\nnew\ntest")
+    let installedAugs = ns.getOwnedAugmentations(false)
+    ns.tprint(installedAugs)
+    let purchasedAugs = ns.getOwnedAugmentations(true).filter((x: string) => !installedAugs.includes(x))
+    ns.tprint(purchasedAugs)
 
 }

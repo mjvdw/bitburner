@@ -317,13 +317,20 @@ function getAugmentationStats(ns: any, args: string[]): any[] {
     }
 
     let augmentations = getAllAugmentations(ns)
+    let installedAugs = ns.getOwnedAugmentations(false)
+    let purchasedAugs = ns.getOwnedAugmentations(true).filter((x: string) => !installedAugs.includes(x))
+
     for (let a in augmentations) {
         let augmentation = augmentations[a]
         let stats = ns.getAugmentationStats(augmentation.name)
 
+        let purchased = purchasedAugs.includes(augmentation.name)
+        let installed = installedAugs.includes(augmentation.name)
+
         let d: any = {
             augmentation: augmentation.name,
-            faction: augmentation.faction
+            ["**"]: (purchased ? "*" : "") + (installed ? "*" : ""),
+            faction: augmentation.faction,
         }
 
         for (let stat in typeOptions[type]) {
@@ -336,13 +343,13 @@ function getAugmentationStats(ns: any, args: string[]): any[] {
     let sort = args[1]
     data = data
         .filter((d: any) => {
-            if (sort) {
+            if (d[sort]) {
                 return d[sort] != "-"
             }
             else {
                 let keep = false
                 Object.entries(d).forEach((element: any) => {
-                    if ((["augmentation", "faction"].indexOf(element[0]) == -1) && element[1] !== "-") {
+                    if ((["augmentation", "faction", "**"].indexOf(element[0]) == -1) && element[1] !== "-") {
                         keep = true
                     }
                 })
