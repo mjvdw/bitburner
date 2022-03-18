@@ -11,7 +11,7 @@ import { getServerAvailableRam, SCRIPTS } from "/scripts/library/utils.js";
  */
 export async function main(ns: any) {
 
-    let scale = ns.args[0]
+    let scale = ns.args[0] || 1
 
     let home = ["home"]
     let pservs = ns.getPurchasedServers()
