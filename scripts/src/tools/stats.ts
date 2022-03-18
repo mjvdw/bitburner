@@ -80,12 +80,7 @@ function getHackingStats(ns: any): object[] {
     let data = targets.map((target: any) => {
 
         // Server available money v max money
-        let money = ns.nFormat(target.moneyAvailable, "0.00a")
-            + "/"
-            + ns.nFormat(target.moneyMax, "0.00a")
-            + " ("
-            + ns.nFormat(target.moneyAvailable / target.moneyMax, "0.00%")
-            + ")"
+        let money = ns.nFormat(target.moneyMax, "$0.000a") + " (" + ns.nFormat(target.moneyAvailable / target.moneyMax, "0.00%") + ")"
 
         // Current state of "attack"
         let preparing = getServersPreparingTarget(ns, target)
@@ -94,13 +89,13 @@ function getHackingStats(ns: any): object[] {
 
         return {
             server: target.hostname,
-            money: money,
-            security: (target.hackDifficulty).toFixed(2),
+            a: "*".repeat(preparing.length),
+            b: isTargetPrepared(ns, target) ? "*" : "",
+            c: "*".repeat(hacking.length),
+            "max money": money,
+            sec: (target.hackDifficulty).toFixed(2),
             time: ns.nFormat(ns.getWeakenTime(target.hostname) / 1000, "00:00:00"),
             "rate/thread": ns.nFormat(rate, "$0.00") + "/s",
-            prep: "*".repeat(preparing.length),
-            ready: isTargetPrepared(ns, target) ? "*" : "",
-            hack: "*".repeat(hacking.length)
         }
     })
 
