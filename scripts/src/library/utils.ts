@@ -684,7 +684,7 @@ export function printTable(ns: any, data: object[]) {
     let hBottom = ""
     let bottom = ""
     for (let k in keys) {
-        let frontSpaces = Number(k) == 0 ? 0 : Math.trunc((colWidths[k] - keys[k].length) / 2)
+        let frontSpaces = Number(k) == 0 ? 0 : Math.trunc((colWidths[k] - keys[k].length) - 1)
         let endSpaces = colWidths[k] - keys[k].length - frontSpaces
         header += (" ".repeat(frontSpaces) + keys[k].toUpperCase() + " ".repeat(endSpaces) + chars.vBorder)
         hTop += (chars.hBorder.repeat(colWidths[k]) + chars.hSectTop)
@@ -692,10 +692,10 @@ export function printTable(ns: any, data: object[]) {
         bottom += (chars.hBorder.repeat(colWidths[k]) + chars.hSectBottom)
     }
 
-    hTop = "\n" + chars.topLeft + hTop.slice(0, -1) + chars.topRight
-    hBottom = "\n" + chars.vSectRight + hBottom.slice(0, -1) + chars.vSectLeft
-    header = "\n" + chars.vBorder + header.slice(0, -1) + chars.vBorder
-    bottom = "\n" + chars.bottomLeft + bottom.slice(0, -1) + chars.bottomRight
+    hTop = "\n" + hTop.slice(0, -1)
+    hBottom = "\n" + hBottom.slice(0, -1)
+    header = "\n" + header.slice(0, -1)
+    bottom = "\n" + bottom.slice(0, -1)
 
     table += hTop
     table += header
@@ -707,11 +707,11 @@ export function printTable(ns: any, data: object[]) {
         for (let k in keys) {
             let key = keys[k]
             let value = String(row[key])
-            let frontSpaces = Number(k) == 0 ? 0 : Math.trunc((colWidths[k] - value.length) / 2)
+            let frontSpaces = Number(k) == 0 ? 0 : Math.trunc((colWidths[k] - value.length) - 1)
             let endSpaces = colWidths[k] - value.length - frontSpaces
             rowString += (" ".repeat(frontSpaces) + value + " ".repeat(endSpaces) + chars.vBorder)
         }
-        rowString = "\n" + chars.vBorder + rowString.slice(0, -1) + chars.vBorder
+        rowString = "\n" + rowString.slice(0, -1)
         table += rowString
     })
 
