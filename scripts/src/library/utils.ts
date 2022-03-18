@@ -15,7 +15,9 @@ export const SCRIPTS = {
     hack: "/scripts/library/hack.js",
     grow: "/scripts/library/grow.js",
     weaken: "/scripts/library/weaken.js",
-    factionShare: "/scripts/library/faction-share.js"
+    factionShare: "/scripts/library/faction-share.js",
+    sync: "/scripts/tools/sync.js",
+    resetScripts: "/scripts/tools/reset-scripts.js"
 }
 
 const HACK_SCRIPTS = [SCRIPTS.batchController, SCRIPTS.batch, SCRIPTS.hack, SCRIPTS.grow, SCRIPTS.weaken]
@@ -283,6 +285,23 @@ export function killHackScripts(ns: any, server: any) {
     runningScripts.forEach((script: any) => {
         if (HACK_SCRIPTS.includes(script.filename)) {
             ns.kill(script.pid)
+        }
+    })
+}
+
+
+export function killAllScriptsWithExceptions(ns: any, host: string, exceptions: string[]) {
+
+    let runningScripts = ns.ps(host)
+    runningScripts.forEach((script: any) => {
+        ns.tprint(!exceptions.includes(script.filename))
+
+        ns.tprint(exceptions)
+        ns.tprint(script.filename)
+
+        if (!exceptions.includes(script.filename)) {
+            ns.tprint("Killing " + script.filename + " on " + host)
+            ns.kill(script.pid, host, script.args)
         }
     })
 }
