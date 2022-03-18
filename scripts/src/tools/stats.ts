@@ -6,7 +6,8 @@ import {
     isTargetPrepared,
     getReservedRamForServer,
     getAllAugmentations,
-    CRIMES
+    CRIMES,
+    FACTIONS
     // @ts-ignore
 } from "/scripts/library/utils.js";
 
@@ -26,7 +27,8 @@ export async function main(ns: any) {
         ramCost: "ram-cost",
         money: "money",
         crimes: "crimes",
-        augmentations: "augmentations"
+        augmentations: "augmentations",
+        factions: "factions"
     }
     let args = ns.args.slice(1)
 
@@ -48,6 +50,9 @@ export async function main(ns: any) {
             break
         case options.augmentations:
             data = getAugmentationStats(ns, args)
+            break
+        case options.factions:
+            data = getFactionStats(ns)
             break
         default:
             ns.tprint("That's not a valid input. Please try again. Valid inputs incude:")
@@ -357,6 +362,31 @@ function getAugmentationStats(ns: any, args: string[]): any[] {
             }
         })
         .sort((a: any, b: any) => b[sort] - a[sort])
+
+    return data
+}
+
+
+/**
+ * Information about factions.
+ * 
+ * @param ns Netscript object provided by Bitburner.
+ * @returns Data pre-formatted to print as a table.
+ */
+function getFactionStats(ns: any): any[] {
+
+    let data: any[] = []
+
+    FACTIONS.forEach((faction: string) => {
+        let d: any = {}
+
+        let joined = ns.getFactionRep(faction) > 0 ? "* " : "  "
+        let working = ""
+
+        d["faction"] = joined + faction + working
+
+        data.push(d)
+    })
 
     return data
 }
