@@ -6,7 +6,8 @@ import {
     getReservedRamForServer,
     reserveRam,
     releaseRam,
-    resetReservedRamForServer
+    resetReservedRamForServer,
+    getAllAugmentations
     // @ts-ignore
 } from "/scripts/library/utils.js";
 
@@ -18,9 +19,7 @@ import {
  */
 export async function main(ns: any) {
 
-    let installedAugs = ns.getOwnedAugmentations(false)
-    ns.tprint(installedAugs)
-    let purchasedAugs = ns.getOwnedAugmentations(true).filter((x: string) => !installedAugs.includes(x))
-    ns.tprint(purchasedAugs)
+    let augs = getAllAugmentations(ns)
+    augs.forEach((a: any) => ns.tprint(a.name + ": " + ns.getAugmentationCost(a.name)))
 
 }
