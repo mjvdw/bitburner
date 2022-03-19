@@ -95,7 +95,10 @@ export const FACTIONS = [
     "The Dark Army",
     "The Syndicate",
     "The Covenant",
-    "Illuminati"
+    "Daedalus",
+    "Illuminati",
+    "Bladeburners",
+    "Church of the Machine God",
 ]
 
 
