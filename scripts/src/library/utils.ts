@@ -257,7 +257,7 @@ export async function buyServer(ns: any, ram?: number, hostname?: string): Promi
     if (server) {
         const scripts = ns.ls("home", "scripts/");
         await ns.scp(scripts, hostname);
-        ns.tprint("Purchased server called " + hostname + " with " + ram + "GB of RAM for " + ns.nFormat(ns.getPurchasedServerCost(ram), "$0.000a") + ".")
+        ns.tprint("Purchased server called " + hostname + " with " + ns.nFormat(ram * 1e9, "0.000b") + " of RAM for " + ns.nFormat(ns.getPurchasedServerCost(ram), "$0.000a") + ".")
         return true
     } else {
         ns.tprint("Unable to purchase server. The RAM appears to be valid and you have enough money, so something else must have gone wrong.")
