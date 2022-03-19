@@ -332,7 +332,7 @@ function getAugmentationStats(ns: any, args: string[]): any[] {
 
         let d: any = {
             augmentation: augmentation.name,
-            ["**"]: (purchased ? "*" : "") + (installed ? "*" : ""),
+            ["**"]: (purchased ? "*" : "") + (installed ? "**" : ""),
             faction: augmentation.faction,
         }
 
