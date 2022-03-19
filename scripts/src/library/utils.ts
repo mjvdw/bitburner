@@ -60,7 +60,7 @@ const HACK_SCRIPTS = [SCRIPTS.batchController, SCRIPTS.batch, SCRIPTS.hack, SCRI
 
 const RAM_PORT = 1
 
-const BATCH_SPEED = 500
+const BATCH_SPEED = 200
 const BATCH_FREQUENCY = 5 * BATCH_SPEED
 
 export const CRIMES = [
@@ -127,7 +127,7 @@ export function getTargets(ns: any, hackableOnly?: boolean): any[] {
 
     let targets: string[] = []
     let queue: string[] = []
-    let excluded = ["home", "darkweb"]
+    let excluded = ["home", "darkweb"].concat(ns.getPurchasedServers())
 
     // Initial scan to set up first queue.
     queue = ns.scan("home")
@@ -149,7 +149,9 @@ export function getTargets(ns: any, hackableOnly?: boolean): any[] {
     }
 
     // Convert list of server names to list of Server objects.
-    targets = targets.map(targetName => ns.getServer(targetName))
+    targets = targets
+        .filter((server: string) => !excluded.includes(server))
+        .map(targetName => ns.getServer(targetName))
 
     // If hackableOnly is true, filter the server list by servers that the current
     // user is able to hack, based on the hack skill level and port open scripts owned.

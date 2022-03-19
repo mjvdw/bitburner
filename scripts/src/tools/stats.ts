@@ -75,7 +75,7 @@ export async function main(ns: any) {
  * @returns Data pre-formatted to print as a table.
  */
 function getHackingStats(ns: any): object[] {
-    let targets = getTargets(ns, true)
+    let targets = getTargets(ns)
 
     let data = targets.map((target: any) => {
 
@@ -92,12 +92,15 @@ function getHackingStats(ns: any): object[] {
             a: "*".repeat(preparing.length),
             b: isTargetPrepared(ns, target) ? "*" : "",
             c: "*".repeat(hacking.length),
+            level: ns.getServerRequiredHackingLevel(target.hostname),
             "max money": money,
             sec: (target.hackDifficulty).toFixed(2),
             time: ns.nFormat(ns.getWeakenTime(target.hostname) / 1000, "00:00:00"),
             "rate/thread": ns.nFormat(rate, "$0.00") + "/s",
         }
     })
+
+    data = data.sort((a: any, b: any) => b.level - a.level)
 
     return data
 }
@@ -334,7 +337,7 @@ function getAugmentationStats(ns: any, args: string[]): any[] {
         }
 
         for (let stat in typeOptions[type]) {
-            d[stat] = stats[typeOptions[type][stat]] || "-"
+            d[stat] = ns.nFormat(stats[typeOptions[type][stat]], "0.00") || "-"
         }
 
         data.push(d)
@@ -371,17 +374,33 @@ function getAugmentationStats(ns: any, args: string[]): any[] {
 function getFactionStats(ns: any): any[] {
 
     let data: any[] = []
+    let augmentations = getAllAugmentations(ns)
 
     FACTIONS.forEach((faction: string) => {
         let d: any = {}
 
         let joined = ns.getFactionRep(faction) > 0 ? "* " : "  "
         let working = ""
-
         d["faction"] = joined + faction + working
+
+        d["Rep"] = ns.nFormat(ns.getFactionRep(faction), "0,0.000a")
+        d["Fav"] = ns.nFormat(ns.getFactionFavor(faction), "0,0a")
+        d["Rate"]
+        d["d$"]
+        d["Augs"] = ns.getAugmentationsFromFaction(faction).length
+
+        let owned = ns.getOwnedAugmentations(true).filter((aug: string) => {
+            return augmentations.some((a: any) => a.name == aug && a.faction == faction)
+        })
+        d["Own"] = owned.length
 
         data.push(d)
     })
+
+    let joined = data.filter((d: any) => d.faction.startsWith("*"))
+    let notJoined = data.filter((d: any) => !d.faction.startsWith("*"))
+
+    data = joined.concat(notJoined)
 
     return data
 }

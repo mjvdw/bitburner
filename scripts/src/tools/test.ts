@@ -7,7 +7,8 @@ import {
     reserveRam,
     releaseRam,
     resetReservedRamForServer,
-    getAllAugmentations
+    getAllAugmentations,
+    buyFromDarkweb
     // @ts-ignore
 } from "/scripts/library/utils.js";
 
@@ -19,7 +20,6 @@ import {
  */
 export async function main(ns: any) {
 
-    let augs = getAllAugmentations(ns)
-    augs.forEach((a: any) => ns.tprint(a.name + ": " + ns.getAugmentationCost(a.name)))
+    buyFromDarkweb(ns)
 
 }
