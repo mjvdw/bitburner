@@ -9,6 +9,19 @@ const ALL_PORT_SCRIPTS = [
     "SQLInject.exe",
 ]
 
+export const DARKWEB_BUY = [
+    { name: "BruteSSH.exe", cost: 5e5 },
+    { name: "FTPCrack.exe", cost: 1.5e6 },
+    { name: "relaySMTP.exe", cost: 5e6 },
+    { name: "HTTPWorm.exe", cost: 3e7 },
+    { name: "SQLInject.exe", cost: 2.5e8 },
+    { name: "ServerProfiler.exe", cost: 5e5 },
+    { name: "DeepscanV1.exe", cost: 5e5 },
+    { name: "DeepscanV2.exe", cost: 2.5e7 },
+    { name: "AutoLink.exe", cost: 1e6 },
+    { name: "Formulas.exe", cost: 5e9 }
+]
+
 const SCRIPT_PREFIXES = {
     library: "/scripts/library/",
     tools: "/scripts/tools/",
@@ -827,6 +840,36 @@ export function getAllAugmentations(ns: any): any[] {
     return allAugmentations
 }
 
+
+/**
+ * Helper function to determine whether the player owns the Tor router.
+ * 
+ * @param ns Netscript object provided by Bitburner.
+ * @returns Boolean indicating whether the player owns the Tor router.
+ */
+export function ownsTorRouter(ns: any): boolean {
+    let servers = ns.scan()
+    return servers.includes("darkweb")
+}
+
+
+/**
+ * Buy the next available script from the darkweb.
+ * 
+ * @param ns Netscript object provided by Bitburner.
+ */
+export function buyFromDarkweb(ns: any) {
+    let ownedScripts = ns.ls("home")
+    let availableToBuy = DARKWEB_BUY.filter((s: any) => !ownedScripts.includes(s.name))
+
+    for (let script of availableToBuy) {
+        let money = ns.getServerMoneyAvailable("home")
+        if (money >= script.cost) {
+            ns.purchaseProgram(script.name)
+            ns.tprint("Success: purchased " + script.name + " from Darkweb for " + ns.nFormat(script.cost, "$0.000a"))
+        }
+    }
+}
 
 
 export function getPathToServer(ns: any, host: string) {
