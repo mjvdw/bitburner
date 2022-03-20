@@ -8,7 +8,10 @@ import {
     releaseRam,
     resetReservedRamForServer,
     getAllAugmentations,
-    buyFromDarkweb
+    buyFromDarkweb,
+    getUnownedAugmentationsForFaction,
+    getOwnedAugmentationsForFaction,
+    FACTIONS
     // @ts-ignore
 } from "/scripts/library/utils.js";
 
@@ -20,6 +23,14 @@ import {
  */
 export async function main(ns: any) {
 
-    buyFromDarkweb(ns)
+    let i = 6
+
+    ns.tprint("\nOWNED")
+    let owned = getOwnedAugmentationsForFaction(ns, FACTIONS[i])
+    owned.forEach((a: string) => ns.tprint(a))
+
+    ns.tprint("\nUNOWNED")
+    let unowned = getUnownedAugmentationsForFaction(ns, FACTIONS[i])
+    unowned.forEach((a: string) => ns.tprint(a))
 
 }
