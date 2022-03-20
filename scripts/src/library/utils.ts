@@ -895,19 +895,38 @@ export function getReputationForDonations(favor: number = 150) {
 }
 
 
+export function getAugmentationsForFaction(ns: any, faction: string): string[] {
+    let augmentations = getAllAugmentations(ns)
+    let factionAugs = augmentations
+        .filter((aug: any) => aug.faction == faction)
+        .map((aug: any) => aug.name)
+    return factionAugs
+}
+
+
+
 /**
+ * Helper function to get the augmetnations already owned by the player with respect
+ * to a given faction.
  * 
  * @param ns Netscript object provided by Bitburner.
- * @param faction The faction for which to return a list of augmentations.
- * @returns 
+ * @param faction The faction for which to return a list of owned augmentations.
+ * @returns A list of augmentations owned by the player, offered by that faction.
  */
-export function getOwnedAugmentationsForFaction(ns: any, faction: string): any[] {
+export function getOwnedAugmentationsForFaction(ns: any, faction: string): string[] {
     let augmentations = getAllAugmentations(ns)
     let owned = ns.getOwnedAugmentations(true).filter((aug: string) => {
         return augmentations.some((a: any) => a.name == aug && a.faction == faction)
     })
 
     return owned
+}
+
+
+export function getUnownedAugmentationsForFaction(ns: any, faction: string): string[] {
+    let all = getAugmentationsForFaction(ns, faction)
+    let unowned = all.filter((aug: string) => !ns.getOwnedAugmentations(true).includes(aug))
+    return unowned
 }
 
 
