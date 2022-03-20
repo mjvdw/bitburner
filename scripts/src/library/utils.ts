@@ -895,6 +895,22 @@ export function getReputationForDonations(favor: number = 150) {
 }
 
 
+/**
+ * 
+ * @param ns Netscript object provided by Bitburner.
+ * @param faction The faction for which to return a list of augmentations.
+ * @returns 
+ */
+export function getOwnedAugmentationsForFaction(ns: any, faction: string): any[] {
+    let augmentations = getAllAugmentations(ns)
+    let owned = ns.getOwnedAugmentations(true).filter((aug: string) => {
+        return augmentations.some((a: any) => a.name == aug && a.faction == faction)
+    })
+
+    return owned
+}
+
+
 export function getPathToServer(ns: any, host: string) {
 
 }

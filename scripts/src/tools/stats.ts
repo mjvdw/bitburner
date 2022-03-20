@@ -7,7 +7,8 @@ import {
     getReservedRamForServer,
     getAllAugmentations,
     CRIMES,
-    FACTIONS
+    FACTIONS,
+    getOwnedAugmentationsForFaction
     // @ts-ignore
 } from "/scripts/library/utils.js";
 
@@ -389,9 +390,7 @@ function getFactionStats(ns: any): any[] {
         d["d$"]
         d["Augs"] = ns.getAugmentationsFromFaction(faction).length
 
-        let owned = ns.getOwnedAugmentations(true).filter((aug: string) => {
-            return augmentations.some((a: any) => a.name == aug && a.faction == faction)
-        })
+        let owned = getOwnedAugmentationsForFaction(ns, faction)
         d["Own"] = owned.length
 
         data.push(d)
