@@ -874,6 +874,27 @@ export function buyFromDarkweb(ns: any) {
 }
 
 
+/**
+ * Helper function to calculate the amount of reputation needed to unlock
+ * donations. Technically this is static (ie, the number will always be the same)
+ * but leaving the function here in case it changes in a future update, or there
+ * is a faction that requires a different amount of favor to unlock donations.
+ * 
+ * @returns The amount of reputation needed to unlock donations for a faction.
+ */
+export function getReputationForDonations(favor: number = 150) {
+
+    // Favour required to unlock donations.
+    let favorRequired = favor
+
+    // Rearranging the equation given in-game.
+    let exponent = ((favorRequired - 1) * Math.log10(1.02)) + Math.log10(25000)
+    let rep = Math.pow(10, exponent) - 25000
+
+    return rep
+}
+
+
 export function getPathToServer(ns: any, host: string) {
 
 }
