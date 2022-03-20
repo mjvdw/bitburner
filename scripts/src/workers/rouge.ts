@@ -7,6 +7,11 @@ import {
     // @ts-ignore
 } from "/scripts/library/utils.js";
 
+import {
+    criteria
+    // @ts-ignore
+} from "/scripts/library/faction-criteria.js"
+
 /**
  * Worker to control joining factions and purchasing organisations.
  * 

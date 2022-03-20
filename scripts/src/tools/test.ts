@@ -15,6 +15,11 @@ import {
     // @ts-ignore
 } from "/scripts/library/utils.js";
 
+import {
+    criteria
+    // @ts-ignore
+} from "/scripts/library/faction-criteria.js"
+
 
 /**
  * Generic file for testing purposes only.
@@ -23,14 +28,6 @@ import {
  */
 export async function main(ns: any) {
 
-    let i = 6
-
-    ns.tprint("\nOWNED")
-    let owned = getOwnedAugmentationsForFaction(ns, FACTIONS[i])
-    owned.forEach((a: string) => ns.tprint(a))
-
-    ns.tprint("\nUNOWNED")
-    let unowned = getUnownedAugmentationsForFaction(ns, FACTIONS[i])
-    unowned.forEach((a: string) => ns.tprint(a))
+    ns.tprint(criteria.ChurchoftheMachineGod)
 
 }
