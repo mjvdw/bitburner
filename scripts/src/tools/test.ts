@@ -11,12 +11,13 @@ import {
     buyFromDarkweb,
     getUnownedAugmentationsForFaction,
     getOwnedAugmentationsForFaction,
-    FACTIONS
+    FACTIONS,
+    directConnect
     // @ts-ignore
 } from "/scripts/library/utils.js";
 
 import {
-    criteria
+    criteria,
     // @ts-ignore
 } from "/scripts/library/faction-criteria.js"
 
@@ -28,6 +29,6 @@ import {
  */
 export async function main(ns: any) {
 
-    ns.tprint(criteria.ChurchoftheMachineGod)
+    directConnect(ns, "run4theh111z")
 
 }

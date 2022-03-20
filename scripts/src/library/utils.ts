@@ -358,6 +358,8 @@ export function killAllScriptsWithExceptions(ns: any, host: string, exceptions: 
  */
 export function unlockTarget(ns: any, target: any): boolean {
 
+    if (typeof (target) === 'string') { target = ns.getServer(target) }
+
     let scripts = ns.ls("home")
 
     // This is a bit fragile - it relies on the order of ALL_PORT_SCRIPTS
@@ -945,12 +947,48 @@ export function getUnownedAugmentationsForFaction(ns: any, faction: string): str
 }
 
 
-export function getPathToServer(ns: any, host: string) {
+export function getPathToServer(ns: any, target: string, serverName: string, serverList: string[], ignore: string[], isFound: boolean): any[] {
+    ignore.push(serverName);
+    let scanResults = ns.scan(serverName);
+    for (let server of scanResults) {
+        if (ignore.includes(server)) {
+            continue;
+        }
+        if (server === target) {
+            serverList.push(server);
+            return [serverList, true];
+        }
+        serverList.push(server);
+        [serverList, isFound] = getPathToServer(
+            ns,
+            target,
+            server,
+            serverList,
+            ignore,
+            isFound
+        );
+        if (isFound) {
+            return [serverList, isFound];
+        }
+        serverList.pop();
+    }
+    return [serverList, false];
+};
 
-}
 
 
+export function directConnect(ns: any, target: string): boolean {
 
-export function directConnect(ns: any, host: string) {
+    let startServer = ns.getHostname();
+    let [path, isFound] = getPathToServer(ns, target, startServer, [], [], false)
 
+    if (isFound) {
+        for (let server of path) {
+            ns.connect(server)
+        }
+        return true
+    } else {
+        ns.tprint("Unable to connect to that server.")
+        return false
+    }
 }
