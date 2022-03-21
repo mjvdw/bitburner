@@ -59,7 +59,10 @@ export const SCRIPTS = {
 
 const HACK_SCRIPTS = [SCRIPTS.batchController, SCRIPTS.batch, SCRIPTS.hack, SCRIPTS.grow, SCRIPTS.weaken]
 
-const RAM_PORT = 1
+const PORTS = {
+    ram: 1,
+    factionFocus: 2
+}
 
 const BATCH_SPEED = 200
 const BATCH_FREQUENCY = 5 * BATCH_SPEED
@@ -397,10 +400,10 @@ export function updateReservedRam(ns: any, server: any, ram: number): boolean {
 
     // Get Netscript port used for storing the current state of RAM for 
     // each server (home + purchased servers.)
-    let port = ns.getPortHandle(RAM_PORT)
+    let port = ns.getPortHandle(PORTS.ram)
 
     // Get current state of RAM.
-    let ramState: any = getReservedRamState(ns)
+    let ramState: any = getPortCurrentState(ns, PORTS.ram)
 
     // getReservedRamState() only "peeks" the data, so we have to manually
     // clear it once we've retrieved what we need.
@@ -424,24 +427,17 @@ export function updateReservedRam(ns: any, server: any, ram: number): boolean {
  * @param ns Netscript object provided by Bitburner.
  * @returns An object with the current RAM state.
  */
-export function getReservedRamState(ns: any): any {
+export function getPortCurrentState(ns: any, portNumber: number): any {
 
-    // Get Netscript port used for storing the current state of RAM for 
-    // each server (home + purchased servers.)
-    let port = ns.getPortHandle(RAM_PORT)
+    // Get Netscript port.
+    let port = ns.getPortHandle(portNumber)
+    let state: any = {}
 
-    // Get current state and read the reserved RAM for the given server.
-    let ramState: any = {}
-
-    // If the port is empty, populate it with inital data for this server, based
-    // on the number of HACK_SCRIPTS running.
-    // Otherwise, if the port has data, attempt to parse the current RAM state.
-    if (port.empty()) {
-        // TODO: Come up with initial state for reserved RAM. 
-    } else {
+    // If the port has data, attempt to parse the current RAM state.
+    if (!port.empty()) {
         let originalState = port.peek()
         try {
-            ramState = JSON.parse(originalState)
+            state = JSON.parse(originalState)
         }
         catch (error) {
             ns.tprint("Port data is not in a valid format. Data: " + originalState)
@@ -449,7 +445,7 @@ export function getReservedRamState(ns: any): any {
         }
     }
 
-    return ramState
+    return state
 }
 
 
@@ -461,7 +457,7 @@ export function getReservedRamState(ns: any): any {
  * @returns A number representing the amount of reserved RAM on that server.
  */
 export function getReservedRamForServer(ns: any, server: any): number {
-    let ramState = getReservedRamState(ns)
+    let ramState = getPortCurrentState(ns, PORTS.ram)
     let reservedRam = ramState[server.hostname]
     reservedRam = reservedRam == null ? 0 : parseInt(reservedRam)
     return reservedRam
@@ -503,7 +499,7 @@ export function releaseRam(ns: any, server: any, ram: number): number {
  * @param ns Netscript object provided by Bitburner.
  */
 export function resetReservedRamForServer(ns: any, server: any) {
-    let ramState = getReservedRamState(ns)
+    let ramState = getPortCurrentState(ns, PORTS.ram)
     releaseRam(ns, server, ramState[server.hostname])
 }
 
