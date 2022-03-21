@@ -47,7 +47,8 @@ export async function main(ns: any) {
         let factions = ns.getPlayer().factions
         let repNeeded = factions.filter((faction: string) => ns.getFactionRep(faction) < maxRep)
 
-        if (repNeeded.length > 0 && !ns.isBusy()) {
+        ns.stopAction()
+        if (repNeeded.length > 0) {
             // Start generating rep for the first in the list.
             let faction = Object.entries(criteria)
                 .map((value: any) => value[1])
