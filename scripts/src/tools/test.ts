@@ -12,7 +12,8 @@ import {
     getUnownedAugmentationsForFaction,
     getOwnedAugmentationsForFaction,
     FACTIONS,
-    directConnect
+    directConnect,
+    getReputationForDonations
     // @ts-ignore
 } from "/scripts/library/utils.js";
 
@@ -28,6 +29,6 @@ import {
  * @param ns Netscript object provider by Bitburner.
  */
 export async function main(ns: any) {
-
+    ns.tprint(getReputationForDonations())
 
 }

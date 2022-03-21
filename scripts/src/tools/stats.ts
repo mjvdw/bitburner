@@ -8,7 +8,8 @@ import {
     getAllAugmentations,
     CRIMES,
     FACTIONS,
-    getOwnedAugmentationsForFaction
+    getOwnedAugmentationsForFaction,
+    getReputationForDonations
     // @ts-ignore
 } from "/scripts/library/utils.js";
 
@@ -387,7 +388,7 @@ function getFactionStats(ns: any): any[] {
         d["Rep"] = ns.nFormat(ns.getFactionRep(faction), "0,0.000a")
         d["Fav"] = ns.nFormat(ns.getFactionFavor(faction), "0,0a")
         d["Rate"]
-        d["d$"]
+        d["d$ %"] = ns.nFormat((ns.getFactionRep(faction) / getReputationForDonations()), "0.00%")
         d["Augs"] = ns.getAugmentationsFromFaction(faction).length
 
         let owned = getOwnedAugmentationsForFaction(ns, faction)
