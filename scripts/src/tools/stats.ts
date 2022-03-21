@@ -9,7 +9,8 @@ import {
     CRIMES,
     FACTIONS,
     getOwnedAugmentationsForFaction,
-    getReputationForDonations
+    getReputationForDonations,
+    isWorkingForFaction
     // @ts-ignore
 } from "/scripts/library/utils.js";
 
@@ -378,11 +379,13 @@ function getFactionStats(ns: any): any[] {
     let data: any[] = []
     let augmentations = getAllAugmentations(ns)
 
+    let workString = " - [Working]"
+
     FACTIONS.forEach((faction: string) => {
         let d: any = {}
 
         let joined = ns.getFactionRep(faction) > 0 ? "* " : "  "
-        let working = ""
+        let working = isWorkingForFaction(ns, faction) ? workString : ""
         d["faction"] = joined + faction + working
 
         d["Rep"] = ns.nFormat(ns.getFactionRep(faction), "0,0.000a")
@@ -397,10 +400,17 @@ function getFactionStats(ns: any): any[] {
         data.push(d)
     })
 
-    let joined = data.filter((d: any) => d.faction.startsWith("*"))
-    let notJoined = data.filter((d: any) => !d.faction.startsWith("*"))
+    let working = data
+        .filter((d: any) => d.faction.endsWith(workString))
+    let joined = data
+        .filter((d: any) => d.faction.startsWith("*") && !d.faction.endsWith(workString))
+        .sort((a: any, b: any) => b["Fav"] - a["Fav"])
+    let notJoined = data
+        .filter((d: any) => !d.faction.startsWith("*"))
+        .sort((a: any, b: any) => b["Fav"] - a["Fav"])
 
-    data = joined.concat(notJoined)
+    let top = working.concat(joined)
+    data = top.concat(notJoined)
 
     return data
 }

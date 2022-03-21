@@ -6,7 +6,8 @@ import {
     getReputationForDonations,
     getUnownedAugmentationsForFaction,
     unlockTarget,
-    directConnect
+    directConnect,
+    updateFactionWorking
     // @ts-ignore
 } from "/scripts/library/utils.js";
 
@@ -61,6 +62,8 @@ export async function main(ns: any) {
                 success = ns.workForFaction(faction, worktypes[i], false)
                 i++
             }
+
+            updateFactionWorking(ns, faction, true)
 
             // TODO: Change so that the faction with the most needed augmentations
             // goes first. Ie, if a faction has useful strength augmentations, that might

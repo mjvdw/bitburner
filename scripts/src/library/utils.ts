@@ -59,7 +59,7 @@ export const SCRIPTS = {
 
 const HACK_SCRIPTS = [SCRIPTS.batchController, SCRIPTS.batch, SCRIPTS.hack, SCRIPTS.grow, SCRIPTS.weaken]
 
-const PORTS = {
+export const PORTS = {
     ram: 1,
     factionFocus: 2
 }
@@ -1013,3 +1013,46 @@ export function directConnect(ns: any, target: string): boolean {
 }
 
 
+export function updateFactionWorking(ns: any, faction: string, working: boolean): boolean {
+    let state = getPortCurrentState(ns, PORTS.factionFocus)
+
+
+    // Update state with new working status. If the state object is empty, create a
+    // blank state to edit.
+    if (Object.entries(state).length == 0) {
+        state = {}
+        for (let f of FACTIONS) {
+            state[f] = false
+        }
+    }
+
+    state[faction] = working
+
+    // Get Netscript port used for storing the current state of RAM for 
+    // each server (home + purchased servers.)
+    let port = ns.getPortHandle(PORTS.factionFocus)
+
+    // getReservedRamState() only "peeks" the data, so we have to manually
+    // clear it once we've retrieved what we need.
+    port.clear()
+
+    try {
+        // Write new state to port.
+        port.write(JSON.stringify(state))
+        return true
+    } catch {
+        return false
+    }
+}
+
+
+export function isWorkingForFaction(ns: any, faction: string): boolean {
+    let state = getPortCurrentState(ns, PORTS.factionFocus)
+    let working = false
+
+    if (Object.entries(state).length > 0) {
+        working = state[faction]
+    }
+
+    return working
+}
