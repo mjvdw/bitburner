@@ -63,9 +63,8 @@ async function attemptToMeetCriteria(ns: any) {
             unlockTarget(ns, criteria.server)
             directConnect(ns, criteria.server)
             await ns.installBackdoor()
-            directConnect(ns, "home")
             ns.tprint("Installed backdoor on " + criteria.server)
+            ns.connect("home")
         }
-        await ns.sleep(200)
     }
 }

@@ -29,6 +29,5 @@ import {
  */
 export async function main(ns: any) {
 
-    directConnect(ns, "run4theh111z")
 
 }

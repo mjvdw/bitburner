@@ -38,6 +38,7 @@ export const SCRIPTS = {
     utils: SCRIPT_PREFIXES.library + "utils.js",
     weaken: SCRIPT_PREFIXES.library + "weaken.js",
     // Tools
+    direct: SCRIPT_PREFIXES.tools + "direct.js",
     exploit: SCRIPT_PREFIXES.tools + "utils.js",
     list: SCRIPT_PREFIXES.tools + "list.js",
     path: SCRIPT_PREFIXES.tools + "path.js",
