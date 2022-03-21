@@ -946,6 +946,19 @@ export function getUnownedAugmentationsForFaction(ns: any, faction: string): str
 }
 
 
+/**
+ * Helper function to provide the path to a given server. This function loops in 
+ * on itself several times, and once it has found the server, unwraps itself, saving only
+ * those servers that make up the path.
+ * 
+ * @param ns Netscript object provided by Bitburner.
+ * @param target The server the player wants the path to.
+ * @param serverName The starting server position.
+ * @param serverList The list of servers that make up the path.
+ * @param ignore The list of servers to ignore.
+ * @param isFound Boolean whether the server has been found.
+ * @returns 
+ */
 export function getPathToServer(ns: any, target: string, serverName: string, serverList: string[], ignore: string[], isFound: boolean): any[] {
     ignore.push(serverName);
     let scanResults = ns.scan(serverName);
@@ -975,7 +988,14 @@ export function getPathToServer(ns: any, target: string, serverName: string, ser
 };
 
 
-
+/**
+ * Allows the player to connect to servers directly, without needing to 
+ * individually, manually, connect to each server individually along the way.
+ * 
+ * @param ns Netscript object provided by Bitburner.
+ * @param target The server to connect to.
+ * @returns Boolean whether the connection was successful.
+ */
 export function directConnect(ns: any, target: string): boolean {
 
     let startServer = ns.getHostname();
@@ -991,3 +1011,5 @@ export function directConnect(ns: any, target: string): boolean {
         return false
     }
 }
+
+
