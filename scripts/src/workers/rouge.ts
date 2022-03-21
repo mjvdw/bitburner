@@ -45,6 +45,7 @@ export async function main(ns: any) {
     let rep = getReputationForDonations()
     let factions = ns.getPlayer().factions
 
+
     //     // Wait 60 seconds to avoid infinite loop problems.
     //     await ns.sleep(60000)
     // }
@@ -52,6 +53,14 @@ export async function main(ns: any) {
 }
 
 
+/**
+ * Attempt to meet any criteria that can be done instantly. 
+ * Eg, install a backdoor on a server, or hold a certain position in a company.
+ * This function would not trigger actions to meet longer term criteria,
+ * like gaining faction or company reputation. That comes later.
+ * 
+ * @param ns Netscript object provider by Bitburner
+ */
 async function attemptToMeetCriteria(ns: any) {
 
     let remainingFactionCriteria = Object.entries(criteria)
@@ -59,6 +68,8 @@ async function attemptToMeetCriteria(ns: any) {
         .filter((criteria: any) => !ns.getPlayer().factions.includes(criteria.faction))
 
     for (let criteria of remainingFactionCriteria) {
+
+        // For targets that require a backdoor to be installed on a specific server.
         if (criteria.backdoorRequired && ns.getHackingLevel() >= criteria.minHackingLevel) {
             unlockTarget(ns, criteria.server)
             directConnect(ns, criteria.server)
@@ -66,5 +77,8 @@ async function attemptToMeetCriteria(ns: any) {
             ns.tprint("Installed backdoor on " + criteria.server)
             ns.connect("home")
         }
+
+
+        // ADD MORE CRITERIA ATTEMPTS HERE
     }
 }
