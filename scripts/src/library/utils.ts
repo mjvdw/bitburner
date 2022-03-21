@@ -115,6 +115,8 @@ export const FACTIONS = [
     "Church of the Machine God",
 ]
 
+export const FACTION_WORKTYPES = ["hacking", "fieldwork", "security"]
+
 
 /**
  * Get a list of all servers currently accessible (but not necessarily hackable).
