@@ -1026,6 +1026,8 @@ export function updateFactionWorking(ns: any, faction: string, working: boolean)
         }
     }
 
+    Object.entries(state).forEach((value: any) => state[value[0]] = false)
+
     state[faction] = working
 
     // Get Netscript port used for storing the current state of RAM for 

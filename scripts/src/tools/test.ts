@@ -64,15 +64,17 @@ export async function main(ns: any) {
             hackPercent: 90,
         }
     } else {
-        getServerNames(ns).forEach(hostname => {
-            if (ns.getServerMaxMoney(hostname) > 0 && ns.getServerGrowth(hostname) > 1) {
-                targets[hostname] = {
-                    nextAction: "INIT",
-                    msDone: 0,
-                    hackPercent: 90,
+        getServerNames(ns)
+            .filter(hostname => ns.getServerRequiredHackingLevel(hostname) <= ns.getHackingLevel())
+            .forEach(hostname => {
+                if (ns.getServerMaxMoney(hostname) > 0 && ns.getServerGrowth(hostname) > 1) {
+                    targets[hostname] = {
+                        nextAction: "INIT",
+                        msDone: 0,
+                        hackPercent: 90,
+                    }
                 }
-            }
-        })
+            })
     }
 
     await uploadScripts(ns, worker)
@@ -210,7 +212,7 @@ export function autocomplete(data: any, args: any[]) {
 }
 
 function log(ns: any, message: string) {
-    ns.tprint(`${new Date().toLocaleTimeString()} ${message}`)
+    ns.print(`${new Date().toLocaleTimeString()} ${message}`)
 }
 
 
