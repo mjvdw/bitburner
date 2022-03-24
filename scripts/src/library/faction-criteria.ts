@@ -3,7 +3,6 @@ class FactionCriteria {
     server: string
     backdoorRequired: boolean
     minMoney: number
-    minHackingLevel: number
     location: string[]
     excludedFactions: string[]
     companyRep: number
@@ -18,7 +17,6 @@ class FactionCriteria {
         this.server = params.server || ""
         this.backdoorRequired = params.backdoorRequired || false
         this.minMoney = params.minMoney || 0
-        this.minHackingLevel = params.minHackingLevel || 0
         this.location = params.location || ""
         this.excludedFactions = params.excludedFactions || []
         this.companyRep = params.companyRep || 0
@@ -43,14 +41,12 @@ export const criteria = {
     TianDiHui: new FactionCriteria({
         faction: "Tian Di Hui",
         minMoney: 1e6,
-        minHackingLevel: 50,
         location: ["Chongqing", "New Tokyo", "Ishima"]
     }),
 
     // Netburners
     Netburners: new FactionCriteria({
         faction: "Netburners",
-        minHackingLevel: 80
         /**
          * TODO: Add hacknet node criteria.
          */
@@ -91,7 +87,6 @@ export const criteria = {
         faction: "NiteSec",
         server: "avmnite-02h",
         backdoorRequired: true,
-        minHackingLevel: 203
     }),
 
     // The Black Hand
@@ -99,7 +94,6 @@ export const criteria = {
         faction: "The Black Hand",
         server: "I.I.I.I",
         backdoorRequired: true,
-        minHackingLevel: 342
     }),
 
     // BitRunners
@@ -107,57 +101,68 @@ export const criteria = {
         faction: "BitRunners",
         server: "run4theh111z",
         backdoorRequired: true,
-        minHackingLevel: 541
     }),
 
     // ECorp
     ECorp: new FactionCriteria({
-        faction: "ECorp"
+        faction: "ECorp",
+        companyRep: 2e5
     }),
 
     // MegaCorp
     MegaCorp: new FactionCriteria({
-        faction: "MegaCorp"
+        faction: "MegaCorp",
+        companyRep: 2e5
     }),
 
     // KuaiGong International
     KuaiGongInternational: new FactionCriteria({
-        faction: "KuaiGong International"
+        faction: "KuaiGong International",
+        companyRep: 2e5
     }),
 
     // Four Sigma
     FourSigma: new FactionCriteria({
-        faction: "Four Sigma"
+        faction: "Four Sigma",
+        companyRep: 2e5
     }),
 
     // NWO
     NWO: new FactionCriteria({
-        faction: "NWO"
+        faction: "NWO",
+        companyRep: 2e5
     }),
 
     // Blade Industries
     BladeIndustries: new FactionCriteria({
-        faction: "Blade Industries"
+        faction: "Blade Industries",
+        companyRep: 2e5
     }),
 
     // OmniTek Incorporated
     OmniTekIncorporated: new FactionCriteria({
-        faction: "OmniTek Incorporated"
+        faction: "OmniTek Incorporated",
+        companyRep: 2e5
     }),
 
     // Bachman & Associates
     BachmanAssociates: new FactionCriteria({
-        faction: "Bachman & Associates"
+        faction: "Bachman & Associates",
+        companyRep: 2e5
     }),
 
     // Clarke Incorporated
     ClarkeIncorporated: new FactionCriteria({
-        faction: "Clarke Incorporated"
+        faction: "Clarke Incorporated",
+        companyRep: 2e5
     }),
 
     // Fulcrum Secret Technologies
     FulcrumSecretTechnologies: new FactionCriteria({
-        faction: "Fulcrum Secret Technologies"
+        faction: "Fulcrum Secret Technologies",
+        server: "fulcrumassets",
+        backdoorRequired: true,
+        companyRep: 2.5e5
     }),
 
     // Slum Snakes

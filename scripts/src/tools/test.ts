@@ -94,10 +94,10 @@ async function hackLoop(ns: any, worker: string, targets: any[]) {
         await ns.sleep(updateInterval)
 
         for (const [target, meta] of Object.entries(targets)) {
-            unlockTarget(ns, target)
+            let unlocked = unlockTarget(ns, target)
             meta.msDone -= updateInterval
 
-            if (meta.msDone < 0) {
+            if (meta.msDone < 0 && unlocked) {
                 if (meta.nextAction === "INIT") {
                     init(target, meta)
                 } else if (meta.nextAction === "WEAKEN") {

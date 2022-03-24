@@ -100,11 +100,13 @@ async function attemptToMeetCriteria(ns: any) {
 
         // For targets that require a backdoor to be installed on a specific server.
         if (criteria.backdoorRequired && ns.getHackingLevel() >= criteria.minHackingLevel) {
-            unlockTarget(ns, criteria.server)
-            directConnect(ns, criteria.server)
-            await ns.installBackdoor()
-            ns.tprint("Installed backdoor on " + criteria.server)
-            ns.connect("home")
+            let unlocked = unlockTarget(ns, criteria.server)
+            if (unlocked) {
+                directConnect(ns, criteria.server)
+                await ns.installBackdoor()
+                ns.tprint("Installed backdoor on " + criteria.server)
+                ns.connect("home")
+            }
         }
 
 
