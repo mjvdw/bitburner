@@ -11,16 +11,22 @@ import { getServerAvailableRam, SCRIPTS } from "/scripts/library/utils.js";
  */
 export async function main(ns: any) {
 
-    let scale = ns.args[0] || 1
+    let flags = ns.flags([
+        ["scale", 1],
+        ["exclude", ""]
+    ])
 
     let home = ["home"]
     let pservs = ns.getPurchasedServers()
-    let servers = home.concat(pservs)
+    let exclude = flags["exclude"].split(",").map((e: string) => e.trim())
+    let servers = home
+        .concat(pservs)
+        .filter((server: string) => !exclude.includes(server))
 
     servers.forEach((server: any) => {
         let availableRam = getServerAvailableRam(ns, server)
         let shareRam = 1.6 + 2.4 // 1.6GB base ram, 2.4GB for share function
-        let threads = Math.trunc(availableRam / shareRam) * scale
+        let threads = Math.trunc(availableRam / shareRam) * flags["scale"]
 
         ns.exec(SCRIPTS.factionShare, server, threads)
     })
