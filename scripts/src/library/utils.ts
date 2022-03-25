@@ -897,23 +897,6 @@ export function getReputationForDonations(favor: number = 150) {
 
 
 /**
- * Helper function to get the list of augmentations associated with the given faction.
- * 
- * @param ns Netscript object provided by Bitburner.
- * @param faction The faction for which to return a list of augmentations.
- * @returns The list of augmentations for the given faction.
- */
-export function getAugmentationsForFaction(ns: any, faction: string): string[] {
-    let augmentations = getAllAugmentations(ns)
-    let factionAugs = augmentations
-        .filter((aug: any) => aug.faction == faction)
-        .map((aug: any) => aug.name)
-    return factionAugs
-}
-
-
-
-/**
  * Helper function to get the augmetnations already owned by the player with respect
  * to a given faction.
  * 
@@ -940,7 +923,7 @@ export function getOwnedAugmentationsForFaction(ns: any, faction: string): strin
  * @returns A list of augmentations not owned by the player, offered by that faction.
  */
 export function getUnownedAugmentationsForFaction(ns: any, faction: string): string[] {
-    let all = getAugmentationsForFaction(ns, faction)
+    let all = ns.getAugmentationsFromFaction(faction)
     let unowned = all.filter((aug: string) => !ns.getOwnedAugmentations(true).includes(aug))
     return unowned
 }
@@ -1057,4 +1040,12 @@ export function isWorkingForFaction(ns: any, faction: string): boolean {
     }
 
     return working
+}
+
+
+export function getMaxReputationForFaction(ns: any, faction: string): number {
+    let augs = ns.getAugmentationsFromFaction(faction)
+    let repReq = augs.map((aug: string) => parseInt(ns.getAugmentationRepReq(aug)))
+    let maxRep = Math.max(...repReq)
+    return maxRep
 }

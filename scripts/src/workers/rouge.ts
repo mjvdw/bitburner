@@ -7,7 +7,8 @@ import {
     getUnownedAugmentationsForFaction,
     unlockTarget,
     directConnect,
-    updateFactionWorking
+    updateFactionWorking,
+    getMaxReputationForFaction
     // @ts-ignore
 } from "/scripts/library/utils.js";
 
@@ -44,9 +45,14 @@ export async function main(ns: any) {
         // Identify the best faction to be working for.
         // This is based on the goal of getting enough faction favor to enable
         // donations, which will allow player to buy reputation as needed.
-        let maxRep = getReputationForDonations()
         let factions = ns.getPlayer().factions
-        let repNeeded = factions.filter((faction: string) => ns.getFactionRep(faction) < maxRep)
+        let maxRep: any = {}
+        factions.forEach((faction: string) => {
+            let donationOnly = ns.args[0]
+            if (donationOnly) { maxRep[faction] = getReputationForDonations() }
+            else { maxRep[faction] = getMaxReputationForFaction(ns, faction) }
+        })
+        let repNeeded = factions.filter((faction: string) => ns.getFactionRep(faction) < maxRep[faction])
 
         ns.stopAction()
         if (repNeeded.length > 0) {

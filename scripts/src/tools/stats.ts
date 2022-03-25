@@ -10,7 +10,8 @@ import {
     FACTIONS,
     getOwnedAugmentationsForFaction,
     getReputationForDonations,
-    isWorkingForFaction
+    isWorkingForFaction,
+    getMaxReputationForFaction
     // @ts-ignore
 } from "/scripts/library/utils.js";
 
@@ -389,13 +390,17 @@ function getFactionStats(ns: any): any[] {
         d["faction"] = joined + faction + working
 
         d["Rep"] = ns.nFormat(ns.getFactionRep(faction), "0,0.000a")
+        d["Max"] = ns.nFormat(getMaxReputationForFaction(ns, faction), "0.000a")
+
         d["Fav"] = ns.nFormat(ns.getFactionFavor(faction), "0,0a")
-        d["Rate"]
         d["d$ %"] = ns.nFormat((ns.getFactionRep(faction) / getReputationForDonations()), "0.00%")
-        d["Augs"] = ns.getAugmentationsFromFaction(faction).length
+
+        let allAugs = ns.getAugmentationsFromFaction(faction)
+        d["Augs"] = allAugs.length
 
         let owned = getOwnedAugmentationsForFaction(ns, faction)
-        d["Own"] = owned.length
+        d["Own"] = allAugs.length - owned.length == 1 ? "All" : owned.length
+
 
         data.push(d)
     })
