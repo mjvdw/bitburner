@@ -996,6 +996,15 @@ export function directConnect(ns: any, target: string): boolean {
 }
 
 
+/**
+ * Updates the value of the port holding data on which faction the player
+ * is currently working for.
+ * 
+ * @param ns Netscript object provided by Bitburner.
+ * @param faction The faction whose status to update.
+ * @param working Whether the player is working for the given faction.
+ * @returns Boolean indicating whether the update was successful.
+ */
 export function updateFactionWorking(ns: any, faction: string, working: boolean): boolean {
     let state = getPortCurrentState(ns, PORTS.factionFocus)
 
@@ -1031,6 +1040,13 @@ export function updateFactionWorking(ns: any, faction: string, working: boolean)
 }
 
 
+/**
+ * Helper function to give whether the player is working for the given faction.
+ * 
+ * @param ns Netscript object provided by Bitburner.
+ * @param faction The given faction to assess.
+ * @returns Whether the player is working for the given faction.
+ */
 export function isWorkingForFaction(ns: any, faction: string): boolean {
     let state = getPortCurrentState(ns, PORTS.factionFocus)
     let working = false
@@ -1043,6 +1059,15 @@ export function isWorkingForFaction(ns: any, faction: string): boolean {
 }
 
 
+/**
+ * Helper fucntion to get the maximum reputation needed to be able to install
+ * all augmentations for a given faction, assuming all other criteria and 
+ * pre-requisites have been met.
+ * 
+ * @param ns Netscript object provided by Bitburner.
+ * @param faction The faction to get max reputation for.
+ * @returns The maximum reputation needed for a given faction.
+ */
 export function getMaxReputationForFaction(ns: any, faction: string): number {
     let augs = ns.getAugmentationsFromFaction(faction)
     let repReq = augs.map((aug: string) => parseInt(ns.getAugmentationRepReq(aug)))
@@ -1051,6 +1076,16 @@ export function getMaxReputationForFaction(ns: any, faction: string): number {
 }
 
 
+/**
+ * Get the number of running scripts given a particular script name and optional
+ * target for that script.
+ * 
+ * @param ns Netscript object provided by Bitburner.
+ * @param scriptName The name of the script to count.
+ * @param target Some scripts have targets. Specify that target to only get the count
+ * for scripts affecting that target. Leave blank to get all scripts.
+ * @returns The number of scripts.
+ */
 export function getScriptCount(ns: any, scriptName: string, target?: string): number {
 
     let servers = ["home"].concat(ns.getPurchasedServers())
