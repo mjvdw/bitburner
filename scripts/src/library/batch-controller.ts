@@ -51,11 +51,12 @@ export async function main(ns: any) {
     // component of the batch - the server may run out of RAM to complete each
     // batch because the next batch started too quickly.
     while (true) {
-        // let availableRam = startRam - getReservedRamForServer(ns, server.hostname)
-        // if (availableRam >= batchRam) {
-        ns.exec(batchScript, server.hostname, 1, target.hostname, JSON.stringify(threads), JSON.stringify(times), Math.random())
-        reserveRam(ns, server, batchRam)
-        // }
+        let availableRam = startRam - getReservedRamForServer(ns, server.hostname)
+        let numScripts = ns.ps().length
+        if (availableRam >= batchRam && numScripts <= 1000) {
+            ns.exec(batchScript, server.hostname, 1, target.hostname, JSON.stringify(threads), JSON.stringify(times), Math.random())
+            reserveRam(ns, server, batchRam)
+        }
         await ns.sleep(times.interval)
     }
 }

@@ -1,5 +1,6 @@
 class FactionCriteria {
     faction: string
+    company: string
     server: string
     backdoorRequired: boolean
     minMoney: number
@@ -14,6 +15,7 @@ class FactionCriteria {
 
     constructor(params: any) {
         this.faction = params.faction
+        this.company = params.company || ""
         this.server = params.server || ""
         this.backdoorRequired = params.backdoorRequired || false
         this.minMoney = params.minMoney || 0
@@ -160,6 +162,7 @@ export const criteria = {
     // Fulcrum Secret Technologies
     FulcrumSecretTechnologies: new FactionCriteria({
         faction: "Fulcrum Secret Technologies",
+        company: "Fulcrum Technologies",
         server: "fulcrumassets",
         backdoorRequired: true,
         companyRep: 2.5e5

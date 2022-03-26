@@ -571,7 +571,7 @@ export function getBatchRam(ns: any, server: any, threads: any): number {
  */
 export function getBatchThreads(ns: any, server: any, target: any, availableRam: number, times: any): any {
 
-    let multiplier = 0.5
+    let multiplier = 0.9
     let threads: any = {}
 
     let i = 0

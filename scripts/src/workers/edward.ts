@@ -28,23 +28,6 @@ import {
 } from "/scripts/library/faction-criteria.js"
 
 
-/**
- * Generic file for testing purposes only.
- * 
- * @param ns Netscript object provider by Bitburner.
- */
-// export async function main(ns: any) {
-
-//     let state = getPortCurrentState(ns, PORTS.factionFocus)
-//     ns.tprint(state)
-
-
-//     updateFactionWorking(ns, "The Black Hand", true)
-//     ns.tprint(isWorkingForFaction(ns, "The Black Hand"))
-
-// }
-
-
 const HACK_SCRIPT = "/scripts/library/hack.js"
 const GROW_SCRIPT = "/scripts/library/grow.js"
 const WEAKEN_SCRIPT = "/scripts/library/weaken.js"
@@ -52,8 +35,17 @@ export async function main(ns: any) {
     ns.disableLog("ALL")
     ns.clearLog()
 
-    const worker = ns.args[0] || "home"
-    const singleTarget = ns.args[1]
+    const worker = ns.getServer().hostname
+    const singleTarget = ns.args[0]
+
+    if (worker == "home") {
+        const pservs = ns.getPurchasedServers()
+        // const pservs = ["pserv-001"]
+        for (let pserv of pservs) {
+            ns.exec("/scripts/workers/edward.js", pserv, 1)
+            await ns.sleep(1000)
+        }
+    }
 
     let targets: any = {}
 
@@ -77,15 +69,9 @@ export async function main(ns: any) {
             })
     }
 
-    await uploadScripts(ns, worker)
     await hackLoop(ns, worker, targets)
 }
 
-async function uploadScripts(ns: any, worker: string) {
-    await ns.scp(HACK_SCRIPT, worker)
-    await ns.scp(GROW_SCRIPT, worker)
-    await ns.scp(WEAKEN_SCRIPT, worker)
-}
 
 async function hackLoop(ns: any, worker: string, targets: any[]) {
     const updateInterval = 500
@@ -206,6 +192,15 @@ function attack(ns: any, type: string, worker: string, target: any, maxThreads: 
         return Math.floor(freeRam / ns.getScriptRam(script, worker))
     }
 }
+
+
+
+
+/**
+ * 
+ * HELPER FUNCTIONS ONLY
+ * 
+ */
 
 export function autocomplete(data: any, args: any[]) {
     return [...data.servers]; // This script autocompletes the list of servers.
