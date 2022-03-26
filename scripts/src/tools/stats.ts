@@ -391,9 +391,10 @@ function getFactionStats(ns: any): any[] {
 
         d["Rep"] = ns.nFormat(ns.getFactionRep(faction), "0,0.000a")
         d["Max"] = ns.nFormat(getMaxReputationForFaction(ns, faction), "0.000a")
+        d["d$ %"] = ns.nFormat((ns.getFactionRep(faction) / getReputationForDonations()), "0.00%")
+        d["Max %"] = ns.nFormat((ns.getFactionRep(faction) / getMaxReputationForFaction(ns, faction)), "0.00%")
 
         d["Fav"] = ns.nFormat(ns.getFactionFavor(faction), "0,0a")
-        d["d$ %"] = ns.nFormat((ns.getFactionRep(faction) / getReputationForDonations()), "0.00%")
 
         let allAugs = ns.getAugmentationsFromFaction(faction)
         d["Augs"] = allAugs.length
