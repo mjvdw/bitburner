@@ -883,13 +883,14 @@ export function buyFromDarkweb(ns: any) {
  * 
  * @returns The amount of reputation needed to unlock donations for a faction.
  */
-export function getReputationForDonations(favor: number = 150) {
+export function getReputationForDonations(ns: any, faction?: string) {
 
     // Favour required to unlock donations.
-    let favorRequired = favor
+    let favor = 150
+    if (faction) { favor -= ns.getFactionFavor(faction) }
 
     // Rearranging the equation given in-game.
-    let exponent = ((favorRequired - 1) * Math.log10(1.02)) + Math.log10(25000)
+    let exponent = ((favor - 1) * Math.log10(1.02)) + Math.log10(25000)
     let rep = Math.pow(10, exponent) - 25000
 
     return rep

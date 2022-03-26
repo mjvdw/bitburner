@@ -49,7 +49,7 @@ export async function main(ns: any) {
         let maxRep: any = {}
         factions.forEach((faction: string) => {
             let donationOnly = ns.args[0]
-            if (donationOnly) { maxRep[faction] = getReputationForDonations() }
+            if (donationOnly) { maxRep[faction] = getReputationForDonations(ns, faction) }
             else { maxRep[faction] = getMaxReputationForFaction(ns, faction) }
         })
         let repNeeded = factions.filter((faction: string) => {
