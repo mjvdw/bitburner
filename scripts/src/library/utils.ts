@@ -1049,3 +1049,23 @@ export function getMaxReputationForFaction(ns: any, faction: string): number {
     let maxRep = Math.max(...repReq)
     return maxRep
 }
+
+
+export function getScriptCount(ns: any, scriptName: string, target?: string): number {
+
+    let servers = ["home"].concat(ns.getPurchasedServers())
+
+    let count = 0
+    servers.forEach((server: string) => {
+        let scripts = ns.ps(server)
+            .filter((script: any) => script.filename == scriptName)
+            .filter((script: any) => {
+                if (target) {
+                    return script.args.includes(target)
+                }
+            })
+        count += scripts.length
+    })
+
+    return count
+}

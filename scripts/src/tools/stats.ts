@@ -11,7 +11,9 @@ import {
     getOwnedAugmentationsForFaction,
     getReputationForDonations,
     isWorkingForFaction,
-    getMaxReputationForFaction
+    getMaxReputationForFaction,
+    getScriptCount,
+    SCRIPTS
     // @ts-ignore
 } from "/scripts/library/utils.js";
 
@@ -91,11 +93,15 @@ function getHackingStats(ns: any): object[] {
         let hacking = getServersHackingTarget(ns, target)
         let rate = (ns.hackAnalyze(target.hostname) * ns.getServerMaxMoney(target.hostname)) / (ns.getWeakenTime(target.hostname) / 1000)
 
+        let weakenCount = getScriptCount(ns, SCRIPTS.weaken, target.hostname)
+        let growCount = getScriptCount(ns, SCRIPTS.grow, target.hostname)
+        let hackCount = getScriptCount(ns, SCRIPTS.hack, target.hostname)
+
         return {
             server: target.hostname,
-            a: "*".repeat(preparing.length),
-            b: isTargetPrepared(ns, target) ? "*" : "",
-            c: "*".repeat(hacking.length),
+            w: weakenCount == 0 ? "" : weakenCount,
+            g: growCount == 0 ? "" : growCount,
+            h: hackCount == 0 ? "" : hackCount,
             level: ns.getServerRequiredHackingLevel(target.hostname),
             "max money": money,
             sec: (target.hackDifficulty).toFixed(2),
