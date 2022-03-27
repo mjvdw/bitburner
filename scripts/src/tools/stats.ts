@@ -215,10 +215,18 @@ function getAllCrimeStats(ns: any): any[] {
         let d = {
             name: stats.name,
             i: crimes.indexOf(crime) + 1,
+            time: ns.nFormat(stats.time / 1000, "00:00:00"),
             money: ns.nFormat(money, "$0.000a"),
             chance: ns.nFormat(ns.getCrimeChance(stats.name), "0.00%"),
             diff: ns.nFormat(stats.difficulty, "0.00"),
-            "rate/sec": ns.nFormat((money / (stats.time / 1000)) * ns.getCrimeChance(stats.name), "$0.000a")
+            "rate/sec": ns.nFormat((money / (stats.time / 1000)) * ns.getCrimeChance(stats.name), "$0.000a"),
+            "|": "|",
+            agi: stats.agility_exp,
+            char: stats.charisma_exp,
+            def: stats.defense_exp,
+            dex: stats.dexterity_exp,
+            str: stats.strength_exp,
+            rate: ns.nFormat((stats.agility_exp / (stats.time / 1000)), "0.000"),
         }
         data.push(d)
     })

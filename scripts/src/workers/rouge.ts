@@ -107,7 +107,7 @@ async function attemptToMeetCriteria(ns: any) {
     for (let criteria of remainingFactionCriteria) {
 
         // For targets that require a backdoor to be installed on a specific server.
-        if (criteria.backdoorRequired && ns.getFactionFavor(criteria.faction) < 150) {
+        if (criteria.backdoorRequired) {
             let unlocked = unlockTarget(ns, criteria.server)
             if (unlocked) {
                 directConnect(ns, criteria.server)
