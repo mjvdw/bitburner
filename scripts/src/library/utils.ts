@@ -616,6 +616,7 @@ export function getBatchThreads(ns: any, server: any, target: any, availableRam:
         // Since we are aiming to run one per second, this is the same as the number of
         // seconds it takes to complete one batch.
         let numBatches = times.total / BATCH_FREQUENCY
+        numBatches = numBatches >= 300 ? 300 : numBatches
         let totalBatchRam = batchRam * numBatches
 
         // Scale the multiplier up or down depending on whether the "ideal" thread amount
