@@ -66,6 +66,7 @@ export const PORTS = {
 
 const BATCH_SPEED = 200
 const BATCH_FREQUENCY = 5 * BATCH_SPEED
+const MAX_BATCHES = 10
 
 export const CRIMES = [
     "shoplift",
@@ -616,7 +617,7 @@ export function getBatchThreads(ns: any, server: any, target: any, availableRam:
         // Since we are aiming to run one per second, this is the same as the number of
         // seconds it takes to complete one batch.
         let numBatches = times.total / BATCH_FREQUENCY
-        numBatches = numBatches >= 300 ? 300 : numBatches
+        numBatches = numBatches > MAX_BATCHES ? MAX_BATCHES : numBatches
         let totalBatchRam = batchRam * numBatches
 
         // Scale the multiplier up or down depending on whether the "ideal" thread amount
