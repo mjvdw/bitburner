@@ -337,6 +337,14 @@ export function killHackScripts(ns: any, server: any) {
 }
 
 
+/**
+ * Allows the player to stop all scripts on all servers, without killing
+ * certain key scripts that need to keep running.
+ * 
+ * @param ns Netscript object provided by Bitburner.
+ * @param host Host on which to kill all scripts.
+ * @param exceptions The scripts to keep running.
+ */
 export function killAllScriptsWithExceptions(ns: any, host: string, exceptions: string[]) {
 
     let runningScripts = ns.ps(host)
