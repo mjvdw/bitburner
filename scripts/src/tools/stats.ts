@@ -106,7 +106,7 @@ function getHackingStats(ns: any): object[] {
             "max money": money,
             sec: (target.hackDifficulty).toFixed(2),
             time: ns.nFormat(ns.getWeakenTime(target.hostname) / 1000, "00:00:00"),
-            "rate/thread": ns.nFormat(rate, "$0.00") + "/s",
+            "rate/thread": ns.nFormat(rate, "$0.000a") + "/s",
         }
     })
 
