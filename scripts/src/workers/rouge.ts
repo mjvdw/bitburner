@@ -56,8 +56,9 @@ export async function main(ns: any) {
             return ns.getFactionRep(faction) < maxRep[faction] && ns.getFactionFavor(faction) < 150
         })
 
-        ns.stopAction()
         if (repNeeded.length > 0) {
+            ns.stopAction()
+
             // Start generating rep for the first in the list.
             let faction = Object.entries(criteria)
                 .map((value: any) => value[1])
