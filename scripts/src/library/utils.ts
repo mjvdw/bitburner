@@ -66,7 +66,7 @@ export const PORTS = {
 
 const BATCH_SPEED = 200
 const BATCH_FREQUENCY = 5 * BATCH_SPEED
-const MAX_BATCHES = 10
+export const MAX_BATCHES = 10
 
 export const CRIMES = [
     "shoplift",

@@ -9,7 +9,8 @@ import {
     getBatchRam,
     getServerAvailableRam,
     resetReservedRamForServer,
-    SCRIPTS
+    SCRIPTS,
+    MAX_BATCHES
     // @ts-ignore
 } from "/scripts/library/utils.js";
 
@@ -53,7 +54,7 @@ export async function main(ns: any) {
     while (true) {
         let availableRam = startRam - getReservedRamForServer(ns, server.hostname)
         let numScripts = ns.ps().length
-        if (availableRam >= batchRam && numScripts <= 1000) {
+        if (availableRam >= batchRam && numScripts <= (MAX_BATCHES * 5) + 10) {
             ns.exec(batchScript, server.hostname, 1, target.hostname, JSON.stringify(threads), JSON.stringify(times), Math.random())
             reserveRam(ns, server, batchRam)
         }

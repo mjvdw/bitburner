@@ -337,7 +337,7 @@ function getAugmentationStats(ns: any, args: string[]): any[] {
         return []
     }
 
-    let augmentations = getAllAugmentations(ns)
+    let augmentations = getAllAugmentations(ns).filter((a: any) => a.name != "NeuroFlux Governor")
     let installedAugs = ns.getOwnedAugmentations(false)
     let purchasedAugs = ns.getOwnedAugmentations(true).filter((x: string) => !installedAugs.includes(x))
 
@@ -410,11 +410,11 @@ function getFactionStats(ns: any): any[] {
 
         d["Fav"] = ns.nFormat(ns.getFactionFavor(faction), "0,0a")
 
-        let allAugs = ns.getAugmentationsFromFaction(faction)
+        let allAugs = ns.getAugmentationsFromFaction(faction).filter((a: string) => a != "NeuroFlux Governor")
         d["Augs"] = allAugs.length
 
-        let owned = getOwnedAugmentationsForFaction(ns, faction)
-        d["Own"] = allAugs.length - owned.length == 1 ? "All" : owned.length
+        let owned = getOwnedAugmentationsForFaction(ns, faction).filter((a: string) => a != "NeuroFlux Governor")
+        d["Own"] = allAugs.length - owned.length <= 1 ? "All" : owned.length
 
 
         data.push(d)
