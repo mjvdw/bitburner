@@ -33,6 +33,7 @@ export async function main(ns: any) {
         servers = servers
             .filter((server: string) => server.startsWith("pserv-") || server.startsWith("home"))
             .map((server: string) => ns.getServer(server))
+            .sort((a: any, b: any) => b.maxRam - a.maxRam)
         let hackPairs = servers.map((server: any, index: number) => {
             let target: any
             if (targets[index]) { target = targets[index] }

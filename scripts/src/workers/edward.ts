@@ -38,14 +38,14 @@ export async function main(ns: any) {
     const worker = ns.getServer().hostname
     const singleTarget = ns.args[0]
 
-    if (worker == "home") {
-        const pservs = ns.getPurchasedServers()
-        // const pservs = ["pserv-001"]
-        for (let pserv of pservs) {
-            ns.exec("/scripts/workers/edward.js", pserv, 1)
-            await ns.sleep(1000)
-        }
-    }
+    // if (worker == "home") {
+    //     const pservs = ns.getPurchasedServers()
+    //     // const pservs = ["pserv-001"]
+    //     for (let pserv of pservs) {
+    //         ns.exec("/scripts/workers/edward.js", pserv, 1)
+    //         await ns.sleep(1000)
+    //     }
+    // }
 
     let targets: any = {}
 

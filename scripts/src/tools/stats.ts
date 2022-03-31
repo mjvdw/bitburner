@@ -414,7 +414,7 @@ function getFactionStats(ns: any): any[] {
         d["Augs"] = allAugs.length
 
         let owned = getOwnedAugmentationsForFaction(ns, faction).filter((a: string) => a != "NeuroFlux Governor")
-        d["Own"] = allAugs.length - owned.length <= 1 ? "All" : owned.length
+        d["Own"] = allAugs.length - owned.length <= 0 ? "All" : owned.length
 
 
         data.push(d)

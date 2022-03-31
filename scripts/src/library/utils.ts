@@ -66,7 +66,7 @@ export const PORTS = {
 
 const BATCH_SPEED = 200
 const BATCH_FREQUENCY = 5 * BATCH_SPEED
-export const MAX_BATCHES = 10
+export const MAX_BATCHES = 50
 
 export const CRIMES = [
     "shoplift",
@@ -380,17 +380,18 @@ export function unlockTarget(ns: any, target: any): boolean {
     // This is a bit fragile - it relies on the order of ALL_PORT_SCRIPTS
     // never changing. However, assuming the order doesn't change, this will
     // run whatever port unlock scripts the user has available.
-    scripts.includes(ALL_PORT_SCRIPTS[0]) ? ns.brutessh(target.hostname) : null
-    scripts.includes(ALL_PORT_SCRIPTS[1]) ? ns.ftpcrack(target.hostname) : null
-    scripts.includes(ALL_PORT_SCRIPTS[2]) ? ns.relaysmtp(target.hostname) : null
-    scripts.includes(ALL_PORT_SCRIPTS[3]) ? ns.httpworm(target.hostname) : null
-    scripts.includes(ALL_PORT_SCRIPTS[4]) ? ns.sqlinject(target.hostname) : null
+    let portsOpen = 5
+    scripts.includes(ALL_PORT_SCRIPTS[0]) ? ns.brutessh(target.hostname) : portsOpen--
+    scripts.includes(ALL_PORT_SCRIPTS[1]) ? ns.ftpcrack(target.hostname) : portsOpen--
+    scripts.includes(ALL_PORT_SCRIPTS[2]) ? ns.relaysmtp(target.hostname) : portsOpen--
+    scripts.includes(ALL_PORT_SCRIPTS[3]) ? ns.httpworm(target.hostname) : portsOpen--
+    scripts.includes(ALL_PORT_SCRIPTS[4]) ? ns.sqlinject(target.hostname) : portsOpen--
 
     // Once unlocking as many ports as possible, attempt to NUKE the target.
-    try {
+    if (portsOpen >= target.numOpenPortsRequired) {
         ns.nuke(target.hostname)
         return true
-    } catch {
+    } else {
         return false
     }
 }
@@ -896,7 +897,7 @@ export function buyFromDarkweb(ns: any) {
 export function getReputationForDonations(ns: any, faction?: string) {
 
     // Favour required to unlock donations.
-    let favor = 150
+    let favor = 151
     if (faction) { favor -= ns.getFactionFavor(faction) }
 
     // Rearranging the equation given in-game.

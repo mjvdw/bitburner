@@ -17,12 +17,16 @@ import {
  */
 export async function main(ns: any) {
 
+    let flags: any = ns.flags([
+        ["pservs", true]
+    ])
+
     while (true) {
         // Continually upgrade "home" server to the next available upgrade.
         upgradeHomeServer(ns)
 
         // Keep purchased servers in lockstep with "home", up to their max.
-        await maintainPurchasedServers(ns)
+        if (flags["pservs"]) { await maintainPurchasedServers(ns) }
 
         // If player doesn't already own Tor router and has enough money, buy
         // the Tor router.
