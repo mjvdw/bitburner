@@ -86,7 +86,9 @@ function getHackingStats(ns: any): object[] {
     let data = targets.map((target: any) => {
 
         // Server available money v max money
-        let money = ns.nFormat(target.moneyMax, "$0.000a") + " (" + ns.nFormat(target.moneyAvailable / target.moneyMax, "0.00%") + ")"
+        let maxMoney = target.moneyMax
+        let ratio = target.moneyAvailable / target.moneyMax
+        let money = ratio ? ns.nFormat(maxMoney, "$0.000a") + " (" + ns.nFormat(ratio, "0.00%") + ")" : "—"
 
         // Current state of "attack"
         let preparing = getServersPreparingTarget(ns, target)
@@ -248,7 +250,7 @@ function getRamUpgradeCost(ns: any): any[] {
     for (let i = 1; i <= 20; i++) {
         let ram = Math.pow(2, i)
         let homeRam = ns.getServerMaxRam("home")
-        let homeCost = homeRam == ram ? ns.getUpgradeHomeRamCost() : 0
+        let homeCost = homeRam == ram / 2 ? ns.getUpgradeHomeRamCost() : 0
         let pservCost = ns.getPurchasedServerCost(ram)
 
         data.push({
@@ -355,7 +357,8 @@ function getAugmentationStats(ns: any, args: string[]): any[] {
         }
 
         for (let stat in typeOptions[type]) {
-            d[stat] = ns.nFormat(stats[typeOptions[type][stat]], "0.00") || "-"
+            let s = stats[typeOptions[type][stat]]
+            d[stat] = s !== undefined ? ns.nFormat(s, "0.00") : "-"
         }
 
         data.push(d)

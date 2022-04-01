@@ -45,6 +45,7 @@ export const SCRIPTS = {
     pserv: SCRIPT_PREFIXES.tools + "pserv.js",
     resetScripts: SCRIPT_PREFIXES.tools + "reset-scripts.js",
     share: SCRIPT_PREFIXES.tools + "share.js",
+    start: SCRIPT_PREFIXES.tools + "start.js",
     stats: SCRIPT_PREFIXES.tools + "stats.js",
     stop: SCRIPT_PREFIXES.tools + "stop.js",
     sync: SCRIPT_PREFIXES.tools + "sync.js",
@@ -52,9 +53,11 @@ export const SCRIPTS = {
     unlock: SCRIPT_PREFIXES.tools + "unlock.js",
     // Workers
     capone: SCRIPT_PREFIXES.workers + "capone.js",
+    edward: SCRIPT_PREFIXES.workers + "edward.js",
     icarusjr: SCRIPT_PREFIXES.workers + "icarus-jr.js",
     icarus: SCRIPT_PREFIXES.workers + "icarus.js",
-    linus: SCRIPT_PREFIXES.workers + "linus.js"
+    linus: SCRIPT_PREFIXES.workers + "linus.js",
+    rouge: SCRIPT_PREFIXES.workers + "rouge.js"
 }
 
 const HACK_SCRIPTS = [SCRIPTS.batchController, SCRIPTS.batch, SCRIPTS.hack, SCRIPTS.grow, SCRIPTS.weaken]
@@ -350,11 +353,6 @@ export function killAllScriptsWithExceptions(ns: any, host: string, exceptions: 
 
     let runningScripts = ns.ps(host)
     runningScripts.forEach((script: any) => {
-        ns.tprint(!exceptions.includes(script.filename))
-
-        ns.tprint(exceptions)
-        ns.tprint(script.filename)
-
         if (!exceptions.includes(script.filename)) {
             ns.tprint("Killing " + script.filename + " on " + host)
             ns.kill(script.pid, host, script.args)
