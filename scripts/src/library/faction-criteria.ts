@@ -163,8 +163,8 @@ export const criteria = {
     FulcrumSecretTechnologies: new FactionCriteria({
         faction: "Fulcrum Secret Technologies",
         company: "Fulcrum Technologies",
-        server: "fulcrumassets",
-        backdoorRequired: true,
+        // server: "fulcrumassets",
+        // backdoorRequired: true,
         companyRep: 2.5e5
     }),
 
