@@ -15,8 +15,8 @@ export async function main(ns: any) {
     while (true) {
         let crime = getMostProfitableCrime(ns)
         let crimeTime = 0
-        if (!ns.isBusy()) {
-            crimeTime = ns.commitCrime(crime)
+        if (!ns.singularity.isBusy()) {
+            crimeTime = ns.singularity.commitCrime(crime)
         }
         await ns.sleep(crimeTime + 200)
     }
@@ -37,10 +37,10 @@ function getMostProfitableCrime(ns: any): string {
 
     let crimeDetails = crimes
         .map((c: string) => {
-            let crime = ns.getCrimeStats(c)
+            let crime = ns.singularity.getCrimeStats(c)
             return {
                 name: crime.name,
-                rate: (crime.money / (crime.time / 1000)) * ns.getCrimeChance(crime.name)
+                rate: (crime.money / (crime.time / 1000)) * ns.singularity.getCrimeChance(crime.name)
             }
         })
         .sort((a: any, b: any) => b.rate - a.rate)

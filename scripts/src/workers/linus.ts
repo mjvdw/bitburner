@@ -29,7 +29,7 @@ export async function main(ns: any) {
         // If player doesn't already own Tor router and has enough money, buy
         // the Tor router.
         let enoughMoney = ns.getServerMoneyAvailable("home") >= 2e5
-        if (!ownsTorRouter(ns) && enoughMoney) { ns.purchaseTor() }
+        if (!ownsTorRouter(ns) && enoughMoney) { ns.singularity.purchaseTor() }
 
         // Once user owns Tor router, purchase port scripts once enough money.
         // If player doesn't have enough money at this point, just move on, don't wait.

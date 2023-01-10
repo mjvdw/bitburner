@@ -212,16 +212,16 @@ function getAllCrimeStats(ns: any): any[] {
 
     let data: any[] = []
     crimes.forEach((crime: string) => {
-        let stats = ns.getCrimeStats(crime)
+        let stats = ns.singularity.getCrimeStats(crime)
         let money = stats.money * bitnodeMultiplier
         let d = {
             name: stats.name,
             i: crimes.indexOf(crime) + 1,
             time: ns.nFormat(stats.time / 1000, "00:00:00"),
             money: ns.nFormat(money, "$0.000a"),
-            chance: ns.nFormat(ns.getCrimeChance(stats.name), "0.00%"),
+            chance: ns.nFormat(ns.singularity.getCrimeChance(stats.name), "0.00%"),
             diff: ns.nFormat(stats.difficulty, "0.00"),
-            "rate/sec": ns.nFormat((money / (stats.time / 1000)) * ns.getCrimeChance(stats.name), "$0.000a"),
+            "rate/sec": ns.nFormat((money / (stats.time / 1000)) * ns.singularity.getCrimeChance(stats.name), "$0.000a"),
             "|": "|",
             agi: stats.agility_exp,
             char: stats.charisma_exp,
@@ -250,7 +250,7 @@ function getRamUpgradeCost(ns: any): any[] {
     for (let i = 1; i <= 20; i++) {
         let ram = Math.pow(2, i)
         let homeRam = ns.getServerMaxRam("home")
-        let homeCost = homeRam == ram / 2 ? ns.getUpgradeHomeRamCost() : 0
+        let homeCost = homeRam == ram / 2 ? ns.singularity.getUpgradeHomeRamCost() : 0
         let pservCost = ns.getPurchasedServerCost(ram)
 
         data.push({
@@ -340,12 +340,12 @@ function getAugmentationStats(ns: any, args: string[]): any[] {
     }
 
     let augmentations = getAllAugmentations(ns).filter((a: any) => a.name != "NeuroFlux Governor")
-    let installedAugs = ns.getOwnedAugmentations(false)
-    let purchasedAugs = ns.getOwnedAugmentations(true).filter((x: string) => !installedAugs.includes(x))
+    let installedAugs = ns.singularity.getOwnedAugmentations(false)
+    let purchasedAugs = ns.singularity.getOwnedAugmentations(true).filter((x: string) => !installedAugs.includes(x))
 
     for (let a in augmentations) {
         let augmentation = augmentations[a]
-        let stats = ns.getAugmentationStats(augmentation.name)
+        let stats = ns.singularity.getAugmentationStats(augmentation.name)
 
         let purchased = purchasedAugs.includes(augmentation.name)
         let installed = installedAugs.includes(augmentation.name)
@@ -402,18 +402,18 @@ function getFactionStats(ns: any): any[] {
     FACTIONS.forEach((faction: string) => {
         let d: any = {}
 
-        let joined = ns.getFactionRep(faction) > 0 ? "* " : "  "
+        let joined = ns.singularity.getFactionRep(faction) > 0 ? "* " : "  "
         let working = isWorkingForFaction(ns, faction) ? workString : ""
         d["faction"] = joined + faction + working
 
-        d["Rep"] = ns.nFormat(ns.getFactionRep(faction), "0,0.000a")
+        d["Rep"] = ns.nFormat(ns.singularity.getFactionRep(faction), "0,0.000a")
         d["Max"] = ns.nFormat(getMaxReputationForFaction(ns, faction), "0.000a")
-        d["d$ %"] = ns.nFormat((ns.getFactionRep(faction) / getReputationForDonations()), "0.00%")
-        d["Max %"] = ns.nFormat((ns.getFactionRep(faction) / getMaxReputationForFaction(ns, faction)), "0.00%")
+        d["d$ %"] = ns.nFormat((ns.singularity.getFactionRep(faction) / getReputationForDonations()), "0.00%")
+        d["Max %"] = ns.nFormat((ns.singularity.getFactionRep(faction) / getMaxReputationForFaction(ns, faction)), "0.00%")
 
-        d["Fav"] = ns.nFormat(ns.getFactionFavor(faction), "0,0a")
+        d["Fav"] = ns.nFormat(ns.singularity.getFactionFavor(faction), "0,0a")
 
-        let allAugs = ns.getAugmentationsFromFaction(faction).filter((a: string) => a != "NeuroFlux Governor")
+        let allAugs = ns.singularity.getAugmentationsFromFaction(faction).filter((a: string) => a != "NeuroFlux Governor")
         d["Augs"] = allAugs.length
 
         let owned = getOwnedAugmentationsForFaction(ns, faction).filter((a: string) => a != "NeuroFlux Governor")

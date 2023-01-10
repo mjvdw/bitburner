@@ -759,18 +759,18 @@ export function printTable(ns: any, data: object[]) {
  * @returns Whether the upgrade is successful.
  */
 export function upgradeHomeServer(ns: any): boolean {
-    let ramCost = ns.getUpgradeHomeRamCost()
-    let coresCost = ns.getUpgradeHomeCoresCost()
+    let ramCost = ns.singularity.getUpgradeHomeRamCost()
+    let coresCost = ns.singularity.getUpgradeHomeCoresCost()
     let money = ns.getServerMoneyAvailable("home")
 
     let upgrade = ramCost <= coresCost ? "RAM" : "CORES"
 
     if (upgrade == "RAM" && money >= ramCost) {
-        ns.upgradeHomeRam()
+        ns.singularity.upgradeHomeRam()
         ns.tprint("Upgraded RAM on home server!")
         return true
     } else if (upgrade == "CORES" && money >= coresCost) {
-        ns.upgradeHomeCores()
+        ns.singularity.upgradeHomeCores()
         ns.tprint("Upgraded cores on home server!")
         return true
     }
@@ -840,7 +840,7 @@ export function getAllAugmentations(ns: any): any[] {
 
     let allAugmentations: any[] = []
     FACTIONS.forEach((faction: string) => {
-        let augmentations = ns.getAugmentationsFromFaction(faction)
+        let augmentations = ns.singularity.getAugmentationsFromFaction(faction)
         augmentations.forEach((augmentation: string) => {
             allAugmentations.push({
                 name: augmentation,
@@ -877,7 +877,7 @@ export function buyFromDarkweb(ns: any) {
     for (let script of availableToBuy) {
         let money = ns.getServerMoneyAvailable("home")
         if (money >= script.cost) {
-            ns.purchaseProgram(script.name)
+            ns.singularity.purchaseProgram(script.name)
             ns.tprint("Success: purchased " + script.name + " from Darkweb for " + ns.nFormat(script.cost, "$0.000a"))
         }
     }
@@ -896,7 +896,7 @@ export function getReputationForDonations(ns: any, faction?: string) {
 
     // Favour required to unlock donations.
     let favor = 151
-    if (faction) { favor -= ns.getFactionFavor(faction) }
+    if (faction) { favor -= ns.singularity.getFactionFavor(faction) }
 
     // Rearranging the equation given in-game.
     let exponent = ((favor - 1) * Math.log10(1.02)) + Math.log10(25000)
@@ -916,7 +916,7 @@ export function getReputationForDonations(ns: any, faction?: string) {
  */
 export function getOwnedAugmentationsForFaction(ns: any, faction: string): string[] {
     let augmentations = getAllAugmentations(ns)
-    let owned = ns.getOwnedAugmentations(true).filter((aug: string) => {
+    let owned = ns.singularity.getOwnedAugmentations(true).filter((aug: string) => {
         return augmentations.some((a: any) => a.name == aug && a.faction == faction)
     })
 
@@ -933,8 +933,8 @@ export function getOwnedAugmentationsForFaction(ns: any, faction: string): strin
  * @returns A list of augmentations not owned by the player, offered by that faction.
  */
 export function getUnownedAugmentationsForFaction(ns: any, faction: string): string[] {
-    let all = ns.getAugmentationsFromFaction(faction)
-    let unowned = all.filter((aug: string) => !ns.getOwnedAugmentations(true).includes(aug))
+    let all = ns.singularity.getAugmentationsFromFaction(faction)
+    let unowned = all.filter((aug: string) => !ns.singularity.getOwnedAugmentations(true).includes(aug))
     return unowned
 }
 
@@ -996,7 +996,7 @@ export function directConnect(ns: any, target: string): boolean {
 
     if (isFound) {
         for (let server of path) {
-            ns.connect(server)
+            ns.singularity.connect(server)
         }
         return true
     } else {
@@ -1079,8 +1079,8 @@ export function isWorkingForFaction(ns: any, faction: string): boolean {
  * @returns The maximum reputation needed for a given faction.
  */
 export function getMaxReputationForFaction(ns: any, faction: string): number {
-    let augs = ns.getAugmentationsFromFaction(faction)
-    let repReq = augs.map((aug: string) => parseInt(ns.getAugmentationRepReq(aug)))
+    let augs = ns.singularity.getAugmentationsFromFaction(faction)
+    let repReq = augs.map((aug: string) => parseInt(ns.singularity.getAugmentationRepReq(aug)))
     let maxRep = Math.max(...repReq)
     return maxRep
 }

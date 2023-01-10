@@ -33,11 +33,11 @@ export async function main(ns: any) {
         // Check for faction invitations. If there is an invitation, 
         // check that there are augmentations worth obtaining. If yes, 
         // join the faction. If no, do nothing.
-        let invites = ns.checkFactionInvitations()
+        let invites = ns.singularity.checkFactionInvitations()
         invites.forEach((faction: string) => {
             let augs = getUnownedAugmentationsForFaction(ns, faction)
-            if (augs != ["NeuroFlux Governor"]) {
-                ns.joinFaction(faction)
+            if (augs != Array("NeuroFlux Governor")) {
+                ns.singularity.joinFaction(faction)
                 ns.tprint("Joined faction: " + faction)
             }
         })
@@ -53,11 +53,11 @@ export async function main(ns: any) {
             else { maxRep[faction] = getMaxReputationForFaction(ns, faction) }
         })
         let repNeeded = factions.filter((faction: string) => {
-            return ns.getFactionRep(faction) < maxRep[faction] && ns.getFactionFavor(faction) < 150
+            return ns.singularity.getFactionRep(faction) < maxRep[faction] && ns.singularity.getFactionFavor(faction) < 150
         })
 
         if (repNeeded.length > 0) {
-            ns.stopAction()
+            ns.singularity.stopAction()
 
             // Start generating rep for the first in the list.
             let faction = Object.entries(criteria)
@@ -68,7 +68,7 @@ export async function main(ns: any) {
             let worktypes = FACTION_WORKTYPES
             let success = false
             while (!success && i < 3) {
-                success = ns.workForFaction(faction, worktypes[i], false)
+                success = ns.singularity.workForFaction(faction, worktypes[i], false)
                 i++
             }
 
@@ -116,9 +116,9 @@ async function attemptToMeetCriteria(ns: any) {
 
             if (unlocked && hackLevel >= requiredHackLevel) {
                 directConnect(ns, criteria.server)
-                await ns.installBackdoor()
+                await ns.singularity.installBackdoor()
                 ns.tprint("Installed backdoor on " + criteria.server)
-                ns.connect("home")
+                ns.singularity.connect("home")
             }
         }
 
