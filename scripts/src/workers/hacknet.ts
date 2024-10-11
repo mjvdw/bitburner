@@ -8,6 +8,9 @@
 export async function main(ns: any) {
     while (true) {
         let numNodes = ns.hacknet.numNodes();
+        let maxNodes = ns.hacknet.maxNumNodes();
+
+
         for (let i = 0; i < numNodes; i++) {
             let cost = ns.hacknet.getLevelUpgradeCost(i);
             let money = ns.getServerMoneyAvailable("home");
