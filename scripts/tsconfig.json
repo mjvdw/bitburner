@@ -1,14 +1,14 @@
 {
-	"compilerOptions": {
-		"module": "esnext",
-		"esModuleInterop": true,
-		"allowSyntheticDefaultImports": true,
-		"lib": ["es6", "dom", "es2017"],
-		"target": "es6",
-		"noImplicitAny": true,
-		"moduleResolution": "node",
-		"sourceMap": true,
-		"outDir": "dist"
-	},
-	"include": ["src/**/*", "index.d.ts"]
+  "compilerOptions": {
+    "module": "esnext",
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "lib": ["es6", "dom", "es2017"],
+    "target": "es6",
+    "noImplicitAny": true,
+    "moduleResolution": "node",
+    "sourceMap": true,
+    "outDir": "dist"
+  },
+  "include": ["src/**/*", "index.d.ts"]
 }

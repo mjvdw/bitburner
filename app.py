@@ -8,7 +8,7 @@ app = Flask(__name__)
 CORS(app)
 turbo = Turbo(app)
 
-log = logging.getLogger("werkzeug")
+log = logging.getLogger('werkzeug')
 log.setLevel(logging.ERROR)
 
 ROOT = "scripts/dist/"
@@ -20,9 +20,8 @@ def scripts_list():
     scripts = []
     for p in PATHS:
         path = os.path.abspath(ROOT + p)
-        scripts.extend(
-            [p + f for f in os.listdir(path) if os.path.isfile(os.path.join(path, f))]
-        )
+        scripts.extend([p + f for f in os.listdir(
+            path) if os.path.isfile(os.path.join(path, f))])
 
     excluded = [".DS_Store", "index.d.ts"]
 
@@ -34,7 +33,7 @@ def scripts_list():
     return send_file("scripts.txt", "txt/plain")
 
 
-@app.route("/<path:filename>")
+@ app.route("/<path:filename>")
 def file(filename):
     path = os.path.abspath(ROOT)
     script = path + "/" + filename
