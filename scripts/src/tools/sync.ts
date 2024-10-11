@@ -30,6 +30,12 @@ async function sync(ns: any, address: string) {
     await ns.wget(url, "scripts.txt", "home");
 
     let scriptsList = await ns.read("scripts.txt");
+
+    // Remove trailing comma if there is one.
+    if (scriptsList[scriptsList.length - 1] === ",") {
+        scriptsList = scriptsList.slice(0, -1);
+    }
+
     let scripts = scriptsList.split(",");
     for (let s in scripts) {
         let saveLocation = "/scripts/" + scripts[s];

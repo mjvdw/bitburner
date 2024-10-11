@@ -109,3 +109,5 @@ __pycache__
 scripts.txt
 scripts/archive-js
 backup_saves
+.venv
+.DS_Store

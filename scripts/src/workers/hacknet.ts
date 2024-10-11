@@ -1,0 +1,1 @@
+/** @param {import(".").NS} ns */
