@@ -1,9 +1,8 @@
-/** @param {import(".").NS} ns */
+import { NS } from "@ns";
 
 import {
     getTargets,
     printTable,
-    isTargetPrepared,
     getReservedRamForServer,
     getAllAugmentations,
     CRIMES,
@@ -14,8 +13,7 @@ import {
     getMaxReputationForFaction,
     getScriptCount,
     SCRIPTS
-    // @ts-ignore
-} from "/scripts/library/utils.js";
+} from "/library/utils.js";
 
 
 /**
@@ -23,7 +21,7 @@ import {
  * 
  * @param ns Netscript object provided by Bitburner.
  */
-export async function main(ns: any) {
+export async function main(ns: NS): Promise<void> {
 
     let data: object[] = []
     let option = ns.args[0]

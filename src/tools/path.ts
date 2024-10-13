@@ -1,9 +1,8 @@
-/** @param {import(".").NS} ns **/
+import { NS } from "@ns";
 
 import {
     getPathToServer
-    // @ts-ignore
-} from "/scripts/library/utils.js";
+} from "/library/utils.js";
 
 /**
  * Helper function to get the direct path to a particular server. Useful for
@@ -12,7 +11,7 @@ import {
  * @param ns Netscript object provider by Bitburner.
  * @returns Object with the results and a status (true if found, false if not)
  */
-export async function main(ns: any) {
+export async function main(ns: NS): Promise<void> {
 
     let startServer = ns.getHostname();
     let target = ns.args[0];

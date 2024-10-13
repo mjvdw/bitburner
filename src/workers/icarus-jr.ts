@@ -1,7 +1,5 @@
-/** @param {import(".").NS} ns */
-
-// @ts-ignore
-import { getTargets, isTargetPrepared, getServerAvailableRam, unlockTarget, SCRIPTS } from "/scripts/library/utils.js";
+import { NS } from "@ns";
+import { getTargets, isTargetPrepared, getServerAvailableRam, unlockTarget, SCRIPTS } from "/library/utils.js";
 
 /**
  * This is a junior version of the "master" script for hacking servers.
@@ -9,7 +7,7 @@ import { getTargets, isTargetPrepared, getServerAvailableRam, unlockTarget, SCRI
  * 
  * @param ns Netscript object provider by Bitburner
  */
-export async function main(ns: any) {
+export async function main(ns: NS): Promise<void> {
 
     let singleTarget = ns.args[0]
     let targets = singleTarget ? [ns.getServer(singleTarget)] : getTargets(ns, true)

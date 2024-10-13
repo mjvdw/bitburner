@@ -1,4 +1,4 @@
-/** @param {import(".").NS} ns */
+import { NS } from "@ns";
 
 import {
     FACTIONS,
@@ -9,20 +9,16 @@ import {
     directConnect,
     updateFactionWorking,
     getMaxReputationForFaction
-    // @ts-ignore
-} from "/scripts/library/utils.js";
+} from "/library/utils.js";
 
-import {
-    criteria
-    // @ts-ignore
-} from "/scripts/library/faction-criteria.js"
+import { criteria } from "/library/faction-criteria.js"
 
 /**
  * Worker to control joining factions and purchasing organisations.
  * 
  * @param ns Netscript object provider by Bitburner
  */
-export async function main(ns: any) {
+export async function main(ns: NS): Promise<void> {
 
     while (true) {
 

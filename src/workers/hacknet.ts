@@ -1,11 +1,11 @@
-/** @param {import(".").NS} ns */
+import { NS } from "@ns";
 
 /**
  * Automate the process of leveling up Hacknet Nodes.
  *
  * @param ns Netscript object provider by Bitburner
  */
-export async function main(ns: any) {
+export async function main(ns: NS): Promise<void> {
   while (true) {
     let numNodes = ns.hacknet.numNodes();
     let maxNodes = ns.hacknet.maxNumNodes();

@@ -1,7 +1,7 @@
-/** @param {import(".").NS} ns */
+import { NS } from "@ns";
 
 // @ts-ignore
-import { CRIMES } from "/scripts/library/utils.js";
+import { CRIMES } from "/library/utils.js";
 
 /**
  * Simple loop designed to commit crimes on repeat. Initially
@@ -10,7 +10,7 @@ import { CRIMES } from "/scripts/library/utils.js";
  *
  * @param ns Netscript object provider by Bitburner
  */
-export async function main(ns: any) {
+export async function main(ns: NS): Promise<void> {
   while (true) {
     let crime = getMostProfitableCrime(ns);
     let crimeTime = 0;

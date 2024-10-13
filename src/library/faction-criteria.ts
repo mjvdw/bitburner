@@ -1,3 +1,5 @@
+import { NS } from "@ns";
+
 class FactionCriteria {
     faction: string
     company: string

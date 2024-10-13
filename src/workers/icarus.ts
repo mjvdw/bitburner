@@ -1,7 +1,7 @@
-/** @param {import(".").NS} ns */
+import { NS } from "@ns";
 
 // @ts-ignore
-import { SCRIPTS, getTargets, isHackingTarget, killHackScripts } from "/scripts/library/utils.js";
+import { SCRIPTS, getTargets, isHackingTarget, killHackScripts } from "/library/utils.js";
 
 /**
  * This is the "master" script for hacking servers.
@@ -12,7 +12,7 @@ import { SCRIPTS, getTargets, isHackingTarget, killHackScripts } from "/scripts/
  * 
  * @param ns Netscript object provider by Bitburner
  */
-export async function main(ns: any) {
+export async function main(ns: NS): Promise<void> {
 
     while (true) {
 

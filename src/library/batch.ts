@@ -1,12 +1,11 @@
-/** @param {import(".").NS} ns */
+import { NS } from "@ns";
 
 import {
     isTargetPrepared,
     releaseRam,
     getBatchRam,
     SCRIPTS
-    // @ts-ignore
-} from "/scripts/library/utils.js";
+} from "/library/utils.js";
 
 
 /**
@@ -18,7 +17,7 @@ import {
  * 
  * @param ns Netscript object provided by Bitburner
  */
-export async function main(ns: any) {
+export async function main(ns: NS): Promise<void> {
     let target = ns.getServer(ns.args[0])
     let threads = JSON.parse(ns.args[1])
     let times = JSON.parse(ns.args[2])

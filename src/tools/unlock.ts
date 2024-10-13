@@ -1,7 +1,5 @@
-/** @param {import(".").NS} ns */
-
-// @ts-ignore
-import { unlockTarget } from "/scripts/library/utils.js";
+import { NS } from "@ns";
+import { unlockTarget } from "/library/utils.js";
 
 /**
  * Simple entry point for the unlockTarget() utility function.
@@ -10,7 +8,7 @@ import { unlockTarget } from "/scripts/library/utils.js";
  * 
  * @param ns Netscript object provider by Bitburner.
  */
-export async function main(ns: any) {
+export async function main(ns: NS): Promise<void> {
     let target = ns.getServer(ns.args[0])
     unlockTarget(ns, target)
 }

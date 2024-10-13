@@ -1,11 +1,11 @@
-/** @param {import(".").NS} ns **/
+import { NS } from "@ns";
 
 /**
  * This function pulls data hosted on a local server by the player.
  * 
  * @param ns Netscript object provider by Bitburner
  */
-export async function main(ns: any) {
+export async function main(ns: NS): Promise<void> {
 
     // wget function prints a lot - turn it off for convenience.
     ns.disableLog("wget");
@@ -25,7 +25,7 @@ export async function main(ns: any) {
  * 
  * @param ns Netscript object provider by Bitburner
  */
-async function sync(ns: any, address: string) {
+async function sync(ns: NS, address: string) {
     let url = "http://" + address
     await ns.wget(url, "scripts.txt", "home");
 

@@ -1,14 +1,12 @@
-/** @param {import(".").NS} ns */
-
-//@ts-ignore
-import { resetReservedRamForServer, SCRIPTS } from "./scripts/library/utils.js"
+import { NS } from "@ns";
+import { resetReservedRamForServer, SCRIPTS } from "/library/utils.js"
 
 /**
  * Kill all scripts on all servers except the sync script on home and this script.
  * 
  * @param ns Netscript object provided by Bitburner.
  */
-export async function main(ns: any) {
+export async function main(ns: NS): Promise<void> {
 
     let home = ["home"]
     let pservs = ns.getPurchasedServers()

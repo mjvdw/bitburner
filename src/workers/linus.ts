@@ -1,12 +1,11 @@
-/** @param {import(".").NS} ns */
+import { NS } from "@ns";
 
 import {
     upgradeHomeServer,
     maintainPurchasedServers,
     ownsTorRouter,
     buyFromDarkweb
-    // @ts-ignore
-} from "/scripts/library/utils.js";
+} from "/library/utils.js";
 
 /**
  * Automate the process of upgrading your home computer and
@@ -15,7 +14,7 @@ import {
  * 
  * @param ns Netscript object provider by Bitburner
  */
-export async function main(ns: any) {
+export async function main(ns: NS): Promise<void> {
 
     let pservs = ns.args[0] != null ? ns.args[0] : true
 

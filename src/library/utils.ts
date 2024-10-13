@@ -1,4 +1,4 @@
-/** @param {import(".").NS} ns */
+import { NS } from "@ns";
 
 
 const ALL_PORT_SCRIPTS = [
@@ -133,7 +133,7 @@ export const FACTION_WORKTYPES = ["hacking", "fieldwork", "security"]
  * @param hackableOnly Whether to filter the list by servers that can be hacked by the current user.
  * @returns The list of all visible servers, of type Server.
  */
-export function getTargets(ns: any, hackableOnly?: boolean): any[] {
+export function getTargets(ns: NS, hackableOnly?: boolean): any[] {
 
     let targets: string[] = []
     let queue: string[] = []
@@ -196,7 +196,7 @@ export function getTargets(ns: any, hackableOnly?: boolean): any[] {
  * @param hostname Optional. The hostname of the purchased server.
  * @returns Boolean indicating whether the server was successfully created.
  */
-export async function buyServer(ns: any, ram?: number, hostname?: string): Promise<boolean> {
+export async function buyServer(ns: NS, ram?: number, hostname?: string): Promise<boolean> {
 
     // Check whether RAM is a valid amount and the user has enough money.
     // If no RAM is specified, get the maximum RAM currently available to the user.
@@ -285,7 +285,7 @@ export async function buyServer(ns: any, ram?: number, hostname?: string): Promi
  * @param hostname The hostname of the server to be deleted.
  * @returns Boolean indicated whether the server was successfully deleted.
  */
-export function deleteServer(ns: any, hostname: string): boolean {
+export function deleteServer(ns: NS, hostname: string): boolean {
 
     // Check whether there is a hostname provided.
     if (!hostname) {
@@ -316,7 +316,7 @@ export function deleteServer(ns: any, hostname: string): boolean {
  * @param target The target of the hacking scripts.
  * @returns Boolean indicating whether the given server is hacking the given target.
  */
-export function isHackingTarget(ns: any, server: any, target: any): Promise<boolean> {
+export function isHackingTarget(ns: NS, server: any, target: any): Promise<boolean> {
     let scriptName = SCRIPTS.batchController
     let isHackingTarget = ns.isRunning(scriptName, server.hostname, target.hostname)
     return isHackingTarget
@@ -330,7 +330,7 @@ export function isHackingTarget(ns: any, server: any, target: any): Promise<bool
  * @param ns Netscript object provided by Bitburner.
  * @param server The server to kill the hack scripts for.
  */
-export function killHackScripts(ns: any, server: any) {
+export function killHackScripts(ns: NS, server: any) {
 
     let runningScripts = ns.ps(server.hostname)
     runningScripts.forEach((script: any) => {
@@ -349,7 +349,7 @@ export function killHackScripts(ns: any, server: any) {
  * @param host Host on which to kill all scripts.
  * @param exceptions The scripts to keep running.
  */
-export function killAllScriptsWithExceptions(ns: any, host: string, exceptions: string[]) {
+export function killAllScriptsWithExceptions(ns: NS, host: string, exceptions: string[]) {
 
     let runningScripts = ns.ps(host)
     runningScripts.forEach((script: any) => {
@@ -369,7 +369,7 @@ export function killAllScriptsWithExceptions(ns: any, host: string, exceptions: 
  * @param target The name of the target server to be unlocked.
  * @returns Boolean indicating whether unlock was successful.
  */
-export function unlockTarget(ns: any, target: any): boolean {
+export function unlockTarget(ns: NS, target: any): boolean {
 
     if (typeof (target) === 'string') { target = ns.getServer(target) }
 
@@ -404,7 +404,7 @@ export function unlockTarget(ns: any, target: any): boolean {
  * @param ram The amount of RAM (positve or negative) being added to the current amount.
  * @returns Boolean indicating whether the update was successful.
  */
-export function updateReservedRam(ns: any, server: any, ram: number): boolean {
+export function updateReservedRam(ns: NS, server: any, ram: number): boolean {
 
     // Get Netscript port used for storing the current state of RAM for 
     // each server (home + purchased servers.)
@@ -435,7 +435,7 @@ export function updateReservedRam(ns: any, server: any, ram: number): boolean {
  * @param ns Netscript object provided by Bitburner.
  * @returns An object with the current RAM state.
  */
-export function getPortCurrentState(ns: any, portNumber: number): any {
+export function getPortCurrentState(ns: NS, portNumber: number): any {
 
     // Get Netscript port.
     let port = ns.getPortHandle(portNumber)
@@ -464,7 +464,7 @@ export function getPortCurrentState(ns: any, portNumber: number): any {
  * @param server The server to get the current reserved RAM for.
  * @returns A number representing the amount of reserved RAM on that server.
  */
-export function getReservedRamForServer(ns: any, server: any): number {
+export function getReservedRamForServer(ns: NS, server: any): number {
     let ramState = getPortCurrentState(ns, PORTS.ram)
     let reservedRam = ramState[server.hostname]
     reservedRam = reservedRam == null ? 0 : parseInt(reservedRam)
@@ -480,7 +480,7 @@ export function getReservedRamForServer(ns: any, server: any): number {
  * @param ram The amount of RAM to reserve.
  * @returns The amount of reserved RAM remaining.
  */
-export function reserveRam(ns: any, server: any, ram: number): number {
+export function reserveRam(ns: NS, server: any, ram: number): number {
     updateReservedRam(ns, server, ram)
     return getReservedRamForServer(ns, server)
 }
@@ -494,7 +494,7 @@ export function reserveRam(ns: any, server: any, ram: number): number {
  * @param ram The amount of RAM to release.
  * @returns The amount of reserved RAM remaining.
  */
-export function releaseRam(ns: any, server: any, ram: number): number {
+export function releaseRam(ns: NS, server: any, ram: number): number {
     updateReservedRam(ns, server, -ram)
     return getReservedRamForServer(ns, server)
 }
@@ -506,7 +506,7 @@ export function releaseRam(ns: any, server: any, ram: number): number {
  * 
  * @param ns Netscript object provided by Bitburner.
  */
-export function resetReservedRamForServer(ns: any, server: any) {
+export function resetReservedRamForServer(ns: NS, server: any) {
     let ramState = getPortCurrentState(ns, PORTS.ram)
     releaseRam(ns, server, ramState[server.hostname])
 }
@@ -521,7 +521,7 @@ export function resetReservedRamForServer(ns: any, server: any) {
  * @param target The target being hacked, grown or weakened.
  * @returns An object containing the times it will take to hack, grow and weaken.
  */
-export function getBatchTimes(ns: any, target: any): any {
+export function getBatchTimes(ns: NS, target: any): any {
 
     let offset = BATCH_SPEED   // Time between HWGW.
     let interval = BATCH_FREQUENCY   // Time between batches
@@ -553,7 +553,7 @@ export function getBatchTimes(ns: any, target: any): any {
  * component of the batch.
  * @returns The amount of RAM that a single batch will use.
  */
-export function getBatchRam(ns: any, server: any, threads: any): number {
+export function getBatchRam(ns: NS, server: any, threads: any): number {
 
     // Hack, grow and weaken all run in their own scripts.
     // All scripts have a base RAM of 1.6GB, and the HGW functions all use
@@ -577,7 +577,7 @@ export function getBatchRam(ns: any, server: any, threads: any): number {
  * @param times The times for each component of the batch.
  * @returns An object containing the threads needed to run a batch against the given target.
  */
-export function getBatchThreads(ns: any, server: any, target: any, availableRam: number, times: any): any {
+export function getBatchThreads(ns: NS, server: any, target: any, availableRam: number, times: any): any {
 
     let multiplier = 0.9
     let threads: any = {}
@@ -645,7 +645,7 @@ export function getBatchThreads(ns: any, server: any, target: any, availableRam:
  * @param host The server the get available RAM for.
  * @returns The available RAM for the given server.
  */
-export function getServerAvailableRam(ns: any, host: string): number {
+export function getServerAvailableRam(ns: NS, host: string): number {
     return ns.getServerMaxRam(host) - ns.getServerUsedRam(host)
 }
 
@@ -659,7 +659,7 @@ export function getServerAvailableRam(ns: any, host: string): number {
  * @param target The target being evaluated.
  * @returns A boolean indicating whether the target is ready to be batch hacked.
  */
-export function isTargetPrepared(ns: any, target: any): boolean {
+export function isTargetPrepared(ns: NS, target: any): boolean {
 
     let maxMoney = ns.getServerMoneyAvailable(target.hostname) == ns.getServerMaxMoney(target.hostname)
     let minSecurity = ns.getServerSecurityLevel(target.hostname) == ns.getServerMinSecurityLevel(target.hostname)
@@ -676,7 +676,7 @@ export function isTargetPrepared(ns: any, target: any): boolean {
  * @param ns Netscript object provided by Bitburner.
  * @param data Data to print in a table. Must be a regular array of objects.
  */
-export function printTable(ns: any, data: object[]) {
+export function printTable(ns: NS, data: object[]) {
 
     let keys = Object.keys(data[0])
     let colBuffer = 2  // Should always be an even number
@@ -758,7 +758,7 @@ export function printTable(ns: any, data: object[]) {
  * @param ns Netscript object provided by Bitburner.
  * @returns Whether the upgrade is successful.
  */
-export function upgradeHomeServer(ns: any): boolean {
+export function upgradeHomeServer(ns: NS): boolean {
     let ramCost = ns.singularity.getUpgradeHomeRamCost()
     let coresCost = ns.singularity.getUpgradeHomeCoresCost()
     let money = ns.getServerMoneyAvailable("home")
@@ -789,7 +789,7 @@ export function upgradeHomeServer(ns: any): boolean {
  * 
  * @param ns Netscript object provided by Bitburner.
  */
-export async function maintainPurchasedServers(ns: any) {
+export async function maintainPurchasedServers(ns: NS) {
 
     // Start by buying servers that match the "home" server's RAM,
     // or is at the maximum.
@@ -836,7 +836,7 @@ export async function maintainPurchasedServers(ns: any) {
  * @returns List of objects containing the name of the augmentations and
  * the name of the faction where the player can obtain that augmentation.
  */
-export function getAllAugmentations(ns: any): any[] {
+export function getAllAugmentations(ns: NS): any[] {
 
     let allAugmentations: any[] = []
     FACTIONS.forEach((faction: string) => {
@@ -859,7 +859,7 @@ export function getAllAugmentations(ns: any): any[] {
  * @param ns Netscript object provided by Bitburner.
  * @returns Boolean indicating whether the player owns the Tor router.
  */
-export function ownsTorRouter(ns: any): boolean {
+export function ownsTorRouter(ns: NS): boolean {
     let servers = ns.scan()
     return servers.includes("darkweb")
 }
@@ -870,7 +870,7 @@ export function ownsTorRouter(ns: any): boolean {
  * 
  * @param ns Netscript object provided by Bitburner.
  */
-export function buyFromDarkweb(ns: any) {
+export function buyFromDarkweb(ns: NS) {
     let ownedScripts = ns.ls("home")
     let availableToBuy = DARKWEB_BUY.filter((s: any) => !ownedScripts.includes(s.name))
 
@@ -892,7 +892,7 @@ export function buyFromDarkweb(ns: any) {
  * 
  * @returns The amount of reputation needed to unlock donations for a faction.
  */
-export function getReputationForDonations(ns: any, faction?: string) {
+export function getReputationForDonations(ns: NS, faction?: string) {
 
     // Favour required to unlock donations.
     let favor = 151
@@ -914,7 +914,7 @@ export function getReputationForDonations(ns: any, faction?: string) {
  * @param faction The faction for which to return a list of owned augmentations.
  * @returns A list of augmentations owned by the player, offered by that faction.
  */
-export function getOwnedAugmentationsForFaction(ns: any, faction: string): string[] {
+export function getOwnedAugmentationsForFaction(ns: NS, faction: string): string[] {
     let augmentations = getAllAugmentations(ns)
     let owned = ns.singularity.getOwnedAugmentations(true).filter((aug: string) => {
         return augmentations.some((a: any) => a.name == aug && a.faction == faction)
@@ -932,7 +932,7 @@ export function getOwnedAugmentationsForFaction(ns: any, faction: string): strin
  * @param faction The faction for which to return a list of unowned augmentations.
  * @returns A list of augmentations not owned by the player, offered by that faction.
  */
-export function getUnownedAugmentationsForFaction(ns: any, faction: string): string[] {
+export function getUnownedAugmentationsForFaction(ns: NS, faction: string): string[] {
     let all = ns.singularity.getAugmentationsFromFaction(faction)
     let unowned = all.filter((aug: string) => !ns.singularity.getOwnedAugmentations(true).includes(aug))
     return unowned
@@ -952,7 +952,7 @@ export function getUnownedAugmentationsForFaction(ns: any, faction: string): str
  * @param isFound Boolean whether the server has been found.
  * @returns 
  */
-export function getPathToServer(ns: any, target: string, serverName: string, serverList: string[], ignore: string[], isFound: boolean): any[] {
+export function getPathToServer(ns: NS, target: string, serverName: string, serverList: string[], ignore: string[], isFound: boolean): any[] {
     ignore.push(serverName);
     let scanResults = ns.scan(serverName);
     for (let server of scanResults) {
@@ -989,7 +989,7 @@ export function getPathToServer(ns: any, target: string, serverName: string, ser
  * @param target The server to connect to.
  * @returns Boolean whether the connection was successful.
  */
-export function directConnect(ns: any, target: string): boolean {
+export function directConnect(ns: NS, target: string): boolean {
 
     let startServer = ns.getHostname();
     let [path, isFound] = getPathToServer(ns, target, startServer, [], [], false)
@@ -1015,7 +1015,7 @@ export function directConnect(ns: any, target: string): boolean {
  * @param working Whether the player is working for the given faction.
  * @returns Boolean indicating whether the update was successful.
  */
-export function updateFactionWorking(ns: any, faction: string, working: boolean): boolean {
+export function updateFactionWorking(ns: NS, faction: string, working: boolean): boolean {
     let state = getPortCurrentState(ns, PORTS.factionFocus)
 
 
@@ -1057,7 +1057,7 @@ export function updateFactionWorking(ns: any, faction: string, working: boolean)
  * @param faction The given faction to assess.
  * @returns Whether the player is working for the given faction.
  */
-export function isWorkingForFaction(ns: any, faction: string): boolean {
+export function isWorkingForFaction(ns: NS, faction: string): boolean {
     let state = getPortCurrentState(ns, PORTS.factionFocus)
     let working = false
 
@@ -1078,7 +1078,7 @@ export function isWorkingForFaction(ns: any, faction: string): boolean {
  * @param faction The faction to get max reputation for.
  * @returns The maximum reputation needed for a given faction.
  */
-export function getMaxReputationForFaction(ns: any, faction: string): number {
+export function getMaxReputationForFaction(ns: NS, faction: string): number {
     let augs = ns.singularity.getAugmentationsFromFaction(faction)
     let repReq = augs.map((aug: string) => parseInt(ns.singularity.getAugmentationRepReq(aug)))
     let maxRep = Math.max(...repReq)
@@ -1096,7 +1096,7 @@ export function getMaxReputationForFaction(ns: any, faction: string): number {
  * for scripts affecting that target. Leave blank to get all scripts.
  * @returns The number of scripts.
  */
-export function getScriptCount(ns: any, scriptName: string, target?: string): number {
+export function getScriptCount(ns: NS, scriptName: string, target?: string): number {
 
     let servers = ["home"].concat(ns.getPurchasedServers())
 

@@ -1,7 +1,5 @@
-/** @param {import(".").NS} ns */
-
-// @ts-ignore
-import { SCRIPTS, killAllScriptsWithExceptions } from "/scripts/library/utils.js"
+import { NS } from "@ns";
+import { SCRIPTS, killAllScriptsWithExceptions } from "/library/utils.js"
 
 /**
  * "Reset" all servers by removing all scripts. Does not delete the "sync"
@@ -9,7 +7,7 @@ import { SCRIPTS, killAllScriptsWithExceptions } from "/scripts/library/utils.js
  * 
  * @param ns Netscript object provided by Bitburner.
  */
-export async function main(ns: any) {
+export async function main(ns: NS): Promise<void> {
 
     await ns.prompt("Delete and redownload everything from all servers?")
 

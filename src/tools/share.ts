@@ -1,7 +1,5 @@
-/** @param {import(".").NS} ns */
-
-// @ts-ignore
-import { getServerAvailableRam, SCRIPTS } from "/scripts/library/utils.js";
+import { NS } from "@ns";
+import { getServerAvailableRam, SCRIPTS } from "/library/utils.js";
 
 /**
  * Use the maximum possible RAM across all servers to "share" with
@@ -9,7 +7,7 @@ import { getServerAvailableRam, SCRIPTS } from "/scripts/library/utils.js";
  * 
  * @param ns Netscript object provided by Bitburner.
  */
-export async function main(ns: any) {
+export async function main(ns: NS): Promise<void> {
 
     let flags = ns.flags([
         ["scale", 1],

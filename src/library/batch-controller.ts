@@ -1,4 +1,4 @@
-/** @param {import(".").NS} ns */
+import { NS } from "@ns";
 
 import {
     unlockTarget,
@@ -11,8 +11,7 @@ import {
     resetReservedRamForServer,
     SCRIPTS,
     MAX_BATCHES
-    // @ts-ignore
-} from "/scripts/library/utils.js";
+} from "/library/utils.js";
 
 /**
  * The controller for starting each hack batch. While hacking, there
@@ -24,7 +23,7 @@ import {
  * 
  * @param ns Netscript object provider by Bitburner
  */
-export async function main(ns: any) {
+export async function main(ns: NS): Promise<void> {
 
     let server = ns.getServer()
     let target = ns.getServer(ns.args[0])

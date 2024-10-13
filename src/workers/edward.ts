@@ -1,36 +1,10 @@
-/** @param {import(".").NS} ns */
+import { NS } from "@ns";
+import { unlockTarget } from "/library/utils.js";
 
-import {
-  updateReservedRam,
-  getReservedRamState,
-  getReservedRamForServer,
-  reserveRam,
-  releaseRam,
-  resetReservedRamForServer,
-  getAllAugmentations,
-  buyFromDarkweb,
-  getUnownedAugmentationsForFaction,
-  getOwnedAugmentationsForFaction,
-  FACTIONS,
-  directConnect,
-  getReputationForDonations,
-  isWorkingForFaction,
-  updateFactionWorking,
-  getPortCurrentState,
-  PORTS,
-  unlockTarget,
-  // @ts-ignore
-} from "/scripts/library/utils.js";
-
-import {
-  criteria,
-  // @ts-ignore
-} from "/scripts/library/faction-criteria.js";
-
-const HACK_SCRIPT = "/scripts/library/hack.js";
-const GROW_SCRIPT = "/scripts/library/grow.js";
-const WEAKEN_SCRIPT = "/scripts/library/weaken.js";
-export async function main(ns: any) {
+const HACK_SCRIPT = "/library/hack.js";
+const GROW_SCRIPT = "/library/grow.js";
+const WEAKEN_SCRIPT = "/library/weaken.js";
+export async function main(ns: NS): Promise<void> {
   ns.disableLog("ALL");
   ns.clearLog();
 

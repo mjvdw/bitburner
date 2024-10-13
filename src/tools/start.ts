@@ -1,14 +1,12 @@
-/** @param {import(".").NS} ns */
-
-// @ts-ignore
-import { SCRIPTS, killAllScriptsWithExceptions } from "/scripts/library/utils.js";
+import { NS } from "@ns";
+import { SCRIPTS, killAllScriptsWithExceptions } from "/library/utils.js";
 
 /**
  * Starts all needed workers with one command.
  * 
  * @param ns Netscript object provided by Bitburner.
  */
-export async function main(ns: any) {
+export async function main(ns: NS): Promise<void> {
 
     // Reset all servers to blank state (ie, nothing running)
     let servers = ["home"].concat(ns.getPurchasedServers())

@@ -1,7 +1,5 @@
-/** @param {import(".").NS} ns */
-
-// @ts-ignore
-import { buyServer, deleteServer } from "/scripts/library/utils.js";
+import { NS } from "@ns";
+import { buyServer, deleteServer } from "/library/utils.js";
 
 
 /**
@@ -13,7 +11,7 @@ import { buyServer, deleteServer } from "/scripts/library/utils.js";
  * 
  * @param ns Netscript object provided by Bitburner.
  */
-export async function main(ns: any) {
+export async function main(ns: NS): Promise<void> {
     let action = ns.args[0]
     let hostname = ns.args[1]
     let ram = ns.args[2]
