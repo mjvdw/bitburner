@@ -1,4 +1,4 @@
-import { CrimeType, FactionWorkType, NS } from "@ns";
+import { NS, CrimeType, FactionWorkType } from "@ns";
 
 
 const ALL_PORT_SCRIPTS = [
@@ -23,9 +23,9 @@ export const DARKWEB_BUY = [
 ]
 
 const SCRIPT_PREFIXES = {
-    library: "/scripts/library/",
-    tools: "/scripts/tools/",
-    workers: "/scripts/workers/"
+    library: "library/",
+    tools: "tools/",
+    workers: "workers/"
 }
 
 export const SCRIPTS = {
@@ -72,19 +72,19 @@ const BATCH_FREQUENCY = 5 * BATCH_SPEED
 export const MAX_BATCHES = 50
 
 export const CRIMES: CrimeType[] = [
-    CrimeType.shoplift,
-    CrimeType.robStore,
-    CrimeType.mug,
-    CrimeType.larceny,
-    CrimeType.dealDrugs,
-    CrimeType.bondForgery,
-    CrimeType.traffickArms,
-    CrimeType.homicide,
-    CrimeType.grandTheftAuto,
-    CrimeType.kidnap,
-    CrimeType.assassination,
-    CrimeType.heist,
-]
+    "Assassination",
+	"Bond Forgery",
+	"Deal Drugs",
+	"Grand Theft Auto",
+	"Heist",
+	"Homicide",
+	"Kidnap",
+	"Larceny",
+	"Mug",
+	"Rob Store",
+	"Shoplift",
+	"Traffick Arms",
+] as CrimeType[]
 
 export const FACTIONS = [
     "CyberSec",
@@ -122,7 +122,11 @@ export const FACTIONS = [
     "Church of the Machine God",
 ]
 
-export const FACTION_WORKTYPES: FactionWorkType[] = [FactionWorkType.hacking, FactionWorkType.field, FactionWorkType.security];
+export const FACTION_WORKTYPES: FactionWorkType[] = [
+    "hacking", 
+    "field", 
+    "security"
+] as FactionWorkType[];
 
 
 /**

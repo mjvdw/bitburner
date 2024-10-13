@@ -1,7 +1,5 @@
 import { NS, ScriptArg } from "@ns";
-
-// @ts-ignore
-import { SCRIPTS, getTargets, isHackingTarget, killHackScripts } from "/library/utils.js";
+import { SCRIPTS, getTargets, isHackingTarget, killHackScripts } from "library/utils.js";
 
 /**
  * This is the "master" script for hacking servers.
