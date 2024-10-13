@@ -1,4 +1,4 @@
-import { NS } from "@ns";
+import { CrimeType, NS } from "@ns";
 
 // @ts-ignore
 import { CRIMES } from "/library/utils.js";
@@ -12,7 +12,7 @@ import { CRIMES } from "/library/utils.js";
  */
 export async function main(ns: NS): Promise<void> {
   while (true) {
-    let crime = getMostProfitableCrime(ns);
+    let crime: CrimeType = getMostProfitableCrime(ns);
     let crimeTime = 0;
     if (!ns.singularity.isBusy()) {
       crimeTime = ns.singularity.commitCrime(crime);
@@ -29,7 +29,7 @@ export async function main(ns: NS): Promise<void> {
  * @param ns Netscript object provider by Bitburner
  * @returns A string with the name of the selected crime.
  */
-function getMostProfitableCrime(ns: any): string {
+function getMostProfitableCrime(ns: any): CrimeType {
   let crimes = ns.args[0] ? [ns.args[0]] : CRIMES;
 
   let crimeDetails = crimes

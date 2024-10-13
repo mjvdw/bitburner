@@ -9,7 +9,7 @@ import { getTargets, isTargetPrepared, getServerAvailableRam, unlockTarget, SCRI
  */
 export async function main(ns: NS): Promise<void> {
 
-    let singleTarget = ns.args[0]
+    let singleTarget = ns.args[0].toString();
     let targets = singleTarget ? [ns.getServer(singleTarget)] : getTargets(ns, true)
 
     let ram = getServerAvailableRam(ns, "home") - ns.getScriptRam(SCRIPTS.icarusjr)

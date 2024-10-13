@@ -1,4 +1,4 @@
-import { NS } from "@ns";
+import { NS, ScriptArg } from "@ns";
 import { getServerAvailableRam, SCRIPTS } from "/library/utils.js";
 
 /**
@@ -9,14 +9,14 @@ import { getServerAvailableRam, SCRIPTS } from "/library/utils.js";
  */
 export async function main(ns: NS): Promise<void> {
 
-    let flags = ns.flags([
+    let flags: { [key: string]: any } = ns.flags([
         ["scale", 1],
-        ["exclude", ""]
+        ["exclude", []]
     ])
 
     let home = ["home"]
     let pservs = ns.getPurchasedServers()
-    let exclude = flags["exclude"].split(",").map((e: string) => e.trim())
+    let exclude: string[] = flags["exclude"] as string[];
     let servers = home
         .concat(pservs)
         .filter((server: string) => !exclude.includes(server))

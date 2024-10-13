@@ -18,9 +18,9 @@ import {
  * @param ns Netscript object provided by Bitburner
  */
 export async function main(ns: NS): Promise<void> {
-    let target = ns.getServer(ns.args[0])
-    let threads = JSON.parse(ns.args[1])
-    let times = JSON.parse(ns.args[2])
+    let target = ns.getServer(ns.args[0].toString());
+    let threads = JSON.parse(ns.args[1].toString());
+    let times = JSON.parse(ns.args[2].toString());
     let server = ns.getServer()
 
 

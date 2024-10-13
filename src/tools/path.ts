@@ -14,7 +14,7 @@ import {
 export async function main(ns: NS): Promise<void> {
 
     let startServer = ns.getHostname();
-    let target = ns.args[0];
+    let target = ns.args[0].toString();
     if (target === undefined) {
         ns.alert("Please provide target server");
         return;

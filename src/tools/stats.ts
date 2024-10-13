@@ -1,4 +1,4 @@
-import { NS } from "@ns";
+import { CrimeType, NS, ScriptArg } from "@ns";
 
 import {
     getTargets,
@@ -34,7 +34,7 @@ export async function main(ns: NS): Promise<void> {
         augmentations: "augmentations",
         factions: "factions"
     }
-    let args = ns.args.slice(1)
+    let args: ScriptArg[] = ns.args
 
     switch (option) {
         case options.hacking:
@@ -205,7 +205,7 @@ function getMoneyStats(ns: any): any[] {
  */
 function getAllCrimeStats(ns: any): any[] {
 
-    let crimes = CRIMES
+    let crimes: CrimeType[] = CRIMES
     let bitnodeMultiplier = 0.256
 
     let data: any[] = []
@@ -214,7 +214,7 @@ function getAllCrimeStats(ns: any): any[] {
         let money = stats.money * bitnodeMultiplier
         let d = {
             name: stats.name,
-            i: crimes.indexOf(crime) + 1,
+            i: crimes.indexOf(crime as CrimeType) + 1,
             time: ns.nFormat(stats.time / 1000, "00:00:00"),
             money: ns.nFormat(money, "$0.000a"),
             chance: ns.nFormat(ns.singularity.getCrimeChance(stats.name), "0.00%"),
@@ -269,10 +269,10 @@ function getRamUpgradeCost(ns: any): any[] {
  * @param ns Netscript object provided by Bitburner.
  * @returns Data pre-formatted to print as a table.
  */
-function getAugmentationStats(ns: any, args: string[]): any[] {
+function getAugmentationStats(ns: any, args: ScriptArg[] | string[]): any[] {
 
     let data: any[] = []
-    let type = args[0]
+    let type = args[0].toString()
     let typeOptions: any = {
         agility: {
             exp: "agility_exp_mult",
@@ -362,7 +362,7 @@ function getAugmentationStats(ns: any, args: string[]): any[] {
         data.push(d)
     }
 
-    let sort = args[1]
+    let sort = args[1].toString()
     data = data
         .filter((d: any) => {
             if (d[sort]) {
@@ -406,7 +406,7 @@ function getFactionStats(ns: any): any[] {
 
         d["Rep"] = ns.nFormat(ns.singularity.getFactionRep(faction), "0,0.000a")
         d["Max"] = ns.nFormat(getMaxReputationForFaction(ns, faction), "0.000a")
-        d["d$ %"] = ns.nFormat((ns.singularity.getFactionRep(faction) / getReputationForDonations()), "0.00%")
+        d["d$ %"] = ns.nFormat((ns.singularity.getFactionRep(faction) / getReputationForDonations(ns)), "0.00%")
         d["Max %"] = ns.nFormat((ns.singularity.getFactionRep(faction) / getMaxReputationForFaction(ns, faction)), "0.00%")
 
         d["Fav"] = ns.nFormat(ns.singularity.getFactionFavor(faction), "0,0a")

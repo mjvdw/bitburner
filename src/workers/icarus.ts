@@ -1,4 +1,4 @@
-import { NS } from "@ns";
+import { NS, ScriptArg } from "@ns";
 
 // @ts-ignore
 import { SCRIPTS, getTargets, isHackingTarget, killHackScripts } from "/library/utils.js";
@@ -16,21 +16,21 @@ export async function main(ns: NS): Promise<void> {
 
     while (true) {
 
-        let flags = ns.flags([
+        let flags: { [key: string]: ScriptArg | string[] } = ns.flags([
             ["target", ""]]
         )
 
         // Get a list of servers that can be hacked by user.
-        let singleTarget = flags["target"]
+        let singleTarget = flags["target"].toString();
         let targets = singleTarget ? [ns.getServer(singleTarget)] : getTargets(ns, true)
 
         // Get a list of the player's servers.
-        let servers = ns.getPurchasedServers()
+        let serverNames: string[] = ns.getPurchasedServers()
 
         // Pair up servers and targets. One server per target, unless there are more
         // servers than targets, in which case loop back around from the top.
-        servers.splice(0, 0, "home")
-        servers = servers
+        serverNames.splice(0, 0, "home")
+        let servers = serverNames
             .filter((server: string) => server.startsWith("pserv-") || server.startsWith("home"))
             .map((server: string) => ns.getServer(server))
             .sort((a: any, b: any) => b.maxRam - a.maxRam)

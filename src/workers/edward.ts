@@ -9,7 +9,7 @@ export async function main(ns: NS): Promise<void> {
   ns.clearLog();
 
   const worker = ns.getServer().hostname;
-  const singleTarget = ns.args[0];
+  const singleTarget = ns.args[0].toString();
 
   // if (worker == "home") {
   //     const pservs = ns.getPurchasedServers()

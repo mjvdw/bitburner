@@ -10,7 +10,7 @@ export async function main(ns: NS): Promise<void> {
     // wget function prints a lot - turn it off for convenience.
     ns.disableLog("wget");
 
-    let address = ns.args[0] || "127.0.0.1:5000"
+    let address = ns.args[0].toString() || "127.0.0.1:5000"
 
     // Run the sync loop.
     while (true) {

@@ -12,9 +12,9 @@ import { buyServer, deleteServer } from "/library/utils.js";
  * @param ns Netscript object provided by Bitburner.
  */
 export async function main(ns: NS): Promise<void> {
-    let action = ns.args[0]
-    let hostname = ns.args[1]
-    let ram = ns.args[2]
+    let action = ns.args[0].toString();
+    let hostname = ns.args[1].toString();
+    let ram = Number(ns.args[2]);
 
     if (action == "buy") { await buyServer(ns, ram, hostname) }
     else if (action == "delete") { deleteServer(ns, hostname) }

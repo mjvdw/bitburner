@@ -1,4 +1,4 @@
-import { NS } from "@ns";
+import { CrimeType, FactionWorkType, NS } from "@ns";
 
 
 const ALL_PORT_SCRIPTS = [
@@ -71,19 +71,19 @@ const BATCH_SPEED = 200
 const BATCH_FREQUENCY = 5 * BATCH_SPEED
 export const MAX_BATCHES = 50
 
-export const CRIMES = [
-    "shoplift",
-    "rob store",
-    "mug",
-    "larceny",
-    "drugs",
-    "bond forge",
-    "traffic illegal arms",
-    "homicide",
-    "grand auto",
-    "kidnap",
-    "assassin",
-    "heist"
+export const CRIMES: CrimeType[] = [
+    CrimeType.shoplift,
+    CrimeType.robStore,
+    CrimeType.mug,
+    CrimeType.larceny,
+    CrimeType.dealDrugs,
+    CrimeType.bondForgery,
+    CrimeType.traffickArms,
+    CrimeType.homicide,
+    CrimeType.grandTheftAuto,
+    CrimeType.kidnap,
+    CrimeType.assassination,
+    CrimeType.heist,
 ]
 
 export const FACTIONS = [
@@ -122,7 +122,7 @@ export const FACTIONS = [
     "Church of the Machine God",
 ]
 
-export const FACTION_WORKTYPES = ["hacking", "fieldwork", "security"]
+export const FACTION_WORKTYPES: FactionWorkType[] = [FactionWorkType.hacking, FactionWorkType.field, FactionWorkType.security];
 
 
 /**
@@ -135,7 +135,7 @@ export const FACTION_WORKTYPES = ["hacking", "fieldwork", "security"]
  */
 export function getTargets(ns: NS, hackableOnly?: boolean): any[] {
 
-    let targets: string[] = []
+    let targetNames: string[] = []
     let queue: string[] = []
     let excluded = ["home", "darkweb"].concat(ns.getPurchasedServers())
 
@@ -147,11 +147,11 @@ export function getTargets(ns: NS, hackableOnly?: boolean): any[] {
     while (queue.length > 0) {
         let scanQueue = queue
         for (let s in scanQueue) {
-            targets.push(scanQueue[s])
+            targetNames.push(scanQueue[s])
             queue = queue.filter(value => value !== scanQueue[s])
             let newServers = ns.scan(scanQueue[s])
             newServers.forEach((newServer: string) => {
-                if (excluded.includes(newServer) == false && targets.includes(newServer) == false) {
+                if (excluded.includes(newServer) == false && targetNames.includes(newServer) == false) {
                     queue.push(newServer)
                 }
             })
@@ -159,7 +159,7 @@ export function getTargets(ns: NS, hackableOnly?: boolean): any[] {
     }
 
     // Convert list of server names to list of Server objects.
-    targets = targets
+    let targets = targetNames
         .filter((server: string) => !excluded.includes(server))
         .map(targetName => ns.getServer(targetName))
 
@@ -319,7 +319,7 @@ export function deleteServer(ns: NS, hostname: string): boolean {
 export function isHackingTarget(ns: NS, server: any, target: any): Promise<boolean> {
     let scriptName = SCRIPTS.batchController
     let isHackingTarget = ns.isRunning(scriptName, server.hostname, target.hostname)
-    return isHackingTarget
+    return Promise.resolve(isHackingTarget);
 }
 
 
@@ -799,12 +799,13 @@ export async function maintainPurchasedServers(ns: NS) {
         : Math.pow(2, 20)
     let cost = ns.getPurchasedServerCost(ram)
 
-    let servers = ns.getPurchasedServers()
-    servers = servers.map((s: string) => ns.getServer(s))
+    let serverNames: string[] = ns.getPurchasedServers()
+    let servers = serverNames.map((s: string) => ns.getServer(s))
 
-    while (money > cost && servers.length < 25) {
+    let serverCount = servers.length
+    while (money > cost && serverCount < 25) {
         await buyServer(ns, ram)
-        servers = ns.getPurchasedServers()
+        serverCount = ns.getPurchasedServers().length
         money = ns.getServerMoneyAvailable("home")
         await ns.sleep(500)
     }
@@ -1080,7 +1081,7 @@ export function isWorkingForFaction(ns: NS, faction: string): boolean {
  */
 export function getMaxReputationForFaction(ns: NS, faction: string): number {
     let augs = ns.singularity.getAugmentationsFromFaction(faction)
-    let repReq = augs.map((aug: string) => parseInt(ns.singularity.getAugmentationRepReq(aug)))
+    let repReq = augs.map((aug: string) => ns.singularity.getAugmentationRepReq(aug));
     let maxRep = Math.max(...repReq)
     return maxRep
 }

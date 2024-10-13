@@ -26,7 +26,7 @@ import {
 export async function main(ns: NS): Promise<void> {
 
     let server = ns.getServer()
-    let target = ns.getServer(ns.args[0])
+    let target = ns.getServer(ns.args[0].toString());
     let batchScript = SCRIPTS.batch
 
     // Unlock server. This means opening all ports available and then
