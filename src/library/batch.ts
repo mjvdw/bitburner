@@ -31,6 +31,10 @@ export async function main(ns: NS): Promise<void> {
     let hSleep = times.weaken - times.hack - (w2Sleep + gSleep);
 
 
+    // ns.tprint(`Starting batch on ${target.hostname} with ${threads.hack} hack threads, ${threads.grow} grow threads, ${threads.hackWeaken} hackWeaken threads and ${threads.growWeaken} growWeaken threads.`)
+    // ns.tprint(isTargetPrepared(ns, target))
+
+
     // If the target is prepared (ie, max money, min security) then 
     // start a full HWGW batch. If it isn't prepared, do a half batch
     // with just the grow and weaken components.

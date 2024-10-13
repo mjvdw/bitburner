@@ -36,7 +36,7 @@ export async function main(ns: NS): Promise<void> {
     unlockTarget(ns, target)
 
     // Calculate threads, time and RAM required to run batch script.
-    let startRam = getServerAvailableRam(ns, server.hostname) * 4
+    let startRam = getServerAvailableRam(ns, server.hostname)
     let times = getBatchTimes(ns, target)
     let threads = getBatchThreads(ns, server, target, startRam, times)
     let batchRam = getBatchRam(ns, server, threads)
@@ -52,8 +52,12 @@ export async function main(ns: NS): Promise<void> {
     // batch because the next batch started too quickly.
     while (true) {
         let availableRam = startRam - getReservedRamForServer(ns, server.hostname)
+        // ns.tprint(`Available RAM: ${availableRam}, Batch RAM: ${batchRam}, Start RAM: ${startRam}`)
+        // ns.tprint(`Reserved RAM: ${getReservedRamForServer(ns, server.hostname)}`)
+        // ns.tprint(`Threads: ${threads.toString()}`)
+        // ns.tprint("===============================================")
         let numScripts = ns.ps().length
-        if (availableRam >= batchRam && numScripts <= (MAX_BATCHES * 5) + 10) {
+        if (availableRam >= batchRam && numScripts <= (MAX_BATCHES * 5) + 2) {
             ns.exec(batchScript, server.hostname, 1, target.hostname, JSON.stringify(threads), JSON.stringify(times), Math.random())
             reserveRam(ns, server, batchRam)
         }

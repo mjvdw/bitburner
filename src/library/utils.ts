@@ -69,7 +69,7 @@ export const PORTS = {
 
 const BATCH_SPEED = 200
 const BATCH_FREQUENCY = 5 * BATCH_SPEED
-export const MAX_BATCHES = 50
+export const MAX_BATCHES = 1
 
 export const CRIMES: CrimeType[] = [
     "Assassination",
@@ -320,10 +320,10 @@ export function deleteServer(ns: NS, hostname: string): boolean {
  * @param target The target of the hacking scripts.
  * @returns Boolean indicating whether the given server is hacking the given target.
  */
-export function isHackingTarget(ns: NS, server: any, target: any): Promise<boolean> {
+export function isHackingTarget(ns: NS, server: any, target: any): boolean {
     let scriptName = SCRIPTS.batchController
     let isHackingTarget = ns.isRunning(scriptName, server.hostname, target.hostname)
-    return Promise.resolve(isHackingTarget);
+    return isHackingTarget;
 }
 
 
@@ -583,7 +583,7 @@ export function getBatchRam(ns: NS, server: any, threads: any): number {
  */
 export function getBatchThreads(ns: NS, server: any, target: any, availableRam: number, times: any): any {
 
-    let multiplier = 0.9
+    let multiplier = 0.1
     let threads: any = {}
 
     let i = 0
