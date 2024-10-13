@@ -1,4 +1,4 @@
-import ReactNamespace from 'react/index';
+import ReactNamespace from 'react';
 import ReactDomNamespace from 'react-dom';
 
 const React = window.React as typeof ReactNamespace;
