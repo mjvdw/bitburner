@@ -69,7 +69,7 @@ export const PORTS = {
 
 const BATCH_SPEED = 200
 const BATCH_FREQUENCY = 5 * BATCH_SPEED
-export const MAX_BATCHES = 1
+export const MAX_BATCHES = 5
 
 export const CRIMES: CrimeType[] = [
     "Assassination",

@@ -54,7 +54,7 @@ export async function main(ns: NS): Promise<void> {
         let availableRam = startRam - getReservedRamForServer(ns, server.hostname)
         // ns.tprint(`Available RAM: ${availableRam}, Batch RAM: ${batchRam}, Start RAM: ${startRam}`)
         // ns.tprint(`Reserved RAM: ${getReservedRamForServer(ns, server.hostname)}`)
-        // ns.tprint(`Threads: ${threads.toString()}`)
+        // ns.tprint(`Threads: ${threads.hack}, ${threads.grow}, ${threads.hackWeaken}, ${threads.growWeaken}`)
         // ns.tprint("===============================================")
         let numScripts = ns.ps().length
         if (availableRam >= batchRam && numScripts <= (MAX_BATCHES * 5) + 2) {

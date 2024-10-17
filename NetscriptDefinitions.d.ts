@@ -68,14 +68,16 @@ interface SleevePerson extends Person {
 interface ResetInfo {
   /** Numeric timestamp (from Date.now()) of last augmentation reset */
   lastAugReset: number;
-  /** Numeric timestamp (from Date.now()) of last bitnode reset */
+  /** Numeric timestamp (from Date.now()) of last BitNode reset */
   lastNodeReset: number;
-  /** The current bitnode */
+  /** The current BitNode */
   currentNode: number;
   /** A map of owned augmentations to their levels. Keyed by the augmentation name. Map values are the augmentation level (e.g. for NeuroFlux governor). */
   ownedAugs: Map<string, number>;
   /** A map of owned SF to their levels. Keyed by the SF number. Map values are the SF level. */
   ownedSF: Map<number, number>;
+  /** Current BitNode options */
+  bitNodeOptions: BitNodeOptions;
 }
 
 /** @public */
@@ -422,7 +424,7 @@ interface StockOrder {
   [key: string]: StockOrderObject[];
 }
 
-/** Constants used for the stockmarket game mechanic.
+/** Constants used for the stock market game mechanic.
  * @public */
 interface StockMarketConstants {
   /** Normal time in ms between stock market updates */
@@ -1247,7 +1249,7 @@ export interface TIX {
    * ns.tprint("Stock organization: " + ns.stock.getOrganization(sym));
    * ```
    * @param sym - Stock symbol.
-   * @returns The organization assicated with the stock symbol.
+   * @returns The organization associated with the stock symbol.
    */
   getOrganization(sym: string): string;
 
@@ -1658,7 +1660,7 @@ export interface CreateProgramWorkTask {
 /**
  * Crime
  * @remarks
- * An object representing the crime being commited
+ * An object representing the crime being committed
  * @public
  */
 export interface CrimeTask {
@@ -1700,6 +1702,40 @@ export interface GraftingTask {
  * @public
  */
 export type Task = StudyTask | CompanyWorkTask | CreateProgramWorkTask | CrimeTask | FactionWorkTask | GraftingTask;
+
+/**
+ * Default value:
+ * - sourceFileOverrides: an empty Map
+ * - intelligenceOverride: undefined
+ * - All boolean options: false
+ *
+ * If you specify intelligenceOverride, it must be a non-negative integer.
+ *
+ * @public
+ */
+export interface BitNodeOptions extends BitNodeBooleanOptions {
+  sourceFileOverrides: Map<number, number>;
+  intelligenceOverride: number | undefined;
+}
+
+/**
+ * restrictHomePCUpgrade: The home computer's maximum RAM and number of cores are lower than normal. Max RAM: 128GB. Max
+ * core: 1.
+ *
+ * disableSleeveExpAndAugmentation: Your Sleeves do not gain experience when they perform action. You also cannot buy
+ * augmentations for them.
+ *
+ * @public
+ */
+export interface BitNodeBooleanOptions {
+  restrictHomePCUpgrade: boolean;
+  disableGang: boolean;
+  disableCorporation: boolean;
+  disableBladeburner: boolean;
+  disable4SData: boolean;
+  disableHacknetServer: boolean;
+  disableSleeveExpAndAugmentation: boolean;
+}
 
 /**
  * Singularity API
@@ -2010,13 +2046,13 @@ export interface Singularity {
    * apply for promotions by specifying the company and field you are already
    * employed at.
    *
-   * This function will return true if you successfully get a job/promotion,
-   * and false otherwise. Note that if you are trying to use this function to
-   * apply for a promotion and don’t get one, the function will return false.
+   * This function will return the job name if you successfully get a job/promotion,
+   * and null otherwise. Note that if you are trying to use this function to
+   * apply for a promotion and don’t get one, the function will return null.
    *
    * @param companyName - Name of company to apply to.
    * @param field - Field to which you want to apply.
-   * @returns True if the player successfully get a job/promotion, and false otherwise.
+   * @returns Job name if the player successfully get a job/promotion, and null otherwise.
    */
   applyToCompany(companyName: CompanyName | `${CompanyName}`, field: JobField | `${JobField}`): JobName | null;
 
@@ -2615,8 +2651,9 @@ export interface Singularity {
    *
    * @param nextBN - BN number to jump to
    * @param callbackScript - Name of the script to launch in the next BN.
+   * @param bitNodeOptions - BitNode options for the next BN.
    */
-  b1tflum3(nextBN: number, callbackScript?: string): void;
+  b1tflum3(nextBN: number, callbackScript?: string, bitNodeOptions?: BitNodeOptions): void;
 
   /**
    * Destroy the w0r1d_d43m0n and move on to the next BN.
@@ -2629,8 +2666,9 @@ export interface Singularity {
    *
    * @param nextBN - BN number to jump to
    * @param callbackScript - Name of the script to launch in the next BN.
+   * @param bitNodeOptions - BitNode options for the next BN.
    */
-  destroyW0r1dD43m0n(nextBN: number, callbackScript?: string): void;
+  destroyW0r1dD43m0n(nextBN: number, callbackScript?: string, bitNodeOptions?: BitNodeOptions): void;
 
   /**
    * Get the current work the player is doing.
@@ -3325,7 +3363,7 @@ export interface Bladeburner {
    *
    * This function returns the number of skill points needed to upgrade the specified skill the specified number of times.
    *
-   * The function returns -1 if an invalid skill name is passed in, and Infinity if the count overflows the maximum level.
+   * The function returns Infinity if the sum of the current level and count exceeds the maximum level.
    *
    * @param skillName - Name of skill. Case-sensitive and must be an exact match.
    * @param count - Number of times to upgrade the skill. Defaults to 1 if not specified.
@@ -3998,12 +4036,246 @@ type SimpleOpponentStats = {
 };
 
 /**
+ * Tools to analyze the IPvGO subnet.
+ *
+ * @public
+ */
+export interface GoAnalysis {
+  /**
+   * Shows if each point on the board is a valid move for the player.
+   *
+   * The true/false validity of each move can be retrieved via the X and Y coordinates of the move.
+   *      `const validMoves = ns.go.analysis.getValidMoves();`
+   *
+   *      `const moveIsValid = validMoves[x][y];`
+   *
+   * Note that the [0][0] point is shown on the bottom-left on the visual board (as is traditional), and each
+   * string represents a vertical column on the board. In other words, the printed example above can be understood to
+   * be rotated 90 degrees clockwise compared to the board UI as shown in the IPvGO subnet tab.
+   *
+   * @remarks
+   * RAM cost: 8 GB
+   * (This is intentionally expensive; you can derive this info from just getBoardState() )
+   */
+  getValidMoves(): boolean[][];
+
+  /**
+   * Returns an ID for each point. All points that share an ID are part of the same network (or "chain"). Empty points
+   * are also given chain IDs to represent continuous empty space. Dead nodes are given the value `null.`
+   *
+   * The data from getChains() can be used with the data from getBoardState() to see which player (or empty) each chain is
+   *
+   * For example, a 5x5 board might look like this. There is a large chain #1 on the left side, smaller chains
+   * 2 and 3 on the right, and a large chain 0 taking up the center of the board.
+   *
+   * ```js
+   * [
+   *   [   0,0,0,3,4],
+   *   [   1,0,0,3,3],
+   *   [   1,1,0,0,0],
+   *   [null,1,0,2,2],
+   *   [null,1,0,2,5],
+   * ]
+   * ```
+   *
+   * @remarks
+   * RAM cost: 16 GB
+   * (This is intentionally expensive; you can derive this info from just getBoardState() )
+   *
+   */
+  getChains(): (number | null)[][];
+
+  /**
+   * Returns a number for each point, representing how many open nodes its network/chain is connected to.
+   * Empty nodes and dead nodes are shown as -1 liberties.
+   *
+   * For example, a 5x5 board might look like this. The chain in the top-left touches 5 total empty nodes, and the one
+   * in the center touches four. The group in the bottom-right only has one liberty; it is in danger of being captured!
+   *
+   * ```js
+   * [
+   *   [-1, 5,-1,-1, 2],
+   *   [ 5, 5,-1,-1,-1],
+   *   [-1,-1, 4,-1,-1],
+   *   [ 3,-1,-1, 3, 1],
+   *   [ 3,-1,-1, 3, 1],
+   * ]
+   * ```
+   *
+   * @remarks
+   * RAM cost: 16 GB
+   * (This is intentionally expensive; you can derive this info from just getBoardState() )
+   */
+  getLiberties(): number[][];
+
+  /**
+   * Returns 'X', 'O', or '?' for each empty point to indicate which player controls that empty point.
+   * If no single player fully encircles the empty space, it is shown as contested with '?'.
+   * "#" are dead nodes that are not part of the subnet.
+   *
+   * Filled points of any color are indicated with '.'
+   *
+   * In this example, white encircles some space in the top-left, black encircles some in the top-right, and between their routers is contested space in the center:
+   *
+   * ```js
+   * [
+   *   "OO..?",
+   *   "OO.?.",
+   *   "O.?.X",
+   *   ".?.XX",
+   *   "?..X#",
+   * ]
+   * ```
+   *
+   * @remarks
+   * RAM cost: 16 GB
+   * (This is intentionally expensive; you can derive this info from just getBoardState() )
+   */
+  getControlledEmptyNodes(): string[];
+
+  /**
+   * Displays the game history, captured nodes, and gained bonuses for each opponent you have played against.
+   *
+   * The details are keyed by opponent name, in this structure:
+   *
+   * ```js
+   * {
+   *   <OpponentName>: {
+   *     wins: number,
+   *     losses: number,
+   *     winStreak: number,
+   *     highestWinStreak: number,
+   *     favor: number,
+   *     bonusPercent: number,
+   *     bonusDescription: string,
+   *   }
+   * }
+   * ```
+   */
+  getStats(): Partial<Record<GoOpponent, SimpleOpponentStats>>;
+}
+
+/**
+ * Illicit and dangerous IPvGO tools. Not for the faint of heart. Requires BitNode 14.2 to use.
+ *
+ * @public
+ */
+export interface GoCheat {
+  /**
+   * Returns your chance of successfully playing one of the special moves in the ns.go.cheat API.
+   * Scales with your crime success rate stat.
+   *
+   * Warning: if you fail to play a cheat move, your turn will be skipped. After your first cheat attempt, if you fail, there is a
+   * small (~10%) chance you will instantly be ejected from the subnet.
+   *
+   * @remarks
+   * RAM cost: 1 GB
+   * Requires BitNode 14.2 to use
+   */
+  getCheatSuccessChance(): number;
+  /**
+   * Attempts to remove an existing router, leaving an empty node behind.
+   *
+   * Success chance can be seen via ns.go.getCheatSuccessChance()
+   *
+   * Warning: if you fail to play a cheat move, your turn will be skipped. After your first cheat attempt, if you fail, there is a
+   * small (~10%) chance you will instantly be ejected from the subnet.
+   *
+   * @remarks
+   * RAM cost: 8 GB
+   * Requires BitNode 14.2 to use
+   *
+   * @returns a promise that contains the opponent move's x and y coordinates (or pass) in response, or an indication if the game has ended
+   */
+  removeRouter(
+    x: number,
+    y: number,
+  ): Promise<{
+    type: "move" | "pass" | "gameOver";
+    x: number | null;
+    y: number | null;
+  }>;
+  /**
+   * Attempts to place two routers at once on empty nodes. Note that this ignores other move restrictions, so you can
+   * suicide your own routers if they have no access to empty ports and do not capture any enemy routers.
+   *
+   * Success chance can be seen via ns.go.getCheatSuccessChance()
+   *
+   * Warning: if you fail to play a cheat move, your turn will be skipped. After your first cheat attempt, if you fail, there is a
+   * small (~10%) chance you will instantly be ejected from the subnet.
+   *
+   * @remarks
+   * RAM cost: 8 GB
+   * Requires BitNode 14.2 to use
+   *
+   * @returns a promise that contains the opponent move's x and y coordinates (or pass) in response, or an indication if the game has ended
+   */
+  playTwoMoves(
+    x1: number,
+    y1: number,
+    x2: number,
+    y2: number,
+  ): Promise<{
+    type: "move" | "pass" | "gameOver";
+    x: number | null;
+    y: number | null;
+  }>;
+
+  /**
+   * Attempts to repair an offline node, leaving an empty playable node behind.
+   *
+   * Success chance can be seen via ns.go.getCheatSuccessChance()
+   *
+   * Warning: if you fail to play a cheat move, your turn will be skipped. After your first cheat attempt, if you fail, there is a
+   * small (~10%) chance you will instantly be ejected from the subnet.
+   *
+   * @remarks
+   * RAM cost: 8 GB
+   * Requires BitNode 14.2 to use
+   *
+   * @returns a promise that contains the opponent move's x and y coordinates (or pass) in response, or an indication if the game has ended
+   */
+  repairOfflineNode(
+    x: number,
+    y: number,
+  ): Promise<{
+    type: "move" | "pass" | "gameOver";
+    x: number | null;
+    y: number | null;
+  }>;
+
+  /**
+   * Attempts to destroy an empty node, leaving an offline dead space that does not count as territory or
+   * provide open node access to adjacent routers.
+   *
+   * Success chance can be seen via ns.go.getCheatSuccessChance()
+   *
+   * Warning: if you fail to play a cheat move, your turn will be skipped. After your first cheat attempt, if you fail, there is a
+   * small (~10%) chance you will instantly be ejected from the subnet.
+   *
+   * @remarks
+   * RAM cost: 8 GB
+   * Requires BitNode 14.2 to use
+   *
+   * @returns a promise that contains the opponent move's x and y coordinates (or pass) in response, or an indication if the game has ended
+   */
+  destroyNode(
+    x: number,
+    y: number,
+  ): Promise<{
+    type: "move" | "pass" | "gameOver";
+    x: number | null;
+    y: number | null;
+  }>;
+}
+
+/**
  * IPvGO api
  * @public
  */
 export interface Go {
   /**
-   *  Make a move on the IPvGO subnet gameboard, and await the opponent's response.
+   *  Make a move on the IPvGO subnet game board, and await the opponent's response.
    *  x:0 y:0 represents the bottom-left corner of the board in the UI.
    *
    * @remarks
@@ -4062,13 +4334,15 @@ export interface Go {
    *
    * For example, a 5x5 board might look like this:
    *
-   [<br/>  
-      "XX.O.",<br/>  
-      "X..OO",<br/>  
-      ".XO..",<br/>  
-      "XXO.#",<br/>  
-      ".XO.#",<br/>  
-   ]
+   * ```js
+   * [
+   *   "XX.O.",
+   *   "X..OO",
+   *   ".XO..",
+   *   "XXO.#",
+   *   ".XO.#",
+   * ]
+   * ```
    *
    * Each string represents a vertical column on the board, and each character in the string represents a point.
    *
@@ -4088,13 +4362,15 @@ export interface Go {
    *
    * For example, a single 5x5 prior move board might look like this:
    *
-   [<br/>  
-      "XX.O.",<br/>  
-      "X..OO",<br/>  
-      ".XO..",<br/>  
-      "XXO.#",<br/>  
-      ".XO.#",<br/>  
-   ]
+   * ```js
+   * [
+   *   "XX.O.",
+   *   "X..OO",
+   *   ".XO..",
+   *   "XXO.#",
+   *   ".XO.#",
+   * ]
+   * ```
    */
   getMoveHistory(): string[][];
 
@@ -4142,231 +4418,12 @@ export interface Go {
   /**
    * Tools to analyze the IPvGO subnet.
    */
-  analysis: {
-    /**
-     * Shows if each point on the board is a valid move for the player.
-     *
-     * The true/false validity of each move can be retrieved via the X and Y coordinates of the move.
-     *      `const validMoves = ns.go.analysis.getValidMoves();`
-     *
-     *      `const moveIsValid = validMoves[x][y];`
-     *
-     * Note that the [0][0] point is shown on the bottom-left on the visual board (as is traditional), and each
-     * string represents a vertical column on the board. In other words, the printed example above can be understood to
-     * be rotated 90 degrees clockwise compared to the board UI as shown in the IPvGO subnet tab.
-     *
-     * @remarks
-     * RAM cost: 8 GB
-     * (This is intentionally expensive; you can derive this info from just getBoardState() )
-     */
-    getValidMoves(): boolean[][];
-
-    /**
-     * Returns an ID for each point. All points that share an ID are part of the same network (or "chain"). Empty points
-     * are also given chain IDs to represent continuous empty space. Dead nodes are given the value `null.`
-     *
-     * The data from getChains() can be used with the data from getBoardState() to see which player (or empty) each chain is
-     *
-     * For example, a 5x5 board might look like this. There is a large chain #1 on the left side, smaller chains
-     * 2 and 3 on the right, and a large chain 0 taking up the center of the board.
-     * <pre lang="javascript">
-     *       [
-     *         [   0,0,0,3,4],
-     *         [   1,0,0,3,3],
-     *         [   1,1,0,0,0],
-     *         [null,1,0,2,2],
-     *         [null,1,0,2,5],
-     *       ]
-     * </pre>
-     * @remarks
-     * RAM cost: 16 GB
-     * (This is intentionally expensive; you can derive this info from just getBoardState() )
-     *
-     */
-    getChains(): (number | null)[][];
-
-    /**
-     * Returns a number for each point, representing how many open nodes its network/chain is connected to.
-     * Empty nodes and dead nodes are shown as -1 liberties.
-     *
-     * For example, a 5x5 board might look like this. The chain in the top-left touches 5 total empty nodes, and the one
-     * in the center touches four. The group in the bottom-right only has one liberty; it is in danger of being captured!
-     *
-     * <pre lang="javascript">
-     *      [
-     *         [-1, 5,-1,-1, 2],
-     *         [ 5, 5,-1,-1,-1],
-     *         [-1,-1, 4,-1,-1],
-     *         [ 3,-1,-1, 3, 1],
-     *         [ 3,-1,-1, 3, 1],
-     *      ]
-     * </pre>
-     *
-     * @remarks
-     * RAM cost: 16 GB
-     * (This is intentionally expensive; you can derive this info from just getBoardState() )
-     */
-    getLiberties(): number[][];
-
-    /**
-     * Returns 'X', 'O', or '?' for each empty point to indicate which player controls that empty point.
-     * If no single player fully encircles the empty space, it is shown as contested with '?'.
-     * "#" are dead nodes that are not part of the subnet.
-     *
-     * Filled points of any color are indicated with '.'
-     *
-     * In this example, white encircles some space in the top-left, black encircles some in the top-right, and between their routers is contested space in the center:
-     *
-     * <pre lang="javascript">
-     *   [
-     *      "OO..?",
-     *      "OO.?.",
-     *      "O.?.X",
-     *      ".?.XX",
-     *      "?..X#",
-     *   ]
-     * </pre>
-     *
-     * @remarks
-     * RAM cost: 16 GB
-     * (This is intentionally expensive; you can derive this info from just getBoardState() )
-     */
-    getControlledEmptyNodes(): string[];
-
-    /**
-     * Displays the game history, captured nodes, and gained bonuses for each opponent you have played against.
-     *
-     * The details are keyed by opponent name, in this structure:
-     *
-     * <pre lang="javascript">
-     * {
-     *   <OpponentName>: {
-     *     wins: number,
-     *     losses: number,
-     *     winStreak: number,
-     *     highestWinStreak: number,
-     *     favor: number,
-     *     bonusPercent: number,
-     *     bonusDescription: string,
-     *   }
-     * }
-     * </pre>
-     *
-     */
-    getStats(): Partial<Record<GoOpponent, SimpleOpponentStats>>;
-  };
+  analysis: GoAnalysis;
 
   /**
-   * Illicit and dangerous IPvGO tools. Not for the faint of heart. Requires Bitnode 14.2 to use.
+   * Illicit and dangerous IPvGO tools. Not for the faint of heart. Requires BitNode 14.2 to use.
    */
-  cheat: {
-    /**
-     * Returns your chance of successfully playing one of the special moves in the ns.go.cheat API.
-     * Scales with your crime success rate stat.
-     *
-     * Warning: if you fail to play a cheat move, your turn will be skipped. After your first cheat attempt, if you fail, there is a
-     * small (~10%) chance you will instantly be ejected from the subnet.
-     *
-     * @remarks
-     * RAM cost: 1 GB
-     * Requires Bitnode 14.2 to use
-     */
-    getCheatSuccessChance(): number;
-    /**
-     * Attempts to remove an existing router, leaving an empty node behind.
-     *
-     * Success chance can be seen via ns.go.getCheatSuccessChance()
-     *
-     * Warning: if you fail to play a cheat move, your turn will be skipped. After your first cheat attempt, if you fail, there is a
-     * small (~10%) chance you will instantly be ejected from the subnet.
-     *
-     * @remarks
-     * RAM cost: 8 GB
-     * Requires Bitnode 14.2 to use
-     *
-     * @returns a promise that contains the opponent move's x and y coordinates (or pass) in response, or an indication if the game has ended
-     */
-    removeRouter(
-      x: number,
-      y: number,
-    ): Promise<{
-      type: "move" | "pass" | "gameOver";
-      x: number | null;
-      y: number | null;
-    }>;
-    /**
-     * Attempts to place two routers at once on empty nodes. Note that this ignores other move restrictions, so you can
-     * suicide your own routers if they have no access to empty ports and do not capture any enemy routers.
-     *
-     * Success chance can be seen via ns.go.getCheatSuccessChance()
-     *
-     * Warning: if you fail to play a cheat move, your turn will be skipped. After your first cheat attempt, if you fail, there is a
-     * small (~10%) chance you will instantly be ejected from the subnet.
-     *
-     * @remarks
-     * RAM cost: 8 GB
-     * Requires Bitnode 14.2 to use
-     *
-     * @returns a promise that contains the opponent move's x and y coordinates (or pass) in response, or an indication if the game has ended
-     */
-    playTwoMoves(
-      x1: number,
-      y1: number,
-      x2: number,
-      y2: number,
-    ): Promise<{
-      type: "move" | "pass" | "gameOver";
-      x: number | null;
-      y: number | null;
-    }>;
-
-    /**
-     * Attempts to repair an offline node, leaving an empty playable node behind.
-     *
-     * Success chance can be seen via ns.go.getCheatSuccessChance()
-     *
-     * Warning: if you fail to play a cheat move, your turn will be skipped. After your first cheat attempt, if you fail, there is a
-     * small (~10%) chance you will instantly be ejected from the subnet.
-     *
-     * @remarks
-     * RAM cost: 8 GB
-     * Requires Bitnode 14.2 to use
-     *
-     * @returns a promise that contains the opponent move's x and y coordinates (or pass) in response, or an indication if the game has ended
-     */
-    repairOfflineNode(
-      x: number,
-      y: number,
-    ): Promise<{
-      type: "move" | "pass" | "gameOver";
-      x: number | null;
-      y: number | null;
-    }>;
-
-    /**
-     * Attempts to destroy an empty node, leaving an offline dead space that does not count as territory or
-     * provide open node access to adjacent routers.
-     *
-     * Success chance can be seen via ns.go.getCheatSuccessChance()
-     *
-     * Warning: if you fail to play a cheat move, your turn will be skipped. After your first cheat attempt, if you fail, there is a
-     * small (~10%) chance you will instantly be ejected from the subnet.
-     *
-     * @remarks
-     * RAM cost: 8 GB
-     * Requires Bitnode 14.2 to use
-     *
-     * @returns a promise that contains the opponent move's x and y coordinates (or pass) in response, or an indication if the game has ended
-     */
-    destroyNode(
-      x: number,
-      y: number,
-    ): Promise<{
-      type: "move" | "pass" | "gameOver";
-      x: number | null;
-      y: number | null;
-    }>;
-  };
+  cheat: GoCheat;
 }
 
 /**
@@ -5490,7 +5547,8 @@ export interface NS {
    * server to hack that server. For example, you can create a script that hacks the `foodnstuff`
    * server and run that script on any server in the game.
    *
-   * A successful `hack()` on a server will raise that server’s security level by 0.002.
+   * A successful `hack()` on a server will raise that server’s security level by 0.002 per thread. You can use
+   * {@link NS.hackAnalyzeSecurity | hackAnalyzeSecurity} to calculate the security increase for a number of threads.
    *
    * @example
    * ```js
@@ -5555,7 +5613,10 @@ export interface NS {
    *
    * Use your hacking skills to attack a server’s security, lowering the server’s security level.
    * The runtime for this function depends on your hacking level and the target server’s security
-   * level when this function is called. This function lowers the security level of the target server by 0.05.
+   * level when this function is called.
+   *
+   * This function usually lowers the security level of the target server by 0.05 per thread, and only in unusual
+   * situations does it do less. Use {@link NS.weakenAnalyze | weakenAnalyze} to determine the exact value.
    *
    * Like {@link NS.hack | hack} and {@link NS.grow| grow}, `weaken` can be called on any server, regardless of
    * where the script is running. This function requires root access to the target server, but
@@ -5598,7 +5659,7 @@ export interface NS {
    *
    * @example
    * ```js
-   * // Calculate threadcount of a single hack that would take $100k from n00dles
+   * // Calculate the thread count of a single hack that would take $100k from n00dles
    * const hackThreads = ns.hackAnalyzeThreads("n00dles", 1e5);
    *
    * // Launching a script requires an integer thread count. The below would take less than the targeted $100k.
@@ -6018,7 +6079,7 @@ export interface NS {
    * @remarks
    * RAM cost: 0 GB
    *
-   * Moves a tail window. Coordinates are in screenspace pixels (top left is 0,0).
+   * Moves a tail window. Coordinates are in screen space pixels (top left is 0,0).
    *
    * @param x - x coordinate.
    * @param y - y coordinate.
@@ -6370,10 +6431,10 @@ export interface NS {
    * If no host is defined, it will kill all scripts, where the script is running.
    *
    * @param host - IP or hostname of the server on which to kill all scripts.
-   * @param safetyguard - Skips the script that calls this function
+   * @param safetyGuard - Skips the script that calls this function
    * @returns True if any scripts were killed, and false otherwise.
    */
-  killall(host?: string, safetyguard?: boolean): boolean;
+  killall(host?: string, safetyGuard?: boolean): boolean;
 
   /**
    * Terminates the current script immediately.
@@ -6736,7 +6797,7 @@ export interface NS {
    * @remarks
    * RAM cost: 0 GB
    *
-   * This acts analagously to the ramOverride parameter in runOptions, but for changing RAM in
+   * This acts analogously to the ramOverride parameter in runOptions, but for changing RAM in
    * the current running script. The static RAM allocation (the amount of RAM used by ONE thread)
    * will be adjusted to the given value, if possible. This can fail if the number is less than the
    * current dynamic RAM limit, or if adjusting upward would require more RAM than is available on
@@ -6885,7 +6946,7 @@ export interface NS {
    * @remarks
    * RAM cost: 0 GB
    *
-   * This function can be used to write data to a text file (.txt) or a script (.js or .script).
+   * This function can be used to write data to a text file (.txt, .json) or a script (.js, .jsx, .ts, .tsx, .script).
    *
    * This function will write data to that file. If the specified file does not exist,
    * then it will be created. The third argument mode defines how the data will be written to
@@ -6931,7 +6992,7 @@ export interface NS {
    * @remarks
    * RAM cost: 0 GB
    *
-   * This function is used to read data from a text file (.txt) or script (.js or .script).
+   * This function is used to read data from a text file (.txt, .json) or script (.js, .jsx, .ts, .tsx, .script).
    *
    * This function will return the data in the specified file.
    * If the file does not exist, an empty string will be returned.
@@ -7396,7 +7457,7 @@ export interface NS {
    * RAM cost: 0 GB
    *
    * Retrieves data from a URL and downloads it to a file on the specified server.
-   * The data can only be downloaded to a script (.js or .script) or a text file (.txt).
+   * The data can only be downloaded to a script (.js, .jsx, .ts, .tsx, .script) or a text file (.txt, .json).
    * If the file already exists, it will be overwritten by this command.
    * Note that it will not be possible to download data from many websites because they
    * do not allow cross-origin resource sharing (CORS).
@@ -7432,12 +7493,12 @@ export interface NS {
   getFavorToDonate(): number;
 
   /**
-   * Get the current Bitnode multipliers.
+   * Get the current BitNode multipliers.
    * @remarks
    * RAM cost: 4 GB
    *
    * Returns an object containing the current (or supplied) BitNode multipliers.
-   * This function requires you to be in Bitnode 5 or have Source-File 5 in order to run.
+   * This function requires you to be in BitNode 5 or have Source-File 5 in order to run.
    * The multipliers are returned in decimal forms (e.g. 1.5 instead of 150%).
    * The multipliers represent the difference between the current BitNode and
    * the original BitNode (BitNode-1).
@@ -8209,7 +8270,7 @@ export interface Corporation extends WarehouseAPI, OfficeAPI {
 
   /** Create a Corporation
    * @param corporationName - Name of the corporation
-   * @param selfFund - If you should self fund, defaults to true, false will only work on Bitnode 3
+   * @param selfFund - If you should self fund, defaults to true, false will only work on BitNode 3
    * @returns true if created and false if not */
   createCorporation(corporationName: string, selfFund: boolean): boolean;
 
@@ -8673,10 +8734,14 @@ interface Material {
   demand: number | undefined;
   /** Competition for the material, only present if "Market Research - Competition" unlocked */
   competition: number | undefined;
-  /** Amount of material produced last cycle */
-  productionAmount: number;
+  /** Amount of material purchased from the market last cycle */
+  buyAmount: number;
   /** Amount of material sold last cycle */
   actualSellAmount: number;
+  /** Amount of material produced last cycle */
+  productionAmount: number;
+  /** Amount of material imported from other divisions last cycle */
+  importAmount: number;
   /** Cost to buy material */
   marketPrice: number;
   /** Sell cost, can be "MP+5" */
@@ -8886,7 +8951,7 @@ interface SkillRequirement {
  * Player must have less than this much karma.
  * @public
  */
-interface KarmaRequiremennt {
+interface KarmaRequirement {
   type: "karma";
   karma: number;
 }
@@ -9057,7 +9122,7 @@ interface EveryRequirement {
 export type PlayerRequirement =
   | MoneyRequirement
   | SkillRequirement
-  | KarmaRequiremennt
+  | KarmaRequirement
   | PeopleKilledRequirement
   | FileRequirement
   | NumAugmentationsRequirement
