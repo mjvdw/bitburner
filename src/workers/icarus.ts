@@ -46,7 +46,7 @@ export async function main(ns: NS): Promise<void> {
 
         hackPairs.forEach((pair: any) => {
             let server = pair[0]
-            let target = pair[1]
+            let target = pair[1] 
 
             if (!isHackingTarget(ns, server, target)) {
                 killHackScripts(ns, server)

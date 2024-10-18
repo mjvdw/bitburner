@@ -1,4 +1,4 @@
-import { NS, CrimeType, FactionWorkType } from "@ns";
+import { NS, CrimeType, FactionWorkType, Server } from "@ns";
 
 
 const ALL_PORT_SCRIPTS = [
@@ -67,7 +67,7 @@ export const PORTS = {
     factionFocus: 2
 }
 
-const BATCH_SPEED = 200
+const BATCH_SPEED = 20
 const BATCH_FREQUENCY = 5 * BATCH_SPEED
 export const MAX_BATCHES = 5
 
@@ -581,9 +581,9 @@ export function getBatchRam(ns: NS, server: any, threads: any): number {
  * @param times The times for each component of the batch.
  * @returns An object containing the threads needed to run a batch against the given target.
  */
-export function getBatchThreads(ns: NS, server: any, target: any, availableRam: number, times: any): any {
+export function getBatchThreads(ns: NS, server: Server, target: any, availableRam: number, times: any): any {
 
-    let multiplier = 0.1
+    let multiplier = 0.25
     let threads: any = {}
 
     let i = 0
